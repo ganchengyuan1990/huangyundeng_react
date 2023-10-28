@@ -10,24 +10,45 @@ RUN apk add tzdata && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && ech
 # 使用 HTTPS 协议访问容器云调用证书安装
 RUN apk add ca-certificates
 
+RUN apt update && apt install -y curl && \
+    apt clean && rm -rf /var/lib/apt/lists/*
+
 # 选用国内镜像源以提高下载速度
 #RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tencent.com/g' /etc/apk/repositories \
 #    && apk add --update --no-cache python3 py3-pip build-base \
 #    && rm -rf /var/cache/apk/*
 
-# 拷贝依赖项
-COPY requirements.txt /app/requirements.txt
-
 # 设定当前的工作目录
 WORKDIR /app
 
-# 安装依赖到指定的/install文件夹
-# 选用国内镜像源以提高下载速度
-RUN pip config set global.index-url http://mirrors.cloud.tencent.com/pypi/simple \
-&& pip config set global.trusted-host mirrors.cloud.tencent.com \
-&& pip install --upgrade pip \
-# pip install scipy 等数学包失败，可使用 apk add py3-scipy 进行， 参考安装 https://pkgs.alpinelinux.org/packages?name=py3-scipy&branch=v3.13
-&& pip install --user -r requirements.txt
+ENV SPIDER=/app \
+    PYTHONUNBUFFERED=1 \
+    # prevents python creating .pyc files
+    PYTHONDONTWRITEBYTECODE=1 \
+    \
+    # pip
+    PIP_NO_CACHE_DIR=off \
+    PIP_DISABLE_PIP_VERSION_CHECK=on \
+    PIP_DEFAULT_TIMEOUT=100 \
+    \
+    # poetry
+    # https://python-poetry.org/docs/configuration/#using-environment-variables
+    POETRY_VERSION=1.5.1 \
+    # make poetry install to this location
+    POETRY_HOME="/opt/poetry" \
+    # make poetry create the virtual environment in the project's root
+    # it gets named `.venv`
+    POETRY_VIRTUALENVS_IN_PROJECT=true \
+    # do not ask any interactive question
+    POETRY_NO_INTERACTION=1
+
+ENV PATH="$POETRY_HOME/bin:$PATH"
+
+# Install project dependencies
+RUN curl -sSL https://install.python-poetry.org | python3 - && poetry --version
+COPY pyproject.toml poetry.lock /app/
+RUN poetry config virtualenvs.create false \
+    && poetry install --no-interaction --no-ansi --only main
 
 # 拷贝当前项目到/app目录下
 COPY . /app
