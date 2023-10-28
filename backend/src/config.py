@@ -13,7 +13,7 @@ config = {
     'SECRET_KEY': 'django-insecure-^leio-ylom9bh^d*$zil_x6(shm#)95&dc@yd#g61ao=rqd5eo',
     'db_default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'menglu',
+        'NAME': 'fangxt',
         'USER': 'postgres',
         'PASSWORD': '123456',
         'HOST': '127.0.0.1',

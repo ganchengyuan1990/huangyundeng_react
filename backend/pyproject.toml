@@ -15,13 +15,12 @@ python-dotenv = "1.0.0"
 requests = "2.31.0"
 mistune = "3.0.2"
 langchain = "^0.0.325"
-psycopg2 = "^2.9.6"
-psycopg = "^3.1.9"
-
-
-[tool.poetry.group.dev.dependencies]
 psycopg2-binary = "^2.9.6"
 psycopg-binary = "^3.1.9"
+
+[tool.poetry.group.dev.dependencies]
+psycopg2 = "^2.9.6"
+psycopg = "^3.1.9"
 
 [build-system]
 requires = ["poetry-core"]
@@ -31,5 +30,4 @@ build-backend = "poetry.core.masonry.api"
 [[tool.poetry.source]]
 name = "aliyun"
 url = "http://mirrors.aliyun.com/pypi/simple"
-default = false
-secondary = true
+default = true

@@ -21,9 +21,8 @@ from ninja.errors import HttpError
 from ninja.security import APIKeyQuery, APIKeyHeader
 
 from src.utils.api import UserException, ApiResponse, ApiResponseResultCode
-from src.answer_order.views import router as answer_order_router
+# from src.answer_order.views import router as answer_order_router
 from src.account.views import router as account_router
-from src.constellation.views import router as constellation_router
 
 
 class InvalidMethod(Exception):
@@ -57,9 +56,8 @@ class FakeHeaderAuth(APIKeyHeader):
 
 
 api = NinjaAPI(auth=[FakeHeaderAuth(), FakeQueryAuth()])
-api.add_router("/book/", answer_order_router, tags=['book'])
 api.add_router("/account/", account_router, tags=['account'])
-api.add_router("/constellation/", constellation_router, tags=['constellation'])
+# api.add_router("/book/", answer_order_router, tags=['book'])
 
 
 @api.exception_handler(UserException)
