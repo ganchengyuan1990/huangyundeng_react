@@ -20,7 +20,7 @@ RUN apt update && apt install -y ca-certificates && apt install -y curl && \
 WORKDIR /app
 
 # Install project dependencies
-RUN pip install --upgrade pip && pip install poetry==1.5.1 --user && poetry --version
+RUN pip install --upgrade pip && pip install poetry==1.5.1 && poetry --version
 COPY pyproject.toml poetry.lock /app/
 RUN poetry config virtualenvs.create false \
     && poetry install --no-interaction --no-ansi --only main
