@@ -19,13 +19,12 @@ config = {
         'HOST': '127.0.0.1',
         'PORT': '23001',
     },
-    'db2': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(Path(__file__).resolve().parent.parent, '2f9ab323dd9c8c49652f27e20c491cef.db'),
-    },
     'wx': {
-        'appid': 'wxc4d9ad9b7db33b1a',
+        'appid': 'wxe0eb952ea44cbfa0',
         'appsecret': '8c7ded3a7f15aa754473128072f342e5',
+    },
+    'qdrant': {
+        'url': "127.0.0.1",
     },
 }
 

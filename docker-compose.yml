@@ -34,7 +34,7 @@ services:
       OPENAI_API_KEY: $OPENAI_API_KEY
       OPENAI_API_BASE: $OPENAI_API_BASE
     ports:
-      - "80:8000"
+      - "80:80"
     volumes:
       - ./runtime/test_case/:/test_case/
       - ./runtime/test_case_origin/:/test_case_origin/:ro

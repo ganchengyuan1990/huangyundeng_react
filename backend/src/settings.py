@@ -27,6 +27,7 @@ ALLOWED_HOSTS = ['*']
 INSTALLED_APPS = [
     'src.base',
     'src.account',
+    'src.qa',
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -71,7 +72,6 @@ WSGI_APPLICATION = 'src.wsgi.application'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
 DATABASES = {
-    'db2': config['db2'],
     'default': config['db_default'],
 }
 
