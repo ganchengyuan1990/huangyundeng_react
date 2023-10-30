@@ -1,0 +1,31 @@
+{
+  "name": "frontend",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Remax Project",
+  "main": "index.js",
+  "keywords": [],
+  "author": "l@likyh.com",
+  "license": "MIT",
+  "scripts": {
+    "dev": "remax build -t wechat -w",
+    "build": "cross-env NODE_ENV=production remax build -t wechat -m"
+  },
+  "dependencies": {
+    "annar": "^2.2.1",
+    "camelcase": "^6.3.0",
+    "camelcase-keys": "^5.2.0",
+    "expired-storage": "^1.0.2",
+    "intl": "^1.2.5",
+    "luxon": "^2.3.2",
+    "react": "^18.1.0",
+    "remax": "^2.9.1",
+    "snakecase-keys": "^5.4.1"
+  },
+  "devDependencies": {
+    "@remax/plugin-wx-shake": "^1.0.13",
+    "@types/luxon": "^2.3.1",
+    "cross-env": "^7.0.2",
+    "string-replace-loader": "^3.1.0"
+  }
+}
