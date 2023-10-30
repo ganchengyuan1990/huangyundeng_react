@@ -1,7 +1,10 @@
 from typing import List
 
 import qdrant_client
+from langchain.chains import LLMChain
+from langchain.chat_models import QianfanChatEndpoint
 from langchain.embeddings import OpenAIEmbeddings
+from langchain.prompts import HumanMessagePromptTemplate, ChatPromptTemplate
 from langchain.vectorstores.qdrant import Qdrant
 from ninja import Router, Schema
 from qdrant_client import models
@@ -71,16 +74,36 @@ def 获取答案(request: Request, data: AIn):
     if len(found_docs) > 0:
         doc, score = found_docs[0]
         if score > 0.8:
+            chat = QianfanChatEndpoint(**{'top_p': 0.4, 'temperature': 0.1, 'penalty_score': 1})
+            human_message_prompt = HumanMessagePromptTemplate.from_template("""
+            你是房地产法律法规方面的专家，现在，请你先看一下几个参考问答，再回答最后给出的问题。
+            仅根据给出的信息回答，如果给出的参考信息无法回答，只需要回答:"您的问题暂时无法回答，敬请期待"。
+
+            参考问答:
+            ===============
+            {example}
+            ===============
+
+            Question: {question}
+            Answer: """)
+            summary_prompt = ChatPromptTemplate.from_messages([human_message_prompt])
+
+            llm_chain = LLMChain(prompt=summary_prompt, llm=chat)
+
+            example = '\n=====\n'.join(
+                [f'''Question: {doc.metadata['question']}\nAnswer: {doc.page_content}''' for (doc, score) in found_docs])
+
+            final_answer = llm_chain.predict(example=example, question=data.question)
             qr = QaRecord(
                 account=request.user,
                 question=data.question,
                 match_question=doc.metadata['question'],
-                top_score=0,
+                top_score=score,
                 answer_type='ai',
-                answer=doc.page_content,
+                answer=final_answer,
             )
             qr.save()
-            return ApiResponse.success(answer=doc.page_content)
+            return ApiResponse.success(answer=final_answer)
 
     qr = QaRecord(
         account=request.user,

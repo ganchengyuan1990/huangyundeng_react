@@ -8,10 +8,6 @@ from bs4 import BeautifulSoup
 from langchain.schema import Document
 from langchain.vectorstores.qdrant import Qdrant
 
-# chat = QianfanChatEndpoint()
-# res = chat([HumanMessage(content="你来讲个笑话")], **{'top_p': 0.4, 'temperature': 0.1, 'penalty_score': 1})
-# print(res)
-
 # embeddings = QianfanEmbeddingsEndpoint(
 #     model='bge-large-zh',
 #     # endpoint='bge-large-zh',
