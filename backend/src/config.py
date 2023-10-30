@@ -21,10 +21,11 @@ config = {
     },
     'wx': {
         'appid': 'wxe0eb952ea44cbfa0',
-        'appsecret': '8c7ded3a7f15aa754473128072f342e5',
+        'appsecret': 'c185423ffe0b0ad1a4ca07270126a51b',
     },
     'qdrant': {
         'url': "127.0.0.1",
+        'collection_name': "qa_1",
     },
 }
 

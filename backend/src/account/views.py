@@ -16,9 +16,19 @@ router = Router()
 
 
 @router.get('/base', auth=None)
-def account_base(request: Request):
+def account_base(request: Request, mini_id: int):
     """ 获取站点基本信息 """
-    return ApiResponse.success(csrf_token=get_token(request))
+    if mini_id == 1:
+        return ApiResponse.success(
+            csrf_token=get_token(request),
+            title='黄云登',
+            showLogo=True,
+        )
+    return ApiResponse.success(
+        csrf_token=get_token(request),
+        title='房小通',
+        showLogo=False,
+    )
 
 
 class LoginIn(Schema):
@@ -27,6 +37,7 @@ class LoginIn(Schema):
 class LoginOut(ApiResponse):
     account: AccountSerializer
     sessionid: str
+    need_update_info: bool
 
 @router.post('/login', auth=None, response=LoginOut)
 def account_login(request: Request, data: LoginIn):
@@ -38,7 +49,7 @@ def account_login(request: Request, data: LoginIn):
         raise UserException('login failed', ApiResponseResultCode.PARAM_ERROR)
     account = AccountService.login_or_register_by_openid(request, openid)
     session: Session = request.session
-    return ApiResponse.success(account=account, sessionid=session.session_key)
+    return ApiResponse.success(account=account, sessionid=session.session_key, need_update_info=not not account.avatar_url)
 
 
 @router.post('/logout')

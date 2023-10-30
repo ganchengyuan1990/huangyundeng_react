@@ -62,7 +62,7 @@ for item in df.iloc:
                 'question_type': 3,
                 'answer': plain_text,
             }))
-    docs.append(Document(page_content=item['常规回答'], metadata={
+    docs.append(Document(page_content=plain_text, metadata={
         '地域': item['地域'],
         '大类': item['大类'],
         '小类': item['小类'],
@@ -76,9 +76,9 @@ url = "127.0.0.1"
 qdrant = Qdrant.from_documents(
     docs,
     embeddings,
-    # force_recreate=True,
+    force_recreate=True,
     url=url,
-    collection_name="my_documents",
+    collection_name="qa_1",
 )
 
 if __name__ == '__main__':
