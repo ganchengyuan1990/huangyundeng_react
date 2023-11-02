@@ -73,7 +73,7 @@ def 获取答案(request: Request, data: AIn):
         ))
     if len(found_docs) > 0:
         doc, score = found_docs[0]
-        if score > 0.8:
+        if score > 0.9:
             chat = QianfanChatEndpoint(**{'top_p': 0.4, 'temperature': 0.1, 'penalty_score': 1})
             human_message_prompt = HumanMessagePromptTemplate.from_template("""
             你是房地产法律法规方面的专家，现在，请你先看一下几个参考问答，再回答最后给出的问题。
