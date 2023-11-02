@@ -41,6 +41,14 @@ services:
       - ./runtime/django_static/:/django_static/
       - ./runtime/django_logs/:/logs/
 
+  web:
+    image: registry.cn-shanghai.aliyuncs.com/fangxt/web:$version
+    restart: on-failure
+    ports:
+      - "80:80"
+    depends_on:
+      - django
+
 volumes:
   qdrant-storage:
   postgres-storage:

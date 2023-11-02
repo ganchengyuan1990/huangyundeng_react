@@ -6,3 +6,5 @@ fi
 docker build --platform linux/amd64 -f backend/Dockerfile -t registry.cn-shanghai.aliyuncs.com/fangxt/backend:$tag ./backend/
 docker push registry.cn-shanghai.aliyuncs.com/fangxt/backend:$tag
 
+docker build --platform linux/amd64 -f nginx/Dockerfile -t registry.cn-zhangjiakou.aliyuncs.com/dreamoj/web:$tag ./
+docker push registry.cn-zhangjiakou.aliyuncs.com/dreamoj/web:$tag
