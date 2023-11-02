@@ -45,7 +45,7 @@ services:
     image: registry.cn-shanghai.aliyuncs.com/fangxt/web:$version
     restart: on-failure
     ports:
-      - "80:80"
+      - "81:80"
     depends_on:
       - django
 
