@@ -1,3 +1,4 @@
+import hashlib
 from typing import List
 
 from django.contrib.auth import logout
@@ -89,8 +90,12 @@ def account_update_my_info(request: Request, data: UpdateInfoIn):
 @router.get('/get-web-url', auth=None)
 def 获取web版链接(request: Request, appid: str, sign: str, timestamp: int, nickname: str, userid: str):
     if appid == 'wx07755a85c868c35d':
+        md5 = hashlib.md5()
+        text = f'appid={appid}&nickname={nickname}&secret=e839e0365ed1f7&timestamp={timestamp}&userid={userid}'
+        md5.update(text.encode('utf-8'))
+        md5_hash = md5.hexdigest()
+        if md5_hash != sign:
+            raise UserException('sign error')
         return ApiResponse.success(url='https://huangshi.aichan.info/?code=1234567890')
-
-
     return ApiResponse.success()
 
