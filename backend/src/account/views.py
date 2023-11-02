@@ -85,3 +85,12 @@ def account_update_my_info(request: Request, data: UpdateInfoIn):
     AccountService.update_info(account, data.update_keys, data.dict())
     return ApiResponse.success()
 
+
+@router.get('/get-web-url', auth=None)
+def 获取web版链接(request: Request, appid: str, sign: str, timestamp: int, nickname: str, userid: str):
+    if appid == 'wx07755a85c868c35d':
+        return ApiResponse.success(url='https://huangshi.aichan.info/?code=1234567890')
+
+
+    return ApiResponse.success()
+
