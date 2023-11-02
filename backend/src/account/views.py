@@ -17,13 +17,13 @@ router = Router()
 
 
 @router.get('/base', auth=None)
-def account_base(request: Request, mini_id: int):
+def account_base(request: Request, mini_id: str):
     """ 获取站点基本信息 """
-    if mini_id == 1:
+    if mini_id == 'wx07755a85c868c35d':
         return ApiResponse.success(
             csrf_token=get_token(request),
             title='黄云登',
-            showLogo=True,
+            showLogo=False,
         )
     return ApiResponse.success(
         csrf_token=get_token(request),
@@ -33,7 +33,8 @@ def account_base(request: Request, mini_id: int):
 
 
 class LoginIn(Schema):
-    code: str
+    code: str = None
+    web_code: str = None
 
 class LoginOut(ApiResponse):
     account: AccountSerializer
@@ -44,8 +45,10 @@ class LoginOut(ApiResponse):
 def account_login(request: Request, data: LoginIn):
     """ 登录 """
     openid = request.headers.get('X-Wx-Openid')
-    if not openid:
+    if not openid and data.code:
         session_key, openid = code2session(data.code)
+    if not openid and data.web_code:
+        openid = data.web_code
     if openid is None:
         raise UserException('login failed', ApiResponseResultCode.PARAM_ERROR)
     account = AccountService.login_or_register_by_openid(request, openid)
