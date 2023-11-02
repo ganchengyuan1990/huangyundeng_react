@@ -90,8 +90,8 @@ export type RequestObject = {
 export async function apiRequest({ method, path, data, header, }: RequestObject): Promise<any & ApiResponse> {
   const result = await axios.request<ApiResponse>({
     // `url` 是用于请求的服务器 URL
-    // url: 'https://aichan.info/' + path,
-    url: '/' + path,
+    url: 'https://aichan.info/' + path,
+    // url: '/' + path,
 
     // `method` 是创建请求时使用的方法
     method,
