@@ -17,13 +17,16 @@ from langchain.vectorstores.qdrant import Qdrant
 embeddings = OpenAIEmbeddings()
 
 # 读取Excel文件
-excel_file = 'common.xlsx'  # 用你的Excel文件的实际路径替代
+excel_file = '不动产问答库_通用+黄石.xlsx'
 df = pandas.read_excel(excel_file)
 
 docs = []
 
 for item in df.iloc:
     # 使用BeautifulSoup解析答案
+    if type(item['常规回答']) != str or not item['常规回答']:
+        print(item)
+        continue
     soup = BeautifulSoup(item['常规回答'], 'html5lib')
     plain_text = soup.get_text(separator='\n')
 
@@ -47,17 +50,17 @@ for item in df.iloc:
                 'question_type': 2,
                 'answer': plain_text,
             }))
-    if type(item['相关问题']) == str and len(item['相关问题']) > 10:
-        for similar_question in item['相关问题'].split('？ '):
-            docs.append(Document(page_content=similar_question + '?', metadata={
-                '地域': item['地域'],
-                '大类': item['大类'],
-                '小类': item['小类'],
-                '标签': item['标签'],
-                'type': 'question',
-                'question_type': 3,
-                'answer': plain_text,
-            }))
+    # if type(item['相关问题']) == str and len(item['相关问题']) > 10:
+    #     for similar_question in item['相关问题'].split('？ '):
+    #         docs.append(Document(page_content=similar_question + '?', metadata={
+    #             '地域': item['地域'],
+    #             '大类': item['大类'],
+    #             '小类': item['小类'],
+    #             '标签': item['标签'],
+    #             'type': 'question',
+    #             'question_type': 3,
+    #             'answer': plain_text,
+    #         }))
     docs.append(Document(page_content=plain_text, metadata={
         '地域': item['地域'],
         '大类': item['大类'],
@@ -74,7 +77,7 @@ qdrant = Qdrant.from_documents(
     embeddings,
     force_recreate=True,
     url=url,
-    collection_name="qa_1",
+    collection_name="qa_huangshi",
 )
 
 if __name__ == '__main__':

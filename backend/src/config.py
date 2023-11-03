@@ -25,7 +25,7 @@ config = {
     },
     'qdrant': {
         'url': "127.0.0.1",
-        'collection_name': "qa_1",
+        'collection_name': "qa_huangshi",
     },
 }
 

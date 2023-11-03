@@ -16,7 +16,7 @@ client = qdrant_client.QdrantClient(
 qdrant = Qdrant(
     client=client,
     embeddings=embeddings,
-    collection_name="qa_1",
+    collection_name="qa_huangshi",
 )
 
 
