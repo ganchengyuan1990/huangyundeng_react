@@ -26,7 +26,7 @@ const Frame = (props: BlockProps) => {
         'padding': padding,
       })}
       style={{
-        width: '750px',
+        width: '75.0rem',
         margin: '0 auto',
         ...style,
         backgroundColor,

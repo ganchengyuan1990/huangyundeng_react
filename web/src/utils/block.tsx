@@ -19,7 +19,7 @@ const Block = (props: BlockProps) => {
         'padding': padding,
       })}
       style={style}>
-      <div style={{ paddingLeft: noTitlePadding ? '0' : '24px', textAlign: 'left', fontSize: 22 }}>
+      <div style={{ paddingLeft: noTitlePadding ? '0' : '2.4rem', textAlign: 'left', fontSize: 22 }}>
         {title}
       </div>
       <div style={contentStyle}>

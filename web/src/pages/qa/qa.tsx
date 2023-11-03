@@ -67,13 +67,13 @@ export const QaPage = () => {
   }
 
   return (
-    <Frame grayBg style={{ overflow: 'hidden', minHeight: '1000px' }}>
-      <Block padding style={{ paddingTop: '20px', paddingBottom: 0 }}>
+    <Frame grayBg style={{ overflow: 'hidden', minHeight: '100.0rem' }}>
+      <Block padding style={{ paddingTop: '2.0rem', paddingBottom: 0 }}>
         <Row>
           <Col span={3}>
             <img src={robotPng} style={{ width: '80%', height: 'auto' }} alt="robot" />
           </Col>
-          <Col span={18} style={{ lineHeight: '100px', fontSize: '40px', textAlign: 'left', }}>
+          <Col span={18} style={{ lineHeight: '10.0rem', fontSize: '4.0rem', textAlign: 'left', }}>
             <span>小Ai</span>
           </Col>
           <Col span={3}>
@@ -82,7 +82,7 @@ export const QaPage = () => {
           </Col>
         </Row>
       </Block>
-      <Block padding style={{ padding: '10px', paddingBottom: '10px', textAlign: 'left' }}>
+      <Block padding style={{ padding: '1.0rem', paddingBottom: '1.0rem', textAlign: 'left' }}>
         <Card>
           <span>亲，我是您的在线助手，请问你想咨询什么问题?</span>
         </Card>
@@ -90,34 +90,34 @@ export const QaPage = () => {
 
       {!guessTagShow && qas.map((qa) => <>
         {qa.type === 'user' && <>
-          <Block padding style={{ paddingTop: '20px', paddingBottom: 0 }}>
+          <Block padding style={{ paddingTop: '2.0rem', paddingBottom: 0 }}>
             <Row>
-              <Col span={18} offset={3} style={{ lineHeight: '100px', fontSize: '40px', textAlign: 'right' }}>
-                <span style={{ lineHeight: '100px' }}>{account.nickname || '我'}</span>
+              <Col span={18} offset={3} style={{ lineHeight: '10.0rem', fontSize: '4.0rem', textAlign: 'right' }}>
+                <span style={{ lineHeight: '10.0rem' }}>{account.nickname || '我'}</span>
               </Col>
               <Col span={3}>
                 {account.avatar_url && <img src={account.avatar_url} style={{ width: '80%', height: 'auto' }} alt="my avatar" />}
               </Col>
             </Row>
           </Block>
-          <Block padding style={{ padding: '10px', paddingBottom: '10px' }}>
+          <Block padding style={{ padding: '1.0rem', paddingBottom: '1.0rem' }}>
             <Card style={{ backgroundColor: '#5b83fd', color: 'white' }}>
               <div>{qa.message}</div>
             </Card>
           </Block>
         </>}
         {qa.type === 'ai' && <>
-          <Block padding style={{ padding: '20px 10px 0 10px' }}>
+          <Block padding style={{ padding: '2.0rem 1.0rem 0 1.0rem' }}>
             <Row>
               <Col span={3}>
                 <img src={robotPng} style={{ width: '80%', height: 'auto' }} alt="robot avatar" />
               </Col>
-              <Col span={21} style={{ lineHeight: '100px', fontSize: '40px', textAlign: 'left', }}>
+              <Col span={21} style={{ lineHeight: '10.0rem', fontSize: '4.0rem', textAlign: 'left', }}>
                 <span>小Ai</span>
               </Col>
             </Row>
           </Block>
-          <Block padding style={{ padding: '10px', paddingBottom: '10px', textAlign: 'left' }}>
+          <Block padding style={{ padding: '1.0rem', paddingBottom: '1.0rem', textAlign: 'left' }}>
             <Card>
               {qa.message.split('\n').map((v, i) => <div key={i}>{v}</div>)}
             </Card>
@@ -127,28 +127,28 @@ export const QaPage = () => {
 
       {!guessTagShow && qaAnswerLoading && <Block padding><Skeleton /></Block>}
 
-      {guessTagShow && <Block padding contentStyle={{ padding: '0 10px', textAlign: 'left' }}>
+      {guessTagShow && <Block padding contentStyle={{ padding: '0 1.0rem', textAlign: 'left' }}>
         <Card title="猜你想问">
           {tags.slice(0, 9).map((q, i) =>
             <Button key={i} type={chooseTag === q ? 'primary' : 'default'}
                  onClick={async() => await requestRelatedQuestion(q)}
-                 style={{ width: '200px', margin: '10px' }}>{q}</Button>)}
+                 style={{ width: '20.0rem', margin: '1.0rem' }}>{q}</Button>)}
         </Card>
       </Block>}
       {guessTagShow && chooseTag && (
         tagLoading
           ? <Block padding><Skeleton /></Block>
-          : <Block padding contentStyle={{ padding: '0 10px', marginTop: '10px' }}>
+          : <Block padding contentStyle={{ padding: '0 1.0rem', marginTop: '1.0rem' }}>
             <Card bodyStyle={{ paddingTop: 10, paddingBottom: 0 }}>
               {questions.slice(0, 6).map((q, i) =>
-                <div key={i} style={{ padding: '10px', borderBottom: 'solid thin #ddd' }}
+                <div key={i} style={{ padding: '1.0rem', borderBottom: 'solid thin #ddd' }}
                       onClick={async() => requestQA(q)}>
                   <span style={{ color: i <= 2 ? 'red' : (i <= 3 ? 'orange' : 'gray') }}>{i+1}</span>. {q}
                 </div>)}
             </Card>
           </Block>)}
 
-      <Block padding contentStyle={{ padding: '0 10px', marginTop: '10px' }}>
+      <Block padding contentStyle={{ padding: '0 1.0rem', marginTop: '1.0rem' }}>
       <Card>
         <Input.Search
           placeholder="请输入你想问的问题"
@@ -157,7 +157,7 @@ export const QaPage = () => {
           onChange={e => questionTextSetter(e.target.value)}
           size="large"
           style={{
-            width: '650px', backgroundColor: '#fff'
+            width: '65.0rem', backgroundColor: '#fff'
           }}
           onSearch={async () => requestQA(questionText)}
         />

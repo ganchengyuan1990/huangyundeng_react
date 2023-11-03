@@ -1,9 +1,19 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
+import { StyleProvider, px2remTransformer } from '@ant-design/cssinjs';
+
+const maxWidth = 900
+const currentWidth = maxWidth > window.innerWidth ? window.innerWidth : maxWidth;
+const newFontSize = currentWidth / 75;
+document.documentElement.style.fontSize = `${newFontSize}px`;
+
+const px2rem = px2remTransformer({
+  rootValue: newFontSize,
+});
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -11,7 +21,9 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <BrowserRouter>
-      <App />
+      <StyleProvider transformers={[px2rem]}>
+        <App />
+      </StyleProvider>
     </BrowserRouter>
   </React.StrictMode>
 );

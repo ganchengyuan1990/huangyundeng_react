@@ -56,21 +56,21 @@ export const IndexPage = () => {
     await navigate(`/qa/qa?question=${question}&tag=${tag}`)
   }
   return (
-    <Frame grayBg style={{ overflow: 'hidden', minHeight: '1000px' }}>
-      <div style={{ position: 'relative', width: '750px', height: '250px' }}>
-        {showLogo && <img src={logoPng} style={{ position: 'absolute', top: '30px', right: '30px', width: '100px', height: '100px', zIndex: 1 }} />}
-        {title && <span style={{ position: 'absolute', top: '23px', left: '224px', width: '600px', textAlign: 'center', color: '#353535', fontSize: '54px', zIndex: 1, textShadow: '5px 5px 5px #ddd' }}>{title}</span>}
-        <img src={title1Png} style={{ position: 'absolute', top: 0, left: 0, width: '750px', height: '250px' }} />
+    <Frame grayBg style={{ overflow: 'hidden', minHeight: '150.0rem' }}>
+      <div style={{ position: 'relative', width: '75.0rem', height: '25.0rem' }}>
+        {showLogo && <img src={logoPng} style={{ position: 'absolute', top: '3.0rem', right: '3.0rem', width: '10.0rem', height: '10.0rem', zIndex: 1 }} />}
+        {title && <span style={{ position: 'absolute', top: '2.3rem', left: '22.4rem', width: '60.0rem', textAlign: 'center', color: '#353535', fontSize: '5.4rem', zIndex: 1, textShadow: '.5rem .5rem .5rem #ddd' }}>{title}</span>}
+        <img src={title1Png} style={{ position: 'absolute', top: 0, left: 0, width: '75.0rem', height: '25.0rem' }} />
       </div>
 
       {isLoading
         ? <Block padding title={<>热门问题</>}><Skeleton /></Block>
-        : <Block padding contentStyle={{ padding: '0 10px' }}>
+        : <Block padding contentStyle={{ padding: '0 1.0rem' }}>
           <Tabs
             type="card"
             animated
             centered
-            tabBarStyle={{ margin: 0, marginTop: '10px' }}
+            tabBarStyle={{ margin: 0, marginTop: '1.0rem' }}
             items={[
               {
                 label: `热门问题`,
@@ -80,7 +80,7 @@ export const IndexPage = () => {
                   {questions.slice(0, 6).map((q, i) =>
                     <div key={i}
                          onClick={async() => getUserInfoFunc(q)}
-                         style={{ padding: '10px', borderBottom: 'solid thin #ddd' }}>
+                         style={{ padding: '1.0rem', borderBottom: 'solid thin #ddd' }}>
                       <span style={{ color: i <= 2 ? 'red' : (i <= 3 ? 'orange' : 'gray') }}>{i+1}</span>. {q}
                     </div>)}
                 </Card>,
@@ -92,7 +92,7 @@ export const IndexPage = () => {
                   {tags.slice(0, 9).map((t, i) =>
                     <Button key={i}
                          onClick={async() => getUserInfoFunc('', t)}
-                         style={{ width: '200px', margin: '10px' }}>{t}</Button>)}
+                         style={{ width: '18.0rem', margin: '1.0rem' }}>{t}</Button>)}
                 </Card>,
               }
             ]}
@@ -100,15 +100,15 @@ export const IndexPage = () => {
           </Tabs>
         </Block>}
 
-      <Block contentStyle={{ width: '450px', margin: '50px 150px' }}>
-        <Button onClick={async() => getUserInfoFunc()} loading={isLoading} block size="large" type="primary" style={{ fontSize:"20px" }}>
+      <Block contentStyle={{ width: '45.0rem', margin: '5.0rem 15.0rem' }}>
+        <Button onClick={async() => getUserInfoFunc()} loading={isLoading} block size="large" type="primary" style={{ fontSize:"2.0rem" }}>
           <TeamOutlined />
           在线咨询
         </Button>
-        <span style={{ padding: '12px', fontSize: '32px', color: '#666' }}>
+        <span style={{ padding: '1.2rem', fontSize: '3.2rem', color: '#666' }}>
           {errorMessage}
         </span>
-        <Button onClick={() => alert('敬请期待')} block size="large" type="default" style={{ fontSize:"20px", marginTop: '30px' }}>
+        <Button onClick={() => alert('敬请期待')} block size="large" type="default" style={{ fontSize:"2.0rem", marginTop: '3.0rem' }}>
           更多服务
         </Button>
       </Block>
