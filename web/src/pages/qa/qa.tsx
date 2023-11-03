@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Button, Card, Col, Input, Row, Skeleton } from 'antd';
 import Frame from '../../utils/frame';
 import Block from '../../utils/block';
@@ -8,10 +8,11 @@ import robotPng from '../../assets/robot.png';
 import questionPng from '../../assets/question.png';
 import accountManager from '../account/accountManager';
 import useQuery from '../../utils/query';
+import { AppContext } from '../../App';
 
 
 export const QaPage = () => {
-
+  const { title } = useContext(AppContext)
   let account = accountManager.getAccount();
   const [questionText, questionTextSetter] = useState('');
 
@@ -74,7 +75,7 @@ export const QaPage = () => {
             <img src={robotPng} style={{ width: '80%', height: 'auto' }} alt="robot" />
           </Col>
           <Col span={18} style={{ lineHeight: '10.0rem', fontSize: '4.0rem', textAlign: 'left', }}>
-            <span>小Ai</span>
+            <span>{title || '小Ai'}</span>
           </Col>
           <Col span={3}>
             <img src={questionPng} onClick={() => guessTagShowSetter(true)}
@@ -113,7 +114,7 @@ export const QaPage = () => {
                 <img src={robotPng} style={{ width: '80%', height: 'auto' }} alt="robot avatar" />
               </Col>
               <Col span={21} style={{ lineHeight: '10.0rem', fontSize: '4.0rem', textAlign: 'left', }}>
-                <span>小Ai</span>
+                <span>{title || '小Ai'}</span>
               </Col>
             </Row>
           </Block>

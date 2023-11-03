@@ -1,23 +1,22 @@
 import * as React from 'react';
-import { useEffect, useState } from 'react';
-import { Button, Card, Skeleton, Tabs, Tag } from 'antd';
+import { useContext, useEffect, useState } from 'react';
+import { Button, Card, Skeleton, Tabs } from 'antd';
 import Frame from '../../utils/frame';
 import Block from '../../utils/block';
 import logoPng from '../../assets/logo.png';
 import titlePng from '../../assets/title.png';
 import title1Png from '../../assets/title1.png';
-import { getBase, postLogin, postWebLogin } from '../../apis/account';
+import { postWebLogin } from '../../apis/account';
 import accountManager from '../account/accountManager';
 import { getHotQuestions } from '../../apis/qa';
 import { useNavigate } from 'react-router-dom';
 import { AccountModel } from '../../types/account';
 import { TeamOutlined, } from '@ant-design/icons';
+import { AppContext } from '../../App';
 
 
 export const IndexPage = () => {
-  const [showLogo, showLogoSetter] = useState(false);
-  const [title, titleSetter] = useState('');
-
+  const { title, showLogo } = useContext(AppContext)
   const [questions, setQuestions] = useState<string[]>([]);
   const [tags, setTags] = useState<string[]>([]);
   const [isLoading, isLoadingSetter] = useState(true);
@@ -28,11 +27,6 @@ export const IndexPage = () => {
     let account: AccountModel | null = accountManager.getAccount();
     accountManager.listenAccountChange(v => account=v);
     (async function() {
-      const { title, showLogo } = await getBase('wx07755a85c868c35d')
-      showLogoSetter(showLogo)
-      titleSetter(title)
-      document.title = title
-
       const { questions, tags } = await getHotQuestions()
       setQuestions(questions)
       setTags(tags)
