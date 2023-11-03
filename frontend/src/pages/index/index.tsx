@@ -5,6 +5,7 @@ import Block from '../../utils/block';
 import { getUserProfile, Image, login as wxLogin, redirectTo } from 'remax/wechat';
 import logoPng from '../../../public/logo.png';
 import titlePng from '../../../public/title.png';
+import title1Png from '../../../public/title1.png';
 import { useEffect, useRef, useState } from 'react';
 import { getBase, postLogin, postMyInfo } from '../../apis/account';
 import accountManager from '../account/accountManager';
@@ -80,8 +81,9 @@ export default () => {
       <Ling ref={ling} />
       <View style={{ position: 'relative', width: '750rpx', height: '250rpx' }}>
         {showLogo && <Image src={logoPng} mode="widthFix" style={{ position: 'absolute', top: '30rpx', left: '30rpx', width: '190rpx', height: '190rpx', zIndex: 1 }} />}
-        {title && <Text style={{ position: 'absolute', top: '30rpx', left: 0, width: '750rpx', textAlign: 'center', color: 'white', fontSize: '70rpx', zIndex: 1 }}>{title}</Text>}
-        <Image src={titlePng} mode="widthFix" style={{ position: 'absolute', top: 0, left: 0, width: '750rpx', height: '250rpx' }} />
+        {/*{title && <Text style={{ position: 'absolute', top: '30rpx', left: 0, width: '750rpx', textAlign: 'center', color: 'white', fontSize: '70rpx', zIndex: 1 }}>{title}</Text>}*/}
+        {title && <span style={{ position: 'absolute', top: '23rpx', left: '224rpx', width: '600rpx', textAlign: 'center', color: '#353535', fontSize: '54rpx', zIndex: 1, textShadow: '5rpx 5rpx 5prx #ddd' }}>{title}</span>}
+        <Image src={title1Png} mode="widthFix" style={{ position: 'absolute', top: 0, left: 0, width: '750rpx', height: '250rpx' }} />
       </View>
 
       {isLoading
