@@ -25,6 +25,12 @@ def account_base(request: Request, mini_id: str):
             title='黄云登',
             showLogo=False,
         )
+    if mini_id == 'wx5f6601101020cf52':
+        return ApiResponse.success(
+            csrf_token=get_token(request),
+            title='天e登',
+            showLogo=False,
+        )
     return ApiResponse.success(
         csrf_token=get_token(request),
         title='房小通',
