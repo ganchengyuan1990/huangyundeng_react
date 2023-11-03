@@ -95,14 +95,14 @@ export const IndexPage = () => {
         </Block>}
 
       <Block contentStyle={{ width: '45.0rem', margin: '5.0rem 15.0rem' }}>
-        <Button onClick={async() => getUserInfoFunc()} loading={isLoading} block size="large" type="primary" style={{ fontSize:"2.0rem" }}>
+        <Button onClick={async() => getUserInfoFunc()} loading={isLoading} block size="large" type="primary" style={{ fontSize:"2.0rem", lineHeight: '2.0rem' }}>
           <TeamOutlined />
           在线咨询
         </Button>
         <span style={{ padding: '1.2rem', fontSize: '3.2rem', color: '#666' }}>
           {errorMessage}
         </span>
-        <Button onClick={() => alert('敬请期待')} block size="large" type="default" style={{ fontSize:"2.0rem", marginTop: '3.0rem' }}>
+        <Button onClick={() => alert('敬请期待')} block size="large" type="default" style={{ fontSize:"2.0rem", lineHeight: '2.0rem', marginTop: '3.0rem' }}>
           更多服务
         </Button>
       </Block>
