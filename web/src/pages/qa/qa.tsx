@@ -71,10 +71,10 @@ export const QaPage = () => {
     <Frame grayBg style={{ overflow: 'hidden', minHeight: '100.0rem' }}>
       <Block padding style={{ paddingTop: '2.0rem', paddingBottom: 0 }}>
         <Row>
-          <Col span={3}>
+          <Col span={4}>
             <img src={robotPng} style={{ width: '80%', height: 'auto' }} alt="robot" />
           </Col>
-          <Col span={18} style={{ lineHeight: '10.0rem', fontSize: '4.0rem', textAlign: 'left', }}>
+          <Col span={17} style={{ lineHeight: '10.0rem', fontSize: '4.0rem', textAlign: 'left', }}>
             <span>{title || '小Ai'}</span>
           </Col>
           <Col span={3}>
@@ -110,10 +110,10 @@ export const QaPage = () => {
         {qa.type === 'ai' && <>
           <Block padding style={{ padding: '2.0rem 1.0rem 0 1.0rem' }}>
             <Row>
-              <Col span={3}>
+              <Col span={4}>
                 <img src={robotPng} style={{ width: '80%', height: 'auto' }} alt="robot avatar" />
               </Col>
-              <Col span={21} style={{ lineHeight: '10.0rem', fontSize: '4.0rem', textAlign: 'left', }}>
+              <Col span={20} style={{ lineHeight: '10.0rem', fontSize: '4.0rem', textAlign: 'left', }}>
                 <span>{title || '小Ai'}</span>
               </Col>
             </Row>
