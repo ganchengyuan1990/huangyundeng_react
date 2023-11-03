@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from 'react';
 import { Button, Card, Cell, Col, Form, Ling, Popup, Row, SearchBar, Skeleton, Space, Tabs, Tag } from 'annar';
 import Frame from '../../utils/frame';
 import Block from '../../utils/block';
-import { DateTime, Duration } from 'luxon';
 import { usePageEvent } from 'remax/macro';
 import { Text, View } from 'remax/one';
 import { getHotQuestions, qa } from '../../apis/qa';
