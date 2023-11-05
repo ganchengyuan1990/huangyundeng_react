@@ -82,11 +82,11 @@ export const IndexPage = () => {
               {
                 label: `热门标签`,
                 key: 'tag',
-                children: <Card>
+                children: <Card bodyStyle={{ padding: '2%'}}>
                   {tags.slice(0, 9).map((t, i) =>
                     <Button key={i}
                          onClick={async() => getUserInfoFunc('', t)}
-                         style={{ width: '18.0rem', margin: '1.0rem' }}>{t}</Button>)}
+                         style={{ width: '29.5%', margin: '1.5%' }}>{t}</Button>)}
                 </Card>,
               }
             ]}

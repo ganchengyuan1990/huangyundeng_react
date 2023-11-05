@@ -140,11 +140,11 @@ export const QaPage = () => {
       {!guessTagShow && qaAnswerLoading && <Block padding><Skeleton /></Block>}
 
       {guessTagShow && <Block padding contentStyle={{ padding: '0 1.0rem', textAlign: 'left' }}>
-        <Card title="猜你想问">
+        <Card title="猜你想问" bodyStyle={{ padding: '2%'}}>
           {tags.slice(0, 9).map((q, i) =>
             <Button key={i} type={chooseTag === q ? 'primary' : 'default'}
                  onClick={async() => await requestRelatedQuestion(q)}
-                 style={{ width: '20.0rem', margin: '1.0rem' }}>{q}</Button>)}
+                 style={{ width: '29.5%', margin: '1.5%' }}>{q}</Button>)}
         </Card>
       </Block>}
       {guessTagShow && chooseTag && (
