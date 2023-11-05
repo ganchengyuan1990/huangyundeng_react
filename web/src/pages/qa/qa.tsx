@@ -4,7 +4,7 @@ import { Button, Card, Col, Input, Row, Skeleton } from 'antd';
 import Frame from '../../utils/frame';
 import Block from '../../utils/block';
 import { getHotQuestions, qa } from '../../apis/qa';
-import robotPng from '../../assets/robot.png';
+import robotPng from '../../assets/robot.jpeg';
 import questionPng from '../../assets/question.png';
 import accountManager from '../account/accountManager';
 import useQuery from '../../utils/query';
