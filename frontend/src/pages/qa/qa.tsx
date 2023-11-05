@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useEffect, useRef, useState } from 'react';
-import { Button, Card, Cell, Col, Form, Ling, Popup, Row, SearchBar, Skeleton, Space, Tabs, Tag } from 'annar';
+import { Card, Col, Ling, Row, SearchBar, Skeleton, Tag } from 'annar';
 import Frame from '../../utils/frame';
 import Block from '../../utils/block';
 import { usePageEvent } from 'remax/macro';
@@ -8,12 +8,14 @@ import { Text, View } from 'remax/one';
 import { getHotQuestions, qa } from '../../apis/qa';
 import { Image } from 'remax/wechat';
 import accountManager from '../account/accountManager';
+import { getAccountInfoSync, setNavigationBarTitle } from '@remax/wechat/esm/api';
+import { getBase } from '../../apis/account';
 
 export default () => {
-  const title = ''
   let account = accountManager.getAccount();
   const ling = useRef<any>();
   const [questionText, questionTextSetter] = useState('');
+  const [title, titleSetter] = useState('');
 
   const [guessTagShow, guessTagShowSetter] = React.useState(false);
   const [chooseTag, chooseTagSetter] = React.useState('');
@@ -27,6 +29,12 @@ export default () => {
   // 请求热门tags、及参数中tag或者问题的答案
   useEffect(() => {
     (async () => {
+      const res2 = getAccountInfoSync()
+      const appid = res2.miniProgram.appId;
+      const { title } = await getBase(appid)
+      titleSetter(title)
+      await setNavigationBarTitle({ title })
+
       const { questions, tags } = await getHotQuestions()
       setQuestions(questions)
       setTags(tags)
@@ -78,7 +86,7 @@ export default () => {
             <Image src="https://fangxt-object.oss-rg-china-mainland.aliyuncs.com/robot.jpeg" mode="widthFix" style={{ width: '80%', height: 'auto' }} />
           </Col>
           <Col span={17}>
-            <Text style={{ lineHeight: '100rpx' }}>{title || '小Ai'}</Text>
+            <Text style={{ lineHeight: '100rpx' }}>{title || '房小通'}</Text>
           </Col>
           <Col span={3}>
             <Image src="https://fangxt-object.oss-rg-china-mainland.aliyuncs.com/question.png" mode="widthFix"
@@ -118,7 +126,7 @@ export default () => {
                 <Image src="https://fangxt-object.oss-rg-china-mainland.aliyuncs.com/robot.jpeg" mode="widthFix" style={{ width: '80%', height: 'auto' }} />
               </Col>
               <Col span={20}>
-                <Text style={{ lineHeight: '100rpx' }}>小Ai</Text>
+                <Text style={{ lineHeight: '100rpx' }}>{title || '房小通'}</Text>
               </Col>
             </Row>
           </Block>
