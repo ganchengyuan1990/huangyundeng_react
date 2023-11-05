@@ -4,7 +4,8 @@ import { Button, Card, Col, Input, Row, Skeleton } from 'antd';
 import Frame from '../../utils/frame';
 import Block from '../../utils/block';
 import { getHotQuestions, qa } from '../../apis/qa';
-import robotPng from '../../assets/robot.jpeg';
+import robotPng from '../../assets/robot.png';
+import userDefault from '../../assets/user_default.png';
 import questionPng from '../../assets/question.png';
 import accountManager from '../account/accountManager';
 import useQuery from '../../utils/query';
@@ -21,8 +22,9 @@ export const QaPage = () => {
   const [tagLoading, tagLoadingSetter] = useState(true);
   const [questions, setQuestions] = useState<string[]>([]);
   const [tags, setTags] = useState<string[]>([]);
+  const [startDate, setStartDate] = useState<Date>(new Date());
 
-  const [qas, qasSetter] = React.useState<{ type: 'ai' | 'user', message: string }[]>([]);
+  const [qas, qasSetter] = React.useState<{ type: 'ai' | 'user', message: string, time: Date }[]>([]);
   const [qaAnswerLoading, qaAnswerLoadingSetter] = React.useState(false);
 
   // 请求热门tags、及参数中tag或者问题的答案
@@ -39,7 +41,7 @@ export const QaPage = () => {
         requestQA(question)
       }
     })();
-  }, []);
+  }, [question, tag]);
 
   const requestRelatedQuestion = async(tag: string) => {
     questionTextSetter('')
@@ -53,15 +55,15 @@ export const QaPage = () => {
   }
   const requestQA = async(question: string) => {
     questionTextSetter('')
-    qasSetter(qas => [...qas, { type: 'user', message: question }])
+    qasSetter(qas => [...qas, { type: 'user', message: question, time: new Date() }])
 
     guessTagShowSetter(false)
     qaAnswerLoadingSetter(true)
     try {
       const { answer } = await qa(question)
-      qasSetter(qas => [...qas, { type: 'ai', message: answer }])
+      qasSetter(qas => [...qas, { type: 'ai', message: answer, time: new Date() }])
     } catch (e) {
-      qasSetter(qas => [...qas, { type: 'ai', message: '服务器连接失败，请稍后再试' }])
+      qasSetter(qas => [...qas, { type: 'ai', message: '服务器连接失败，请稍后再试', time: new Date() }])
     } finally {
       qaAnswerLoadingSetter(false)
     }
@@ -74,8 +76,11 @@ export const QaPage = () => {
           <Col span={4}>
             <img src={robotPng} style={{ width: '80%', height: 'auto' }} alt="robot" />
           </Col>
-          <Col span={17} style={{ lineHeight: '10.0rem', fontSize: '4.0rem', textAlign: 'left', }}>
-            <span>{title || '小Ai'}</span>
+          <Col span={17}>
+            <div style={{ padding: '2.0rem', lineHeight: '3.0rem', fontSize: '2.5rem', textAlign: 'left', color: '#666', }}>
+              <div>{title || '小Ai'}</div>
+              <div>{startDate.toLocaleString()}</div>
+            </div>
           </Col>
           <Col span={3}>
             <img src={questionPng} onClick={() => guessTagShowSetter(true)}
@@ -93,11 +98,14 @@ export const QaPage = () => {
         {qa.type === 'user' && <>
           <Block padding style={{ paddingTop: '2.0rem', paddingBottom: 0 }}>
             <Row>
-              <Col span={18} offset={3} style={{ lineHeight: '10.0rem', fontSize: '4.0rem', textAlign: 'right' }}>
-                <span style={{ lineHeight: '10.0rem' }}>{account.nickname || '我'}</span>
+              <Col span={17} offset={3}>
+                <div style={{ padding: '2.0rem', lineHeight: '3.0rem', fontSize: '2.5rem', textAlign: 'right', color: '#666', }}>
+                  <div>{account.nickname || '我'}</div>
+                  <div>{new Date().toLocaleString()}</div>
+                </div>
               </Col>
-              <Col span={3}>
-                {account.avatar_url && <img src={account.avatar_url} style={{ width: '80%', height: 'auto' }} alt="my avatar" />}
+              <Col span={4}>
+                <img src={account.avatar_url || userDefault} style={{ width: '80%', height: 'auto' }} alt="my avatar" />
               </Col>
             </Row>
           </Block>
@@ -113,8 +121,11 @@ export const QaPage = () => {
               <Col span={4}>
                 <img src={robotPng} style={{ width: '80%', height: 'auto' }} alt="robot avatar" />
               </Col>
-              <Col span={20} style={{ lineHeight: '10.0rem', fontSize: '4.0rem', textAlign: 'left', }}>
-                <span>{title || '小Ai'}</span>
+              <Col span={20}>
+                <div style={{ padding: '2.0rem', lineHeight: '3.0rem', fontSize: '2.5rem', textAlign: 'left', color: '#666', }}>
+                  <div>{title || '小Ai'}</div>
+                  <div>{new Date().toLocaleString()}</div>
+                </div>
               </Col>
             </Row>
           </Block>

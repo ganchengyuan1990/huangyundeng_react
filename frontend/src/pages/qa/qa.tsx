@@ -83,7 +83,7 @@ export default () => {
       <Block padding style={{ paddingTop: '20rpx', paddingBottom: 0 }}>
         <Row>
           <Col span={4}>
-            <Image src="https://fangxt-object.oss-rg-china-mainland.aliyuncs.com/robot.jpeg" mode="widthFix" style={{ width: '80%', height: 'auto' }} />
+            <Image src="https://fangxt-object.oss-rg-china-mainland.aliyuncs.com/robot.png" mode="widthFix" style={{ width: '80%', height: 'auto' }} />
           </Col>
           <Col span={17}>
             <Text style={{ lineHeight: '100rpx' }}>{title || '房小通'}</Text>
