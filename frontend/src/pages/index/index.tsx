@@ -62,16 +62,16 @@ export default () => {
   }, [])
   const getUserInfoFunc = async (question: string = '', tag: string = '') => {
     isInfoLoadingSetter(true)
-    if (needUpdateInfo) {
-      const { userInfo } = await getUserProfile({ desc: '获取头像昵称以便展示' });
-      console.log(userInfo)
-      await postMyInfo(['nickname', 'sex', 'avatar_url'],
-        userInfo.avatarUrl, userInfo.nickName, ['OTHER',  'MALE', 'FEMALE'][userInfo.gender], null, null, null)
-      account.nickname = userInfo.nickName
-      account.avatar_url = userInfo.avatarUrl
-      account.sex = ['OTHER',  'MALE', 'FEMALE'][userInfo.gender]
-      accountManager.setAccount(account)
-    }
+    // if (needUpdateInfo) {
+    //   const { userInfo } = await getUserProfile({ desc: '获取头像昵称以便展示' });
+    //   console.log(userInfo)
+    //   await postMyInfo(['nickname', 'sex', 'avatar_url'],
+    //     userInfo.avatarUrl, userInfo.nickName, ['OTHER',  'MALE', 'FEMALE'][userInfo.gender], null, null, null)
+    //   account.nickname = userInfo.nickName
+    //   account.avatar_url = userInfo.avatarUrl
+    //   account.sex = ['OTHER',  'MALE', 'FEMALE'][userInfo.gender]
+    //   accountManager.setAccount(account)
+    // }
     isInfoLoadingSetter(false)
     await redirectTo({
       url: `/pages/qa/qa?question=${question}&tag=${tag}`
