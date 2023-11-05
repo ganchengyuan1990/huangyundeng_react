@@ -52,9 +52,9 @@ export const IndexPage = () => {
   return (
     <Frame grayBg style={{ overflow: 'hidden', minHeight: '150.0rem' }}>
       <div style={{ position: 'relative', width: '75.0rem', height: '25.0rem' }}>
-        {showLogo && <img src={logoPng} style={{ position: 'absolute', top: '3.0rem', right: '3.0rem', width: '10.0rem', height: '10.0rem', zIndex: 1 }} />}
+        {showLogo && <img src={logoPng} alt="logo" style={{ position: 'absolute', top: '3.0rem', right: '3.0rem', width: '10.0rem', height: '10.0rem', zIndex: 1 }} />}
         {title && <span style={{ position: 'absolute', top: '2.3rem', left: '22.4rem', width: '60.0rem', textAlign: 'center', color: '#353535', fontSize: '5.4rem', zIndex: 1, textShadow: '.5rem .5rem .5rem #ddd' }}>{title}</span>}
-        <img src={title1Png} style={{ position: 'absolute', top: 0, left: 0, width: '75.0rem', height: '25.0rem' }} />
+        <img src={title1Png} alt="" style={{ position: 'absolute', top: 0, left: 0, width: '75.0rem', height: '25.0rem' }} />
       </div>
 
       {isLoading

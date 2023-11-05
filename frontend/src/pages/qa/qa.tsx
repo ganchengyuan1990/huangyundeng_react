@@ -6,8 +6,6 @@ import Block from '../../utils/block';
 import { usePageEvent } from 'remax/macro';
 import { Text, View } from 'remax/one';
 import { getHotQuestions, qa } from '../../apis/qa';
-import robot from '../../../public/robot.png';
-import question from '../../../public/question.png';
 import { Image } from 'remax/wechat';
 import accountManager from '../account/accountManager';
 
@@ -111,13 +109,13 @@ export default () => {
       <Block padding style={{ paddingTop: '20rpx', paddingBottom: 0 }}>
         <Row>
           <Col span={3}>
-            <Image src={robot} mode="widthFix" style={{ width: '80%', height: 'auto' }} />
+            <Image src="https://fangxt-object.oss-rg-china-mainland.aliyuncs.com/robot.jpeg" mode="widthFix" style={{ width: '80%', height: 'auto' }} />
           </Col>
           <Col span={18}>
             <Text style={{ lineHeight: '100rpx' }}>小Ai</Text>
           </Col>
           <Col span={3}>
-            <Image src={question} mode="widthFix"
+            <Image src="https://fangxt-object.oss-rg-china-mainland.aliyuncs.com/question.png" mode="widthFix"
                    onTap={() => guessTagShowSetter(true)}
                    style={{ width: '80%', height: 'auto' }} />
           </Col>
@@ -153,7 +151,7 @@ export default () => {
           <Block padding style={{ paddingTop: '20rpx', paddingBottom: 0 }}>
             <Row>
               <Col span={3}>
-                <Image src={robot} mode="widthFix" style={{ width: '80%', height: 'auto' }} />
+                <Image src="https://fangxt-object.oss-rg-china-mainland.aliyuncs.com/robot.jpeg" mode="widthFix" style={{ width: '80%', height: 'auto' }} />
               </Col>
               <Col span={21}>
                 <Text style={{ lineHeight: '100rpx' }}>小Ai</Text>
