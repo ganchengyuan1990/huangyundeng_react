@@ -107,7 +107,7 @@ export default () => {
                 {tags.slice(0, 9).map((t, i) =>
                   <Tag key={i} plain size="large"
                        onTap={async() => getUserInfoFunc('', t)}
-                       style={{ width: '200rpx', margin: '10rpx' }}>{t}</Tag>)}
+                       style={{ width: '195rpx', margin: '10rpx' }}>{t}</Tag>)}
               </Card>
             </Tabs.TabContent>
           </Tabs>

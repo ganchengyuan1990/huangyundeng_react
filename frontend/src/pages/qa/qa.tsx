@@ -10,6 +10,7 @@ import { Image } from 'remax/wechat';
 import accountManager from '../account/accountManager';
 
 export default () => {
+  const title = ''
   let account = accountManager.getAccount();
   const ling = useRef<any>();
   const [questionText, questionTextSetter] = useState('');
@@ -20,24 +21,12 @@ export default () => {
   const [questions, setQuestions] = useState<string[]>([]);
   const [tags, setTags] = useState<string[]>([]);
 
-  const [qaQuestion, qaQuestionSetter] = React.useState('');
-  const [qaAnswer, qaAnswerSetter] = React.useState('');
+  const [qas, qasSetter] = React.useState<{ type: 'ai' | 'user', message: string }[]>([]);
   const [qaAnswerLoading, qaAnswerLoadingSetter] = React.useState(false);
 
-
-  // const [purposeShow, purposeShowSetter] = React.useState(false);
-
-  // 请求可选的时间、我的预约信息、所有预约
+  // 请求热门tags、及参数中tag或者问题的答案
   useEffect(() => {
     (async () => {
-      // let [{ all_available_datetimes }, { book: myBook }, { books: bookTimes }] = await Promise.all([
-      //   getAllAvailableDatetimes(), getMyBookTime(), listBookTime(),
-      // ]);
-      // allAvailableDatetimeListSetter(all_available_datetimes);
-      // myBookTimeSetter(myBook);
-      // bookTimesSetter(bookTimes);
-      // isLoadingSetter(false);
-
       const { questions, tags } = await getHotQuestions()
       setQuestions(questions)
       setTags(tags)
@@ -65,54 +54,31 @@ export default () => {
   }
   const requestQA = async(question: string) => {
     questionTextSetter('')
-    qaQuestionSetter(question)
+    qasSetter(qas => [...qas, { type: 'user', message: question }])
 
     guessTagShowSetter(false)
     qaAnswerLoadingSetter(true)
     try {
       const { answer } = await qa(question)
-      qaAnswerSetter(answer)
+      qasSetter(qas => [...qas, { type: 'ai', message: answer }])
     } catch (e) {
-      qaAnswerSetter('服务器连接失败，请稍后再试')
+      qasSetter(qas => [...qas, { type: 'ai', message: '服务器连接失败，请稍后再试' }])
     } finally {
       qaAnswerLoadingSetter(false)
     }
   }
 
   return (
-    <Frame grayBg style={{ overflow: 'hidden', minHeight: '1500rpx' }}>
+    <Frame grayBg style={{ overflow: 'hidden', minHeight: '1800rpx', paddingBottom: '200rpx' }}>
       <Ling ref={ling} />
-      {/*<Popup*/}
-      {/*  position="bottom"*/}
-      {/*  title="请输入需要帮助的学习困惑"*/}
-      {/*  open={purposeShow}*/}
-      {/*  onClose={() => purposeShowSetter(false)}*/}
-      {/*>*/}
-      {/*  <Card contentStyle={{ padding: '20px 0 20px' }}>*/}
-      {/*    <Form form={form}>*/}
-      {/*      <Form.Item noStyle name="date">*/}
-      {/*        <Cell.Input label="预约日期" border={false} disabled />*/}
-      {/*      </Form.Item>*/}
-      {/*      <Form.Item noStyle name="time">*/}
-      {/*        <Cell.Input label="预约时间" border={false} disabled />*/}
-      {/*      </Form.Item>*/}
-      {/*      <Form.Item noStyle name="purpose" rules={[{ required: true }]}>*/}
-      {/*        <Cell.Input label="学习困惑" placeholder="Please enter" border={false} />*/}
-      {/*      </Form.Item>*/}
-      {/*      <Form.Item noStyle style={{ marginTop: 10, padding: '0 20px' }}>*/}
-      {/*        <Button type="primary" size="large" shape="square" block nativeType="submit">确认</Button>*/}
-      {/*      </Form.Item>*/}
-      {/*    </Form>*/}
-      {/*  </Card>*/}
-      {/*</Popup>*/}
 
       <Block padding style={{ paddingTop: '20rpx', paddingBottom: 0 }}>
         <Row>
-          <Col span={3}>
+          <Col span={4}>
             <Image src="https://fangxt-object.oss-rg-china-mainland.aliyuncs.com/robot.jpeg" mode="widthFix" style={{ width: '80%', height: 'auto' }} />
           </Col>
-          <Col span={18}>
-            <Text style={{ lineHeight: '100rpx' }}>小Ai</Text>
+          <Col span={17}>
+            <Text style={{ lineHeight: '100rpx' }}>{title || '小Ai'}</Text>
           </Col>
           <Col span={3}>
             <Image src="https://fangxt-object.oss-rg-china-mainland.aliyuncs.com/question.png" mode="widthFix"
@@ -127,27 +93,25 @@ export default () => {
         </Card>
       </Block>
 
-      {!guessTagShow && qaQuestion && <>
-        <Block padding style={{ paddingTop: '20rpx', paddingBottom: 0 }}>
-          <Row>
-            <Col span={18} offset={3} style={{ textAlign: 'right' }}>
-              <Text style={{ lineHeight: '100rpx' }}>{account.nickname || '我'}</Text>
-            </Col>
-            <Col span={3}>
-              <Image src={account.avatar_url} mode="widthFix" style={{ width: '80%', height: 'auto' }} />
-            </Col>
-          </Row>
-        </Block>
-        <Block padding style={{ paddingTop: '10rpx', paddingBottom: '10rpx' }}>
-          <Card style={{ backgroundColor: '#5b83fd', color: 'white' }}>
-            <View>{qaQuestion}</View>
-          </Card>
-        </Block>
-      </>}
-
-      {!guessTagShow && qaQuestion && (qaAnswerLoading
-        ? <Block padding><Skeleton /></Block>
-        : <>
+      {!guessTagShow && qas.map((qa) => <>
+        {qa.type === 'user' && <>
+          <Block padding style={{ paddingTop: '20rpx', paddingBottom: 0 }}>
+            <Row>
+              <Col span={18} offset={3} style={{ textAlign: 'right' }}>
+                <Text style={{ lineHeight: '100rpx' }}>{account.nickname || '我'}</Text>
+              </Col>
+              <Col span={3}>
+                <Image src={account.avatar_url} mode="widthFix" style={{ width: '80%', height: 'auto' }} />
+              </Col>
+            </Row>
+          </Block>
+          <Block padding style={{ paddingTop: '10rpx', paddingBottom: '10rpx' }}>
+            <Card style={{ backgroundColor: '#5b83fd', color: 'white' }}>
+              <View>{qa.message}</View>
+            </Card>
+          </Block>
+        </>}
+        {qa.type === 'ai' && <>
           <Block padding style={{ paddingTop: '20rpx', paddingBottom: 0 }}>
             <Row>
               <Col span={3}>
@@ -160,17 +124,18 @@ export default () => {
           </Block>
           <Block padding style={{ paddingTop: '10rpx', paddingBottom: '10rpx' }}>
             <Card>
-              {qaAnswer.split('\n').map((v, i) => <View key={i}>{v}</View>)}
+              {qa.message.split('\n').map((v, i) => <View key={i}>{v}</View>)}
             </Card>
           </Block>
-        </>)}
+        </>}
+      </>)}
 
       {guessTagShow && <Block padding title="猜你想问">
         <Card>
           {tags.slice(0, 9).map((q, i) =>
             <Tag key={i} plain size="large" color={chooseTag === q ? 'blue' : ''}
                  onTap={async() => await requestRelatedQuestion(q)}
-                 style={{ width: '200rpx', margin: '10rpx' }}>{q}</Tag>)}
+                 style={{ width: '195rpx', margin: '10rpx' }}>{q}</Tag>)}
         </Card>
       </Block>}
       {guessTagShow && chooseTag && (
@@ -195,7 +160,7 @@ export default () => {
                    value={questionText}
                    onInput={v => questionTextSetter(v)}
                    style={{
-                     margin: '0 30rpx'
+                     margin: '0 30rpx 40rpx 30rpx'
                    }}
                    inputStyle={{ backgroundColor: '#fff' }}
                    onSubmit={async() => requestQA(questionText)}
