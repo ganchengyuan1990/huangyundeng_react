@@ -97,10 +97,10 @@ export default () => {
         {qa.type === 'user' && <>
           <Block padding style={{ paddingTop: '20rpx', paddingBottom: 0 }}>
             <Row>
-              <Col span={18} offset={3} style={{ textAlign: 'right' }}>
+              <Col span={17} offset={3} style={{ textAlign: 'right' }}>
                 <Text style={{ lineHeight: '100rpx' }}>{account.nickname || '我'}</Text>
               </Col>
-              <Col span={3}>
+              <Col span={4}>
                 <Image src={account.avatar_url} mode="widthFix" style={{ width: '80%', height: 'auto' }} />
               </Col>
             </Row>
@@ -114,10 +114,10 @@ export default () => {
         {qa.type === 'ai' && <>
           <Block padding style={{ paddingTop: '20rpx', paddingBottom: 0 }}>
             <Row>
-              <Col span={3}>
+              <Col span={4}>
                 <Image src="https://fangxt-object.oss-rg-china-mainland.aliyuncs.com/robot.jpeg" mode="widthFix" style={{ width: '80%', height: 'auto' }} />
               </Col>
-              <Col span={21}>
+              <Col span={20}>
                 <Text style={{ lineHeight: '100rpx' }}>小Ai</Text>
               </Col>
             </Row>

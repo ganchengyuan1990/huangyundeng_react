@@ -8,9 +8,11 @@ import { getBase, postLogin, postMyInfo } from '../../apis/account';
 import accountManager from '../account/accountManager';
 import { getHotQuestions } from '../../apis/qa';
 import { View, Text } from 'remax/one';
-import { setNavigationBarTitle } from '@remax/wechat/esm/api';
+import { getAccountInfoSync, setNavigationBarTitle } from '@remax/wechat/esm/api';
 
 export default () => {
+  let account = accountManager.getAccount();
+  accountManager.listenAccountChange(v => account=v);
   const [showLogo, showLogoSetter] = useState(false);
   const [title, titleSetter] = useState('');
   const [needUpdateInfo, needUpdateInfoSetter] = useState(false);
@@ -24,10 +26,10 @@ export default () => {
   const ling = useRef<any>();
 
   useEffect(() => {
-    let account = accountManager.getAccount();
-    accountManager.listenAccountChange(v => account=v);
     (async function() {
-      const { title, showLogo } = await getBase(1)
+      const res2 = getAccountInfoSync()
+      const appid = res2.miniProgram.appId;
+      const { title, showLogo } = await getBase(appid)
       showLogoSetter(showLogo)
       titleSetter(title)
       await setNavigationBarTitle({ title })
@@ -37,6 +39,7 @@ export default () => {
       setTags(tags)
 
       if (account) {
+        needUpdateInfoSetter(!account.avatar_url)
         isLoadingSetter(false)
         return;
       }
@@ -64,6 +67,10 @@ export default () => {
       console.log(userInfo)
       await postMyInfo(['nickname', 'sex', 'avatar_url'],
         userInfo.avatarUrl, userInfo.nickName, ['OTHER',  'MALE', 'FEMALE'][userInfo.gender], null, null, null)
+      account.nickname = userInfo.nickName
+      account.avatar_url = userInfo.avatarUrl
+      account.sex = ['OTHER',  'MALE', 'FEMALE'][userInfo.gender]
+      accountManager.setAccount(account)
     }
     isInfoLoadingSetter(false)
     await redirectTo({

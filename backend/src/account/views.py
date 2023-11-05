@@ -59,7 +59,7 @@ def account_login(request: Request, data: LoginIn):
         raise UserException('login failed', ApiResponseResultCode.PARAM_ERROR)
     account = AccountService.login_or_register_by_openid(request, openid)
     session: Session = request.session
-    return ApiResponse.success(account=account, sessionid=session.session_key, need_update_info=not not account.avatar_url)
+    return ApiResponse.success(account=account, sessionid=session.session_key, need_update_info=not account.avatar_url)
 
 
 @router.post('/logout')
