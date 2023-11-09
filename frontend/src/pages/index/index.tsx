@@ -31,7 +31,7 @@ export default () => {
       const appid = res2.miniProgram.appId;
       const { title, showLogo } = await getBase(appid)
       showLogoSetter(showLogo)
-      titleSetter(title)
+      titleSetter("您好~我是不动产智能客服黄云登")
       await setNavigationBarTitle({ title })
 
       const { questions, tags } = await getHotQuestions()
@@ -81,13 +81,13 @@ export default () => {
     console.log(userInfo)
   }
   return (
-    <Frame grayBg style={{ overflow: 'hidden', minHeight: '1500rpx' }}>
+    <Frame grayBg style={{ overflow: 'hidden', background: 'url(https://cdn.coffeebeats.cn/beijing.png)', backgroundSize: '100% 100%', minHeight: '1500rpx' }}>
       <Ling ref={ling} />
-      <View style={{ position: 'relative', width: '750rpx', height: '250rpx' }}>
+      <View style={{ position: 'relative', width: '750rpx', height: '420rpx' }}>
         {showLogo && <Image src="https://fangxt-object.oss-rg-china-mainland.aliyuncs.com/logo.png" mode="widthFix" style={{ position: 'absolute', top: '30rpx', left: '30rpx', width: '190rpx', height: '190rpx', zIndex: 1 }} />}
         {/*{title && <Text style={{ position: 'absolute', top: '30rpx', left: 0, width: '750rpx', textAlign: 'center', color: 'white', fontSize: '70rpx', zIndex: 1 }}>{title}</Text>}*/}
-        {title && <span style={{ position: 'absolute', top: '23rpx', left: '224rpx', width: '600rpx', textAlign: 'center', color: '#353535', fontSize: '54rpx', zIndex: 1, textShadow: '5rpx 5rpx 5prx #ddd' }}>{title}</span>}
-        <Image src="https://fangxt-object.oss-rg-china-mainland.aliyuncs.com/title1.png" mode="widthFix" style={{ position: 'absolute', top: 0, left: 0, width: '750rpx', height: '250rpx' }} />
+        {title && <span style={{ position: 'absolute', top: '18rpx', left: '224rpx', width: '600rpx', textAlign: 'center', color: '#353535', fontSize: '28rpx', zIndex: 1, textShadow: '5rpx 5rpx 5prx #ddd' }}>{title}</span>}
+        <Image src="https://cdn.coffeebeats.cn/%E5%9B%BE%E7%89%871.png" mode="widthFix" style={{ position: 'absolute', top: 0, left: 0, width: '750rpx', height: '250rpx' }} />
       </View>
 
       {isLoading
@@ -99,12 +99,12 @@ export default () => {
             type="card"
             animated
           >
-            <Tabs.TabContent key="question" tab="热门问题">
+            <Tabs.TabContent key="question" tab="常见问题">
               <Card>
                 {questions.slice(0, 6).map((q, i) =>
                   <View key={i}
                         onTap={async() => getUserInfoFunc(q)}
-                        style={{ padding: '10rpx', borderBottom: 'solid thin #ddd' }}>
+                        style={{ padding: '10rpx', borderBottom: 'solid thin rgba(221,221,221,0.5)' }}>
                   <Text style={{ color: i <= 2 ? 'red' : (i <= 3 ? 'orange' : 'gray') }}>{i+1}</Text>. {q}
                 </View>)}
               </Card>
