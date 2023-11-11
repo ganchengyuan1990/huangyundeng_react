@@ -19,9 +19,13 @@ config = {
         'HOST': '127.0.0.1',
         'PORT': '23001',
     },
+    # 'wx': {
+    #     'appid': 'wxe0eb952ea44cbfa0',
+    #     'appsecret': 'c185423ffe0b0ad1a4ca07270126a51b',
+    # },
     'wx': {
-        'appid': 'wxe0eb952ea44cbfa0',
-        'appsecret': 'c185423ffe0b0ad1a4ca07270126a51b',
+        'appid': 'wx4805e322e709210e',
+        'appsecret': 'ec2a4aa7d81d3140f32216198dd3a432',
     },
     'qdrant': {
         'url': "127.0.0.1",
