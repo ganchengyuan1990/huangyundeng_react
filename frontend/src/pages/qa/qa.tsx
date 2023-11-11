@@ -22,8 +22,9 @@ export default () => {
   const [tagLoading, tagLoadingSetter] = useState(true);
   const [questions, setQuestions] = useState<string[]>([]);
   const [tags, setTags] = useState<string[]>([]);
+  const [collapse, setCollapse] = useState(true);
 
-  const [qas, qasSetter] = React.useState<{ type: 'ai' | 'user', message: string }[]>([]);
+  const [qas, qasSetter] = React.useState<{ type: 'ai' | 'user', message: string, collapse?: boolean }[]>([]);
   const [qaAnswerLoading, qaAnswerLoadingSetter] = React.useState(false);
 
   // 请求热门tags、及参数中tag或者问题的答案
@@ -50,7 +51,7 @@ export default () => {
   });
 
 
-  const requestRelatedQuestion = async(tag: string) => {
+  const requestRelatedQuestion = async (tag: string) => {
     questionTextSetter('')
     tagLoadingSetter(true)
     guessTagShowSetter(true)
@@ -60,15 +61,15 @@ export default () => {
     setTags(tags)
     tagLoadingSetter(false)
   }
-  const requestQA = async(question: string) => {
+  const requestQA = async (question: string) => {
     questionTextSetter('')
-    qasSetter(qas => [...qas, { type: 'user', message: question }])
+    qasSetter(qas => [...qas, { type: 'user', message: question, collapse: question?.length < 80 }])
 
     guessTagShowSetter(false)
     qaAnswerLoadingSetter(true)
     try {
       const { answer } = await qa(question)
-      qasSetter(qas => [...qas, { type: 'ai', message: answer }])
+      qasSetter(qas => [...qas, { type: 'ai', message: answer, collapse: answer?.length < 80 }])
     } catch (e) {
       qasSetter(qas => [...qas, { type: 'ai', message: '服务器连接失败，请稍后再试' }])
     } finally {
@@ -77,7 +78,7 @@ export default () => {
   }
 
   return (
-    <Frame grayBg style={{ overflow: 'hidden', minHeight: '1800rpx', paddingBottom: '200rpx' }}>
+    <Frame grayBg style={{ overflow: 'hidden', minHeight: '100vh', background: 'url(https://cdn.coffeebeats.cn/beijing.png)', backgroundSize: '100% 100%', paddingBottom: '200rpx' }}>
       <Ling ref={ling} />
 
       <Block padding style={{ paddingTop: '20rpx', paddingBottom: 0 }}>
@@ -90,8 +91,8 @@ export default () => {
           </Col>
           <Col span={3}>
             <Image src="https://fangxt-object.oss-rg-china-mainland.aliyuncs.com/question.png" mode="widthFix"
-                   onTap={() => guessTagShowSetter(true)}
-                   style={{ width: '80%', height: 'auto' }} />
+              onTap={() => guessTagShowSetter(true)}
+              style={{ width: '80%', height: 'auto' }} />
           </Col>
         </Row>
       </Block>
@@ -101,7 +102,7 @@ export default () => {
         </Card>
       </Block>
 
-      {!guessTagShow && qas.map((qa) => <>
+      {!guessTagShow && qas.map((qa, idx) => <>
         {qa.type === 'user' && <>
           <Block padding style={{ paddingTop: '20rpx', paddingBottom: 0 }}>
             <Row>
@@ -109,7 +110,7 @@ export default () => {
                 <Text style={{ lineHeight: '100rpx' }}>{account.nickname || '我'}</Text>
               </Col>
               <Col span={4}>
-                <Image src={account.avatar_url} mode="widthFix" style={{ width: '80%', height: 'auto' }} />
+                <Image src={account.avatar_url || "https://cdn.coffeebeats.cn/user_default.png"} mode="widthFix" style={{ width: '80%', height: 'auto', marginLeft: 12 }} />
               </Col>
             </Row>
           </Block>
@@ -118,12 +119,13 @@ export default () => {
               <View>{qa.message}</View>
             </Card>
           </Block>
+          
         </>}
         {qa.type === 'ai' && <>
           <Block padding style={{ paddingTop: '20rpx', paddingBottom: 0 }}>
             <Row>
               <Col span={4}>
-                <Image src="https://fangxt-object.oss-rg-china-mainland.aliyuncs.com/robot.jpeg" mode="widthFix" style={{ width: '80%', height: 'auto' }} />
+                <Image src="https://fangxt-object.oss-rg-china-mainland.aliyuncs.com/robot.png" mode="widthFix" style={{ width: '80%', height: 'auto' }} />
               </Col>
               <Col span={20}>
                 <Text style={{ lineHeight: '100rpx' }}>{title || '房小通'}</Text>
@@ -132,7 +134,15 @@ export default () => {
           </Block>
           <Block padding style={{ paddingTop: '10rpx', paddingBottom: '10rpx' }}>
             <Card>
-              {qa.message.split('\n').map((v, i) => <View key={i}>{v}</View>)}
+              <View className={!qa?.collapse ? "contentWrapper" : ""}>
+                {qa.message.split('\n').map((v, i) => <View key={i}>{v}</View>)}
+              </View>
+              {!qa?.collapse ? <View className="collIcon" onTap={() => {
+                setCollapse(!collapse)
+                const newQas = JSON.parse(JSON.stringify(qas));
+                newQas[idx].collapse = !newQas[idx].collapse
+                qasSetter(newQas)
+              }}>展开<Text className="collIconRight">▽</Text></View> : null}
             </Card>
           </Block>
         </>}
@@ -142,8 +152,8 @@ export default () => {
         <Card>
           {tags.slice(0, 9).map((q, i) =>
             <Tag key={i} plain size="large" color={chooseTag === q ? 'blue' : ''}
-                 onTap={async() => await requestRelatedQuestion(q)}
-                 style={{ width: '195rpx', margin: '10rpx' }}>{q}</Tag>)}
+              onTap={async () => await requestRelatedQuestion(q)}
+              style={{ width: '195rpx', margin: '10rpx' }}>{q}</Tag>)}
         </Card>
       </Block>}
       {guessTagShow && chooseTag && (
@@ -153,26 +163,27 @@ export default () => {
             <Card>
               {questions.slice(0, 6).map((q, i) =>
                 <View key={i} style={{ padding: '10rpx', borderBottom: 'solid thin #ddd' }}
-                      onTap={async() => requestQA(q)}>
-                  <Text style={{ color: i <= 2 ? 'red' : (i <= 3 ? 'orange' : 'gray') }}>{i+1}</Text>. {q}
+                  onTap={async () => requestQA(q)}>
+                  <Text style={{ color: i <= 2 ? 'red' : (i <= 3 ? 'orange' : 'gray') }}>{i + 1}</Text>. {q}
                 </View>)}
             </Card>
           </Block>)}
 
       <View style={{
         backgroundColor: '#fff', width: '750rpx', position: 'fixed', bottom: 0, left: 0, padding: '10rpx',
-        borderTop: 'solid #eee thin' }}>
+        borderTop: 'solid #eee thin'
+      }}>
         <SearchBar shape="square" placeholder="请输入你想问的问题"
-                   actionName="确认"
-                   confirmType="send"
-                   value={questionText}
-                   onInput={v => questionTextSetter(v)}
-                   style={{
-                     margin: '0 30rpx 40rpx 30rpx'
-                   }}
-                   inputStyle={{ backgroundColor: '#fff' }}
-                   onSubmit={async() => requestQA(questionText)}
-                   onActionClick={async() => requestQA(questionText)}
+          actionName="确认"
+          confirmType="send"
+          value={questionText}
+          onInput={v => questionTextSetter(v)}
+          style={{
+            margin: '0 30rpx 40rpx 30rpx'
+          }}
+          inputStyle={{ backgroundColor: '#fff' }}
+          onSubmit={async () => requestQA(questionText)}
+          onActionClick={async () => requestQA(questionText)}
         />
       </View>
     </Frame>
