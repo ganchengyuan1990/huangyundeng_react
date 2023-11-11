@@ -119,6 +119,7 @@ export default () => {
               <View>{qa.message}</View>
             </Card>
           </Block>
+          
         </>}
         {qa.type === 'ai' && <>
           <Block padding style={{ paddingTop: '20rpx', paddingBottom: 0 }}>
