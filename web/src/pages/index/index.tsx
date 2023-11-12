@@ -37,7 +37,7 @@ export const IndexPage = () => {
       }
       try {
         let sessionid;
-        ({ sessionid, account } = await postWebLogin('1234567890'));
+        ({ sessionid, account } = await postWebLogin(window.location.host, '1234567890'));
         accountManager.setAccount(account, sessionid)
         isLoadingSetter(false)
       } catch (e) {

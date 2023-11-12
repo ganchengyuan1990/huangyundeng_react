@@ -20,14 +20,14 @@ export async function postLogout() {
   return await requestApiWithToken({ path: 'api/account/logout', method: 'POST', data: {} });
 }
 
-export async function postLogin(code: string)
+export async function postLogin(miniId: string, code: string)
   : Promise<{ account: AccountModel, sessionid: string, need_update_info: boolean } & ApiResponse> {
-  return await apiRequest({ path: 'api/account/login', method: 'POST', data: { code } });
+  return await apiRequest({ path: 'api/account/login', method: 'POST', data: { miniId, code } });
 }
 
-export async function postWebLogin(code: string)
+export async function postWebLogin(miniId: string, code: string)
   : Promise<{ account: AccountModel, sessionid: string, need_update_info: boolean } & ApiResponse> {
-  return await apiRequest({ path: 'api/account/login', method: 'POST', data: { web_code: code } });
+  return await apiRequest({ path: 'api/account/login', method: 'POST', data: { miniId, web_code: code } });
 }
 
 // 获取站点基本信息

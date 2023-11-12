@@ -94,9 +94,9 @@ export const QaPage = () => {
         </Card>
       </Block>
 
-      {!guessTagShow && qas.map((qa) => <>
+      {!guessTagShow && qas.map((qa, index) => <>
         {qa.type === 'user' && <>
-          <Block padding style={{ paddingTop: '2.0rem', paddingBottom: 0 }}>
+          <Block padding style={{ paddingTop: '2.0rem', paddingBottom: 0 }} key={index}>
             <Row>
               <Col span={17} offset={3}>
                 <div style={{ padding: '2.0rem', lineHeight: '3.0rem', fontSize: '2.5rem', textAlign: 'right', color: '#666', }}>
@@ -116,7 +116,7 @@ export const QaPage = () => {
           </Block>
         </>}
         {qa.type === 'ai' && <>
-          <Block padding style={{ padding: '2.0rem 1.0rem 0 1.0rem' }}>
+          <Block padding style={{ padding: '2.0rem 1.0rem 0 1.0rem' }} key={index}>
             <Row>
               <Col span={4}>
                 <img src={robotPng} style={{ width: '80%', height: 'auto' }} alt="robot avatar" />

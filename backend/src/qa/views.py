@@ -53,6 +53,7 @@ def 获取答案(request: Request, data: AIn):
         doc, score = found_docs[0]
         if score > 0.95:
             qr = QaRecord(
+                platform=platform,
                 account=request.user,
                 question=data.question,
                 match_question=doc.page_content,
@@ -97,6 +98,7 @@ def 获取答案(request: Request, data: AIn):
 
             final_answer = llm_chain.predict(example=example, question=data.question)
             qr = QaRecord(
+                platform=platform,
                 account=request.user,
                 question=data.question,
                 match_question=doc.metadata['question'],
@@ -108,6 +110,7 @@ def 获取答案(request: Request, data: AIn):
             return ApiResponse.success(answer=final_answer)
 
     qr = QaRecord(
+        platform=platform,
         account=request.user,
         question=data.question,
         match_question='na',
