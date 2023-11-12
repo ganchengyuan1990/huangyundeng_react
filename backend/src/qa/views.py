@@ -38,6 +38,7 @@ def 获取答案(request: Request, data: AIn):
         collection_name=platform.qdrant_collection_name,
     )
 
+    # 尝试搜索一个最贴切的问答
     found_docs = qdrant.similarity_search_with_score(
         data.question,
         k=1,
@@ -64,6 +65,49 @@ def 获取答案(request: Request, data: AIn):
             qr.save()
             return ApiResponse.success(answer=doc.metadata['answer'])
 
+    # 尝试搜索一些的文档，让AI自行发挥
+    found_docs = qdrant.similarity_search_with_score(
+        data.question,
+        filter=models.Filter(
+            must=[
+                models.FieldCondition(
+                    key="metadata.type",
+                    match=models.MatchValue(value="article"),
+                ),
+            ]
+        ))
+    if len(found_docs) > 0:
+        doc, score = found_docs[0]
+        if score > 0.9:
+            chat = QianfanChatEndpoint(**{'top_p': 0.4, 'temperature': 0.1, 'penalty_score': 1})
+            human_message_prompt = HumanMessagePromptTemplate.from_template("""
+            你是房地产法律法规方面的专家，现在，请你先看一下下面的文档，再回答最后给出的问题。
+            仅根据给出的信息回答，如果给出的参考信息无法回答，只需要回答:"您的问题暂时无法回答，敬请期待"。
+
+            参考文档:
+            ===============
+            {article}
+            ===============
+
+            Question: {question}
+            Answer: """)
+            summary_prompt = ChatPromptTemplate.from_messages([human_message_prompt])
+
+            llm_chain = LLMChain(prompt=summary_prompt, llm=chat)
+            final_answer = llm_chain.predict(article=doc.metadata['content'], question=data.question)
+            qr = QaRecord(
+                platform=platform,
+                account=request.user,
+                question=data.question,
+                match_question=doc.page_content,
+                top_score=score,
+                answer_type='ai',
+                answer=final_answer,
+            )
+            qr.save()
+            return ApiResponse.success(answer=final_answer)
+
+    # 尝试搜索一些的问答，组装成可用的答案
     found_docs = qdrant.similarity_search_with_score(
         data.question,
         filter=models.Filter(
