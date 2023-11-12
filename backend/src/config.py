@@ -1,9 +1,10 @@
 import os
 from distutils.util import strtobool
-from pathlib import Path
 from typing import Dict
 
 from dotenv import load_dotenv
+
+from src.account.models import Platform
 
 load_dotenv()
 
@@ -19,19 +20,23 @@ config = {
         'HOST': '127.0.0.1',
         'PORT': '23001',
     },
-    # 'wx': {
-    #     'appid': 'wxe0eb952ea44cbfa0',
-    #     'appsecret': 'c185423ffe0b0ad1a4ca07270126a51b',
-    # },
-    'wx': {
-        'appid': 'wx4805e322e709210e',
-        'appsecret': 'ec2a4aa7d81d3140f32216198dd3a432',
-    },
     'qdrant': {
         'url': "127.0.0.1",
-        'collection_name': "qa_huangshi",
     },
 }
+
+
+def get_platform(mini_id: str) -> Platform:
+    """ 获取平台对应的配置信息 """
+    platforms = Platform.objects.all()
+    default_platform = None
+    for platform in platforms:
+        if platform.host == mini_id or platform.wx_appid == mini_id:
+            return platform
+        if platform.as_default:
+            default_platform = platform
+    else:
+        return default_platform
 
 
 

@@ -10,6 +10,7 @@ from src.account.account_service import AccountService
 from src.account.models import Account
 from src.account.serializers import AccountSerializer
 from src.base.request_defined import Request
+from src.config import get_platform
 from src.utils.api import ApiResponse, ApiResponseResultCode, UserException
 from src.utils.wx.wxauth import code2session
 
@@ -18,27 +19,17 @@ router = Router()
 
 @router.get('/base', auth=None)
 def account_base(request: Request, mini_id: str):
-    """ 获取站点基本信息 """
-    if mini_id == 'wx07755a85c868c35d':
-        return ApiResponse.success(
-            csrf_token=get_token(request),
-            title='黄云登',
-            showLogo=False,
-        )
-    if mini_id == 'wx5f6601101020cf52':
-        return ApiResponse.success(
-            csrf_token=get_token(request),
-            title='天易登',
-            showLogo=False,
-        )
+    """ 获取站点基本信息, mini_id可以是host或者小程序appid """
+    config = get_platform(mini_id)
     return ApiResponse.success(
         csrf_token=get_token(request),
-        title='房小通',
+        title=config.title,
         showLogo=False,
     )
 
 
 class LoginIn(Schema):
+    mini_id: str
     code: str = None
     web_code: str = None
 
@@ -52,12 +43,12 @@ def account_login(request: Request, data: LoginIn):
     """ 登录 """
     openid = request.headers.get('X-Wx-Openid')
     if not openid and data.code:
-        session_key, openid = code2session(data.code)
+        session_key, openid = code2session(data.mini_id, data.code)
     if not openid and data.web_code:
         openid = data.web_code
     if openid is None:
         raise UserException('login failed', ApiResponseResultCode.PARAM_ERROR)
-    account = AccountService.login_or_register_by_openid(request, openid)
+    account = AccountService.login_or_register_by_openid(request, data.mini_id, openid)
     session: Session = request.session
     return ApiResponse.success(account=account, sessionid=session.session_key, need_update_info=not account.avatar_url)
 
@@ -98,13 +89,12 @@ def account_update_my_info(request: Request, data: UpdateInfoIn):
 
 @router.get('/get-web-url', auth=None)
 def 获取web版链接(request: Request, appid: str, sign: str, timestamp: int, nickname: str, userid: str):
-    if appid == 'wx07755a85c868c35d':
-        md5 = hashlib.md5()
-        text = f'appid={appid}&nickname={nickname}&secret=e839e0365ed1f7&timestamp={timestamp}&userid={userid}'
-        md5.update(text.encode('utf-8'))
-        md5_hash = md5.hexdigest()
-        if md5_hash != sign:
-            raise UserException('sign error')
-        return ApiResponse.success(url='https://huangshi.aichan.info/?code=1234567890')
-    return ApiResponse.success()
+    config = get_platform(appid)
+    md5 = hashlib.md5()
+    text = f'appid={appid}&nickname={nickname}&secret=e839e0365ed1f7&timestamp={timestamp}&userid={userid}'
+    md5.update(text.encode('utf-8'))
+    md5_hash = md5.hexdigest()
+    if md5_hash != sign:
+        raise UserException('sign error')
+    return ApiResponse.success(url=f'https://{config.host}/?code=1234567890')
 

@@ -34,6 +34,7 @@ class Account(BaseModel, AbstractUser):
 
     avatar_url = models.CharField(max_length=255, null=True)
     nickname = models.CharField(max_length=255, default='')
+    mini_id = models.CharField(max_length=255)
     username = models.CharField(max_length=255, unique=True)
     password = models.CharField(max_length=255)
     email = models.EmailField(null=True, unique=True, default=None)
@@ -54,3 +55,14 @@ class Account(BaseModel, AbstractUser):
     )
 
     desc = models.TextField()
+
+
+class Platform(BaseModel):
+    title = models.CharField('站点名称', max_length=255)
+    host = models.CharField('域名', max_length=255)
+    logo = models.CharField('logo', max_length=255)
+    wx_appid = models.CharField(max_length=255)
+    wx_appsecret = models.CharField(max_length=255)
+    qdrant_collection_name = models.CharField(max_length=255)
+
+    as_default = models.BooleanField('是否作为无法匹配的默认配置')

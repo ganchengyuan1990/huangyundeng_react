@@ -12,16 +12,19 @@ https://github.com/ws999/wx-app
 from __future__ import unicode_literals
 
 import json
+
 import requests
 
-from src.config import config
+from src.account.models import Platform
+from src.config import get_platform
 from src.utils.logger import logger
 
 base_url = 'https://api.weixin.qq.com/sns/jscode2session?appid={appid}&secret={secret}&js_code={code}&grant_type=authorization_code'
 
 
-def code2session(code):
-    url = base_url.format(appid=config['wx']['appid'], secret=config['wx']['appsecret'], code=code)
+def code2session(mini_id: str, code: str):
+    platform = get_platform(mini_id)
+    url = base_url.format(appid=platform.wx_appid, secret=platform.wx_appsecret, code=code)
     try:
         resp = requests.post(url=url, timeout=3)
         content = json.loads(resp.content)
@@ -41,4 +44,4 @@ def code2session(code):
 
 
 if __name__ == '__main__':
-    print(code2session("0114x0ml2tow494hmWkl2Sn7Xf04x0mE"))
+    print(code2session(Platform.objects.get(as_default=True), "0114x0ml2tow494hmWkl2Sn7Xf04x0mE"))

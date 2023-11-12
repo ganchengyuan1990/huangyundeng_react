@@ -12,15 +12,15 @@ from src.utils.api import UserException, ApiResponseResultCode
 
 class AccountService(object):
     @staticmethod
-    def login_or_register_by_openid(request: HttpRequest, openid: str) -> Optional[Account]:
+    def login_or_register_by_openid(request: HttpRequest, mini_id: str, openid: str) -> Optional[Account]:
         """ openid注册 """
         account: Account = None
         try:
-            account = Account.objects.filter(username=openid).get()
+            account = Account.objects.filter(username=mini_id+openid).get()
         except Account.DoesNotExist:
             pass
         if not account:
-            account = Account.objects.create_user(openid, nickname='')
+            account = Account.objects.create_user(mini_id+openid, mini_id=mini_id, nickname='')
         login(request, account)
         return account
 

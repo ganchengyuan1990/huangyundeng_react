@@ -10,7 +10,7 @@ from ninja import Router, Schema
 from qdrant_client import models
 
 from src.base.request_defined import Request
-from src.config import config
+from src.config import config, get_platform
 from src.qa.models import HotQuestion, QaRecord
 from src.utils.api import ApiResponse
 
@@ -30,10 +30,11 @@ def 获取答案(request: Request, data: AIn):
     client = qdrant_client.QdrantClient(
         url=config['qdrant']['url'], prefer_grpc=True
     )
+    platform = get_platform(request.user.mini_id)
     qdrant = Qdrant(
         client=client,
         embeddings=embeddings,
-        collection_name=config['qdrant']['collection_name'],
+        collection_name=platform.qdrant_collection_name,
     )
 
     found_docs = qdrant.similarity_search_with_score(
