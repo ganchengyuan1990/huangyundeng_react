@@ -16,7 +16,7 @@ import json
 import requests
 
 from src.account.models import Platform
-from src.config import get_platform
+from src.account.utils import get_platform
 from src.utils.logger import logger
 
 base_url = 'https://api.weixin.qq.com/sns/jscode2session?appid={appid}&secret={secret}&js_code={code}&grant_type=authorization_code'

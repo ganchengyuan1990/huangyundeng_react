@@ -13,19 +13,13 @@ export const AppContext = createContext<{
   showLogo: false,
 })
 
-const HostToMiniId: { [key: string]: string } = {
-  'aichan.info': '',
-  'huangshi.aichan.info': 'wx07755a85c868c35d',
-  'tianmen.aichan.info': 'wx5f6601101020cf52',
-}
-
 function App() {
   const [showLogo, showLogoSetter] = useState(false);
   const [title, titleSetter] = useState('');
 
   useEffect(() => {
     (async () => {
-      const miniId = HostToMiniId[window.location.host] || ''
+      const miniId = window.location.host
       const { title, showLogo } = await getBase(miniId)
       showLogoSetter(showLogo)
       titleSetter(title)

@@ -10,7 +10,8 @@ from ninja import Router, Schema
 from qdrant_client import models
 
 from src.base.request_defined import Request
-from src.config import config, get_platform
+from src.config import config
+from src.account.utils import get_platform
 from src.qa.models import HotQuestion, QaRecord
 from src.utils.api import ApiResponse
 

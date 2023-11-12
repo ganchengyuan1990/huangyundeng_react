@@ -4,8 +4,6 @@ from typing import Dict
 
 from dotenv import load_dotenv
 
-from src.account.models import Platform
-
 load_dotenv()
 
 config = {
@@ -24,20 +22,6 @@ config = {
         'url': "127.0.0.1",
     },
 }
-
-
-def get_platform(mini_id: str) -> Platform:
-    """ 获取平台对应的配置信息 """
-    platforms = Platform.objects.all()
-    default_platform = None
-    for platform in platforms:
-        if platform.host == mini_id or platform.wx_appid == mini_id:
-            return platform
-        if platform.as_default:
-            default_platform = platform
-    else:
-        return default_platform
-
 
 
 def _merge_envs(config: Dict, prefix: str = None) -> None:

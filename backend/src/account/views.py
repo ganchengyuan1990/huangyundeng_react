@@ -10,7 +10,7 @@ from src.account.account_service import AccountService
 from src.account.models import Account
 from src.account.serializers import AccountSerializer
 from src.base.request_defined import Request
-from src.config import get_platform
+from src.account.utils import get_platform
 from src.utils.api import ApiResponse, ApiResponseResultCode, UserException
 from src.utils.wx.wxauth import code2session
 

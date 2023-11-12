@@ -20,9 +20,9 @@ export async function postLogout() {
   return await requestApiWithToken({ path: 'api/account/logout', method: 'POST', data: {} });
 }
 
-export async function postLogin(code)
+export async function postLogin(miniId, code)
   : Promise<{ account: AccountModel, sessionid: string, need_update_info: boolean } & ApiResponse> {
-  return await apiRequest({ path: 'api/account/login', method: 'POST', data: { code } });
+  return await apiRequest({ path: 'api/account/login', method: 'POST', data: { miniId, code } });
 }
 
 // 获取站点基本信息

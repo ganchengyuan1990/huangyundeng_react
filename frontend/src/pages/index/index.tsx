@@ -31,7 +31,7 @@ export default () => {
       const appid = res2.miniProgram.appId;
       const { title, showLogo } = await getBase(appid)
       showLogoSetter(showLogo)
-      titleSetter(["您好~","我是不动产智能客服","黄云登"])
+      titleSetter(["您好~", "我是不动产智能客服", title])
       await setNavigationBarTitle({ title })
 
       const { questions, tags } = await getHotQuestions()
@@ -51,7 +51,7 @@ export default () => {
       }
       try {
         let sessionid, need_update_info;
-        ({ sessionid, account, need_update_info } = await postLogin(res.code));
+        ({ sessionid, account, need_update_info } = await postLogin(appid, res.code));
         needUpdateInfoSetter(need_update_info)
         accountManager.setAccount(account, sessionid)
         isLoadingSetter(false)
@@ -141,7 +141,7 @@ export default () => {
         <View className="bottomButton" onTap={() => ling.current.info('敬请期待')}>
           <Image className="buttonImageV2_1" src="https://cdn.coffeebeats.cn/nnnasd.png"/>
           <View>改进建议</View>
-        </View>        
+        </View>
         <View className="bottomButton" onTap={() => ling.current.info('敬请期待')}>
           <Image className="buttonImageV2_2" src="https://cdn.coffeebeats.cn/lskdm.png"/>
           <View>更多服务</View>

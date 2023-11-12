@@ -5,6 +5,7 @@ from django.contrib.auth.models import AbstractUser, UserManager
 
 from src.base.models import BaseModel
 
+
 class AccountManager(UserManager):
     def _create_user(self, username, email, password, **extra_fields):
         """
@@ -56,6 +57,9 @@ class Account(BaseModel, AbstractUser):
 
     desc = models.TextField()
 
+    def __str__(self):
+        return self.username
+
 
 class Platform(BaseModel):
     title = models.CharField('站点名称', max_length=255)
@@ -66,3 +70,16 @@ class Platform(BaseModel):
     qdrant_collection_name = models.CharField(max_length=255)
 
     as_default = models.BooleanField('是否作为无法匹配的默认配置')
+
+    def __str__(self):
+        return self.title
+
+
+class FileUpload(BaseModel):
+    """ 上传的文件保存 """
+    platform = models.ForeignKey(Platform, on_delete=models.CASCADE, null=True)
+    name = models.CharField(max_length=255)
+    file = models.FileField(upload_to="runtimes/file")
+
+    def __str__(self):
+        return self.name + ' | ' + self.file.name
