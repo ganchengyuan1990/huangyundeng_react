@@ -13,3 +13,4 @@
 .env.production.local
 
 .idea
+/info-ipad-web/node_modules

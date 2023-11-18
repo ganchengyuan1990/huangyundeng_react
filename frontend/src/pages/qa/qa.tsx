@@ -78,7 +78,8 @@ export default () => {
   }
 
   return (
-    <Frame grayBg style={{ overflow: 'hidden', minHeight: '100vh', background: 'url(https://cdn.coffeebeats.cn/beijing.png)', backgroundSize: '100% 100%', paddingBottom: '200rpx' }}>
+    <Frame grayBg style={{ overflow: 'hidden', minHeight: '100vh', paddingBottom: '200rpx' }}>
+      <View style={{height: '100vh', background: 'url(https://cdn.coffeebeats.cn/beijing.png)', backgroundSize: '100% 100%', position: 'fixed', left: 0, right: 0}}></View>
       <Ling ref={ling} />
 
       <Block padding style={{ paddingTop: '20rpx', paddingBottom: 0 }}>
@@ -181,7 +182,7 @@ export default () => {
           style={{
             margin: '0 30rpx 40rpx 30rpx'
           }}
-          inputStyle={{ backgroundColor: '#fff' }}
+          inputStyle={{ backgroundColor: '#fff', height: '84px' }}
           onSubmit={async () => requestQA(questionText)}
           onActionClick={async () => requestQA(questionText)}
         />

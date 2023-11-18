@@ -127,3 +127,12 @@ page {
   bottom: -210px;
   left: 0;
 }
+
+.anna-search_bar-action_button {
+  font-size: 38px !important;
+  padding-left: 40px !important;
+}
+
+anna-search_bar-input {
+  height: 84rpx !important;
+}
