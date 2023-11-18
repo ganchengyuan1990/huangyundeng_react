@@ -1,0 +1,11 @@
+.wrapper {
+  margin: 50px;
+}
+
+.inputWrapper {
+  /* display: flex;
+  justify-content: center;
+  width: 100%; */
+  margin: auto 10%;
+  margin-top: 30px;
+}
