@@ -12,7 +12,7 @@ from qdrant_client import models
 from src.base.request_defined import Request
 from src.config import config
 from src.account.utils import get_platform
-from src.qa.models import HotQuestion, QaRecord
+from src.qa.models import HotQuestion, QaRecord, QaRecordFeedback
 from src.utils.api import ApiResponse
 
 router = Router()
@@ -22,6 +22,7 @@ class AIn(Schema):
     question: str
 
 class AOut(ApiResponse):
+    record_id: str
     answer: str
 
 @router.post('/a', response=AOut)
@@ -63,7 +64,7 @@ def 获取答案(request: Request, data: AIn):
                 answer='',
             )
             qr.save()
-            return ApiResponse.success(answer=doc.metadata['answer'])
+            return ApiResponse.success(record_id=qr.id, answer=doc.metadata['answer'])
 
     # 尝试搜索一些的文档，让AI自行发挥
     found_docs = qdrant.similarity_search_with_score(
@@ -105,7 +106,7 @@ def 获取答案(request: Request, data: AIn):
                 answer=final_answer,
             )
             qr.save()
-            return ApiResponse.success(answer=final_answer)
+            return ApiResponse.success(record_id=qr.id, answer=final_answer)
 
     # 尝试搜索一些的问答，组装成可用的答案
     found_docs = qdrant.similarity_search_with_score(
@@ -151,7 +152,7 @@ def 获取答案(request: Request, data: AIn):
                 answer=final_answer,
             )
             qr.save()
-            return ApiResponse.success(answer=final_answer)
+            return ApiResponse.success(record_id=qr.id, answer=final_answer)
 
     qr = QaRecord(
         platform=platform,
@@ -164,7 +165,23 @@ def 获取答案(request: Request, data: AIn):
     )
     qr.save()
 
-    return ApiResponse.success(answer='您的问题暂时无法回答，敬请期待')
+    return ApiResponse.success(record_id=qr.id, answer='您的问题暂时无法回答，敬请期待')
+
+
+class FeedbackIn(Schema):
+    record_id: str
+    attitude: str
+    message: str
+
+@router.post('/feedback')
+def 热门问题(request: Request, data: FeedbackIn):
+    feedback = QaRecordFeedback()
+    feedback.record_id = data.record_id
+    feedback.attitude = data.attitude
+    feedback.message = data.message
+    feedback.save()
+
+    return ApiResponse.success()
 
 
 class HotQuestionOut(ApiResponse):

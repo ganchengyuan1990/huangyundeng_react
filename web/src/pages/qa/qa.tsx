@@ -1,15 +1,16 @@
 import * as React from 'react';
 import { useContext, useEffect, useState } from 'react';
-import { Button, Card, Col, Input, Row, Skeleton } from 'antd';
+import { Button, Card, Col, Input, Row, Skeleton, Space } from 'antd';
 import Frame from '../../utils/frame';
 import Block from '../../utils/block';
-import { getHotQuestions, qa } from '../../apis/qa';
+import { feedback, getHotQuestions, qa } from '../../apis/qa';
 import robotPng from '../../assets/robot.png';
 import userDefault from '../../assets/user_default.png';
 import questionPng from '../../assets/question.png';
 import accountManager from '../account/accountManager';
 import useQuery from '../../utils/query';
 import { AppContext } from '../../App';
+import { DislikeOutlined, LikeOutlined, ToolOutlined } from '@ant-design/icons';
 
 
 export const QaPage = () => {
@@ -24,7 +25,7 @@ export const QaPage = () => {
   const [tags, setTags] = useState<string[]>([]);
   const [startDate, setStartDate] = useState<Date>(new Date());
 
-  const [qas, qasSetter] = React.useState<{ type: 'ai' | 'user', message: string, time: Date }[]>([]);
+  const [qas, qasSetter] = React.useState<{ type: 'ai' | 'user', recordId: string, message: string, time: Date }[]>([]);
   const [qaAnswerLoading, qaAnswerLoadingSetter] = React.useState(false);
 
   // 请求热门tags、及参数中tag或者问题的答案
@@ -55,18 +56,30 @@ export const QaPage = () => {
   }
   const requestQA = async(question: string) => {
     questionTextSetter('')
-    qasSetter(qas => [...qas, { type: 'user', message: question, time: new Date() }])
+    qasSetter(qas => [...qas, { type: 'user', recordId: '', message: question, time: new Date() }])
 
     guessTagShowSetter(false)
     qaAnswerLoadingSetter(true)
     try {
-      const { answer } = await qa(question)
-      qasSetter(qas => [...qas, { type: 'ai', message: answer, time: new Date() }])
+      const { answer, recordId } = await qa(question)
+      qasSetter(qas => [...qas, { type: 'ai', recordId: recordId, message: answer, time: new Date() }])
     } catch (e) {
-      qasSetter(qas => [...qas, { type: 'ai', message: '服务器连接失败，请稍后再试', time: new Date() }])
+      qasSetter(qas => [...qas, { type: 'ai', recordId: '', message: '服务器连接失败，请稍后再试', time: new Date() }])
     } finally {
       qaAnswerLoadingSetter(false)
     }
+  }
+  const requestFeedback = async(qa: { type: 'ai' | 'user', recordId: string, message: string, time: Date }, attitude: string, message: string) => {
+    await feedback(qa.recordId, attitude, message)
+    qasSetter(oldV => {
+      const newV = [...oldV]
+      const item = newV.filter(v => v.recordId === qa.recordId)
+      if (item.length>0) {
+        item[0].recordId = ''
+      }
+      return newV
+    })
+    alert('感谢您的反馈')
   }
 
   return (
@@ -130,7 +143,15 @@ export const QaPage = () => {
             </Row>
           </Block>
           <Block padding style={{ padding: '1.0rem', paddingBottom: '1.0rem', textAlign: 'left' }}>
-            <Card>
+            <Card
+              actions={qa.recordId ? [
+                <Space key="good" onClick={() => requestFeedback(qa, 'good', '')}><LikeOutlined/>有用</Space>,
+                <Space key="bad" onClick={() => requestFeedback(qa, 'bad', '')}><DislikeOutlined/>无效</Space>,
+                <Space key="fix" onClick={() => {
+                  const message = prompt('请修改：', qa.message)
+                  message && requestFeedback(qa, 'fix', message)
+                }}><ToolOutlined/>纠错</Space>,
+              ] : []}>
               {qa.message.split('\n').map((v, i) => <div key={i}>{v}</div>)}
             </Card>
           </Block>
