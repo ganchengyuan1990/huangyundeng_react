@@ -1,5 +1,5 @@
 import React from 'react';
-import { Space, Table, Tag } from 'antd';
+import { Space, Table, Upload, message } from 'antd';
 
 interface DataType {
   key: string;
@@ -8,6 +8,23 @@ interface DataType {
   address: string;
   tags: string[];
 }
+const props = {
+  name: 'file',
+  action: 'https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188',
+  headers: {
+    authorization: 'authorization-text',
+  },
+  onChange(info: any) {
+    if (info.file.status !== 'uploading') {
+      console.log(info.file, info.fileList);
+    }
+    if (info.file.status === 'done') {
+      message.success(`${info.file.name} 上传成功`);
+    } else if (info.file.status === 'error') {
+      message.error(`${info.file.name} 上传失败`);
+    }
+  },
+};
 
 const columns = [
   {
@@ -32,7 +49,9 @@ const columns = [
     render: (_: any, record: any) => (
       <Space size="middle">
         <a>要求与实例</a>
-        <a>上传</a>
+        <Upload {...props}>
+          <a>上传</a>
+        </Upload>
         <a>删除</a>
       </Space>
     ),

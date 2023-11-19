@@ -2,7 +2,6 @@ import React, { createContext, useEffect, useState } from 'react';
 import './App.css';
 import { Route, Routes } from 'react-router-dom';
 import { IndexPage } from './pages/index';
-import { QaPage } from './pages/qa/qa';
 import { StepsPage } from './pages/steps/steps';
 import { CompletePage } from './pages/complete/complete';
 
@@ -42,7 +41,6 @@ function App() {
       <AppContext.Provider value={{ showLogo, title }}>
         <Routes>
           <Route path="/" element={<IndexPage />} />
-          <Route path="/qa/qa" element={<QaPage />} />
           <Route path="/steps/steps" element={<StepsPage />} />
           <Route path="/complete/complete" element={<CompletePage />} />
         </Routes>

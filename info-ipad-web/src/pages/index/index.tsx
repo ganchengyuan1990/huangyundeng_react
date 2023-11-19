@@ -8,7 +8,6 @@ import titlePng from '../../assets/title.png';
 // import title1Png from '../../assets/title1.png';
 import { postWebLogin } from '../../apis/account';
 import accountManager from '../account/accountManager';
-import { getHotQuestions } from '../../apis/qa';
 import { useNavigate } from 'react-router-dom';
 import { AccountModel } from '../../types/account';
 import { TeamOutlined, } from '@ant-design/icons';

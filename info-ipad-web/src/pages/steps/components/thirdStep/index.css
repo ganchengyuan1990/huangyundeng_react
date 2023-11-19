@@ -16,3 +16,15 @@
 :where(.css-dev-only-do-not-override-qgg3xn).ant-form label {
   font-size: 16px;
 }
+
+.extraPart {
+  position: absolute;
+  right: 50px;
+  top: 100px;
+  max-width: 300px;
+}
+
+.switch :where(.css-dev-only-do-not-override-qgg3xn).ant-col-8 {
+  flex: 0 0 100%;
+  max-width: 100%;
+}

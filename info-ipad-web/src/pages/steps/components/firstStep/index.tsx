@@ -28,6 +28,7 @@ const App: React.FC = () => (
     onFinish={onFinish}
     onFinishFailed={onFinishFailed}
     autoComplete="off"
+    className="form1"
   >
     <Form.Item<FieldType>
       style={{marginBottom: 60}}
