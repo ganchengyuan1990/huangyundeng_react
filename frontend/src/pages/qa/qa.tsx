@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { useEffect, useRef, useState } from 'react';
-import { Card, Col, Ling, Row, SearchBar, Skeleton, Tag } from 'annar';
+import { Card, Col, Icon, Ling, Row, SearchBar, Skeleton, Tag } from 'annar';
 import Frame from '../../utils/frame';
 import Block from '../../utils/block';
 import { usePageEvent } from 'remax/macro';
 import { Text, View } from 'remax/one';
-import { getHotQuestions, qa } from '../../apis/qa';
+import { feedback, getHotQuestions, qa } from '../../apis/qa';
 import { Image } from 'remax/wechat';
 import accountManager from '../account/accountManager';
 import { getAccountInfoSync, setNavigationBarTitle } from '@remax/wechat/esm/api';
@@ -24,7 +24,7 @@ export default () => {
   const [tags, setTags] = useState<string[]>([]);
   const [collapse, setCollapse] = useState(true);
 
-  const [qas, qasSetter] = React.useState<{ type: 'ai' | 'user', message: string, collapse?: boolean }[]>([]);
+  const [qas, qasSetter] = React.useState<{ type: 'ai' | 'user', recordId: string, message: string, collapse?: boolean }[]>([]);
   const [qaAnswerLoading, qaAnswerLoadingSetter] = React.useState(false);
 
   // 请求热门tags、及参数中tag或者问题的答案
@@ -63,19 +63,32 @@ export default () => {
   }
   const requestQA = async (question: string) => {
     questionTextSetter('')
-    qasSetter(qas => [...qas, { type: 'user', message: question, collapse: question?.length < 80 }])
+    qasSetter(qas => [...qas, { type: 'user', recordId: '', message: question, collapse: question?.length < 80 }])
 
     guessTagShowSetter(false)
     qaAnswerLoadingSetter(true)
     try {
-      const { answer } = await qa(question)
-      qasSetter(qas => [...qas, { type: 'ai', message: answer, collapse: answer?.length < 80 }])
+      const { answer, record_id } = await qa(question)
+      qasSetter(qas => [...qas, { type: 'ai', recordId: record_id, message: answer, collapse: answer?.length < 80 }])
     } catch (e) {
-      qasSetter(qas => [...qas, { type: 'ai', message: '服务器连接失败，请稍后再试' }])
+      qasSetter(qas => [...qas, { type: 'ai', recordId: '', message: '服务器连接失败，请稍后再试' }])
     } finally {
       qaAnswerLoadingSetter(false)
     }
   }
+  const requestFeedback = async(qa: { type: 'ai' | 'user', recordId: string }, attitude: string, message: string) => {
+    await feedback(qa.recordId, attitude, message)
+    qasSetter(oldV => {
+      const newV = [...oldV]
+      const item = newV.filter(v => v.recordId === qa.recordId)
+      if (item.length>0) {
+        item[0].recordId = ''
+      }
+      return newV
+    })
+    ling.current.info('感谢您的反馈')
+  }
+
 
   return (
     <Frame grayBg style={{ overflow: 'hidden', minHeight: '100vh', background: 'url(https://cdn.coffeebeats.cn/beijing.png)', backgroundSize: '100% 100%', paddingBottom: '200rpx' }}>
@@ -119,7 +132,7 @@ export default () => {
               <View>{qa.message}</View>
             </Card>
           </Block>
-          
+
         </>}
         {qa.type === 'ai' && <>
           <Block padding style={{ paddingTop: '20rpx', paddingBottom: 0 }}>
@@ -133,7 +146,27 @@ export default () => {
             </Row>
           </Block>
           <Block padding style={{ paddingTop: '10rpx', paddingBottom: '10rpx' }}>
-            <Card>
+            <Card
+              foot={qa.recordId ? <Row>
+                <Col span={8} key="good" style={{ lineHeight: '50rpx', padding: '10rpx', textAlign: 'center' }}>
+                  <View style={{ width: '100%' }}
+                        onTap={() => requestFeedback(qa, 'good', '')}>
+                    <Icon type="appreciate" size="50px"/> 有用
+                  </View>
+                </Col>
+                <Col span={8} key="bad" style={{ lineHeight: '50rpx', padding: '10rpx', textAlign: 'center' }}>
+                  <View style={{ width: '100%' }}
+                        onTap={() => requestFeedback(qa, 'bad', '')}>
+                    <Icon type="oppose_light" size="50px"/> 无效
+                  </View>
+                </Col>
+                <Col span={8} key="fix" style={{ lineHeight: '50rpx', padding: '10rpx', textAlign: 'center' }}>
+                  <View style={{ width: '100%' }}
+                        onTap={() => requestFeedback(qa, 'fix', '具体的消息写这里')}>
+                    <Icon type="repair" size="50px"/> 纠错
+                  </View>
+                </Col>
+              </Row> : ''}>
               <View className={!qa?.collapse ? "contentWrapper" : ""}>
                 {qa.message.split('\n').map((v, i) => <View key={i}>{v}</View>)}
               </View>
