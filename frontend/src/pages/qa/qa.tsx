@@ -15,6 +15,8 @@ export default () => {
   let account = accountManager.getAccount();
   const ling = useRef<any>();
   const [questionText, questionTextSetter] = useState('');
+  const [keyboradHeight, setKeyboradHeight] = useState(0);
+
   const [title, titleSetter] = useState('');
 
   const [guessTagShow, guessTagShowSetter] = React.useState(false);
@@ -29,6 +31,10 @@ export default () => {
 
   // 请求热门tags、及参数中tag或者问题的答案
   useEffect(() => {
+    // wx?.onKeyboardHeightChange(res => {
+    //   console.log(res.height)
+    //   setKeyboradHeight(res.height)
+    // })
     (async () => {
       const res2 = getAccountInfoSync()
       const appid = res2.miniProgram.appId;
@@ -133,9 +139,9 @@ export default () => {
               </Col>
             </Row>
           </Block>
-          <Block padding style={{ paddingTop: '10rpx', paddingBottom: '10rpx' }}>
+          <Block className="answerWrapper" padding style={{ paddingTop: '10rpx', paddingBottom: '10rpx' }}>
             <Card>
-              <View className={!qa?.collapse ? "contentWrapper" : ""}>
+              <View className={!qa?.collapse ? "contentWrapper" : "contentWrapperNo"}>
                 {qa.message.split('\n').map((v, i) => <View key={i}>{v}</View>)}
               </View>
               {!qa?.collapse ? <View className="collIcon" onTap={() => {
@@ -144,6 +150,22 @@ export default () => {
                 newQas[idx].collapse = !newQas[idx].collapse
                 qasSetter(newQas)
               }}>展开<Text className="collIconRight">▽</Text></View> : null}
+              <View className="actionButtonWrapper">
+                <View className="actionButton" onTap={async() => {
+                  const res = await getHotQuestions()
+                  if (res) {
+                    ling.current.info('操作成功')
+                  }
+                  
+                }}>有用</View>
+                <View className="actionButton" onTap={async() => {
+                    const res = await getHotQuestions()
+                    if (res) {
+                      ling.current.info('操作成功')
+                    }
+                }}>无效</View>
+                <View className="actionButton" onTap={async() => {}}>纠错</View>
+              </View>
             </Card>
           </Block>
         </>}
@@ -174,6 +196,25 @@ export default () => {
         backgroundColor: '#fff', width: '750rpx', position: 'fixed', bottom: 0, left: 0, padding: '10rpx',
         borderTop: 'solid #eee thin'
       }}>
+        {/* <input 
+          bindfocus={(e) => {
+            // ling.current.info(e?.detail.height)
+            setKeyboradHeight(550)
+          }} 
+          bindblur={() => {setKeyboradHeight(0)}} 
+          style={{backgroundColor: '#fff', height: '84px', textAlign: 'center', marginBottom: 30, position: 'relative', bottom: keyboradHeight }} 
+          maxlength="100" 
+          adjust-position={false} 
+          value={questionText} 
+          placeholder="请输入你想问的问题" 
+          bindinput={(e) => {
+              questionTextSetter(e.detail.value)
+            }
+          }  
+          bindconfirm={async (e) => {
+            requestQA(e.detail.value)
+          }} 
+        /> */}
         <SearchBar shape="square" placeholder="请输入你想问的问题"
           actionName="确认"
           confirmType="send"

@@ -102,6 +102,7 @@ page {
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  margin: 24px;
 }
 
 .collIcon {
@@ -133,6 +134,32 @@ page {
   padding-left: 40px !important;
 }
 
-anna-search_bar-input {
+.anna-search_bar-input {
   height: 84rpx !important;
+  margin-bottom: 30px;
+}
+
+.actionButtonWrapper {
+  display: flex;
+  border-top: 1px solid #eee;
+}
+
+.actionButton {
+  flex: 1;
+  text-align: center;
+  color: #666;
+  font-size: 20px;
+  line-height: 60px;
+}
+
+.answerWrapper .anna-card-content {
+  padding: 0 !important;
+}
+
+.answerWrapper .contentWrapperNo {
+  padding: 24px;
+}
+
+.actionButton:not(:last-child) {
+  border-right: 1px solid #eee;
 }
