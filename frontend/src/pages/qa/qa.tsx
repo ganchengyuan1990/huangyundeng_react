@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useEffect, useRef, useState } from 'react';
-import { Card, Col, Icon, Ling, Row, SearchBar, Skeleton, Tag } from 'annar';
+import { Card, Col, Icon, Ling, Row, SearchBar, Skeleton, Tag, Popup } from 'annar';
 import Frame from '../../utils/frame';
 import Block from '../../utils/block';
 import { usePageEvent } from 'remax/macro';
@@ -15,6 +15,10 @@ export default () => {
   let account = accountManager.getAccount();
   const ling = useRef<any>();
   const [questionText, questionTextSetter] = useState('');
+  const [keyboradHeight, setKeyboradHeight] = useState(0);
+  const [showTextArea, setShowTextArea] = useState(false);
+
+
   const [title, titleSetter] = useState('');
 
   const [guessTagShow, guessTagShowSetter] = React.useState(false);
@@ -29,6 +33,10 @@ export default () => {
 
   // 请求热门tags、及参数中tag或者问题的答案
   useEffect(() => {
+    // wx?.onKeyboardHeightChange(res => {
+    //   console.log(res.height)
+    //   setKeyboradHeight(res.height)
+    // })
     (async () => {
       const res2 = getAccountInfoSync()
       const appid = res2.miniProgram.appId;
@@ -76,12 +84,12 @@ export default () => {
       qaAnswerLoadingSetter(false)
     }
   }
-  const requestFeedback = async(qa: { type: 'ai' | 'user', recordId: string }, attitude: string, message: string) => {
+  const requestFeedback = async (qa: { type: 'ai' | 'user', recordId: string }, attitude: string, message: string) => {
     await feedback(qa.recordId, attitude, message)
     qasSetter(oldV => {
       const newV = [...oldV]
       const item = newV.filter(v => v.recordId === qa.recordId)
-      if (item.length>0) {
+      if (item.length > 0) {
         item[0].recordId = ''
       }
       return newV
@@ -91,7 +99,8 @@ export default () => {
 
 
   return (
-    <Frame grayBg style={{ overflow: 'hidden', minHeight: '100vh', background: 'url(https://cdn.coffeebeats.cn/beijing.png)', backgroundSize: '100% 100%', paddingBottom: '200rpx' }}>
+    <Frame grayBg style={{ overflow: 'hidden', minHeight: '100vh', paddingBottom: '200rpx' }}>
+      <View style={{ height: '100vh', background: 'url(https://cdn.coffeebeats.cn/beijing.png)', backgroundSize: '100% 100%', position: 'fixed', left: 0, right: 0 }}></View>
       <Ling ref={ling} />
 
       <Block padding style={{ paddingTop: '20rpx', paddingBottom: 0 }}>
@@ -145,29 +154,33 @@ export default () => {
               </Col>
             </Row>
           </Block>
+          {/* <Block className="answerWrapper" padding style={{ paddingTop: '10rpx', paddingBottom: '10rpx' }}>
+            <Card>
+              <View className={!qa?.collapse ? "contentWrapper" : "contentWrapperNo"}> */}
           <Block padding style={{ paddingTop: '10rpx', paddingBottom: '10rpx' }}>
             <Card
               foot={qa.recordId ? <Row>
                 <Col span={8} key="good" style={{ lineHeight: '50rpx', padding: '10rpx', textAlign: 'center' }}>
-                  <View style={{ width: '100%' }}
-                        onTap={() => requestFeedback(qa, 'good', '')}>
-                    <Icon type="appreciate" size="50px"/> 有用
+                  <View style={{ width: '100%', fontSize: 24 }}
+                    onTap={() => requestFeedback(qa, 'good', '')}>
+                    <Icon type="appreciate" size="50px" /> 有用
                   </View>
                 </Col>
                 <Col span={8} key="bad" style={{ lineHeight: '50rpx', padding: '10rpx', textAlign: 'center' }}>
-                  <View style={{ width: '100%' }}
-                        onTap={() => requestFeedback(qa, 'bad', '')}>
-                    <Icon type="oppose_light" size="50px"/> 无效
+                  <View style={{ width: '100%', fontSize: 24 }}
+                    onTap={() => requestFeedback(qa, 'bad', '')}>
+                    <Icon type="oppose_light" size="50px" /> 无效
                   </View>
                 </Col>
                 <Col span={8} key="fix" style={{ lineHeight: '50rpx', padding: '10rpx', textAlign: 'center' }}>
-                  <View style={{ width: '100%' }}
-                        onTap={() => requestFeedback(qa, 'fix', '具体的消息写这里')}>
-                    <Icon type="repair" size="50px"/> 纠错
+                  <View style={{ width: '100%', fontSize: 24 }}
+                    onTap={() => setShowTextArea(!showTextArea)}>
+                    <Icon type="repair" size="50px" /> 纠错
                   </View>
                 </Col>
-              </Row> : ''}>
-              <View className={!qa?.collapse ? "contentWrapper" : ""}>
+              </Row> : ''}
+            >
+              <View className={!qa?.collapse ? "contentWrapper" : "contentWrapperNo"}>
                 {qa.message.split('\n').map((v, i) => <View key={i}>{v}</View>)}
               </View>
               {!qa?.collapse ? <View className="collIcon" onTap={() => {
@@ -176,6 +189,30 @@ export default () => {
                 newQas[idx].collapse = !newQas[idx].collapse
                 qasSetter(newQas)
               }}>展开<Text className="collIconRight">▽</Text></View> : null}
+
+              <Popup open={showTextArea} closeable={true} onClose={() => {
+                setShowTextArea(false)
+              }}>
+                <form bindsubmit={async (e) => {
+                  const res = await requestFeedback(qa, 'fix', e.detail.value.textarea)
+                  setShowTextArea(false);
+                  console.log(res, 123)
+                }}>
+                  <textarea style="margin: 10px 0; padding: 12px; background: #eee; border-radius: 8px; width: calc(100% - 24px);" placeholder="请输入" name="textarea" />
+                  <button style="height: 38px; line-height: 38px; border: 1px solid rgb(9, 191, 255); background: rgba(0, 191, 255, 0.5); color: #fff" form-type="submit"> 提交 </button>
+                </form>
+              </Popup>
+
+              {/* {showTextArea ? <form bindsubmit={async (e) => {
+                const res = await requestFeedback(qa, 'fix', e.detail.value.textarea)
+                setShowTextArea(false);
+                console.log(res, 123)
+              }}>
+
+                <textarea style="margin: 10px 0; padding: 12px; background: #eee; border-radius: 8px; width: calc(100% - 24px);" placeholder="请输入" name="textarea"/>
+                <button style="height: 38px; line-height: 38px; border: 1px solid blue" form-type="submit"> 提交 </button>
+              </form> : null} */}
+
             </Card>
           </Block>
         </>}
@@ -206,6 +243,25 @@ export default () => {
         backgroundColor: '#fff', width: '750rpx', position: 'fixed', bottom: 0, left: 0, padding: '10rpx',
         borderTop: 'solid #eee thin'
       }}>
+        {/* <input 
+          bindfocus={(e) => {
+            // ling.current.info(e?.detail.height)
+            setKeyboradHeight(550)
+          }} 
+          bindblur={() => {setKeyboradHeight(0)}} 
+          style={{backgroundColor: '#fff', height: '84px', textAlign: 'center', marginBottom: 30, position: 'relative', bottom: keyboradHeight }} 
+          maxlength="100" 
+          adjust-position={false} 
+          value={questionText} 
+          placeholder="请输入你想问的问题" 
+          bindinput={(e) => {
+              questionTextSetter(e.detail.value)
+            }
+          }  
+          bindconfirm={async (e) => {
+            requestQA(e.detail.value)
+          }} 
+        /> */}
         <SearchBar shape="square" placeholder="请输入你想问的问题"
           actionName="确认"
           confirmType="send"
@@ -214,7 +270,7 @@ export default () => {
           style={{
             margin: '0 30rpx 40rpx 30rpx'
           }}
-          inputStyle={{ backgroundColor: '#fff' }}
+          inputStyle={{ backgroundColor: '#fff', height: '84px' }}
           onSubmit={async () => requestQA(questionText)}
           onActionClick={async () => requestQA(questionText)}
         />
