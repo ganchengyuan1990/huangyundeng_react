@@ -6,6 +6,11 @@ export async function getHotQuestions(tag: string = ''): Promise<{ questions: st
 }
 
 // 回答问题
-export async function qa(question: string): Promise<{ answer: string } & ApiResponse> {
+export async function qa(question: string): Promise<{ answer: string, record_id: string } & ApiResponse> {
   return await requestApiWithToken({ path: 'api/qa/a', method: 'POST', data: {question} });
+}
+
+// 反馈信息
+export async function feedback(record_id: string, attitude: string, message: string): Promise<ApiResponse> {
+  return await requestApiWithToken({ path: 'api/qa/feedback', method: 'POST', data: {record_id, attitude, message} });
 }

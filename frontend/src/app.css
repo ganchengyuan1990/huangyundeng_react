@@ -102,7 +102,12 @@ page {
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  margin: 24px;
+  max-height: 120px;
+  /* margin: 24px; */
+}
+
+.contentWrapperNo {
+  max-height: auto;
 }
 
 .collIcon {
@@ -132,11 +137,15 @@ page {
 .anna-search_bar-action_button {
   font-size: 38px !important;
   padding-left: 40px !important;
+  position: relative;
+  top: -18px;
 }
 
 .anna-search_bar-input {
   height: 84rpx !important;
-  margin-bottom: 30px;
+  /* margin-bottom: 30px; */
+  position: relative;
+  top: -8px;
 }
 
 .actionButtonWrapper {
@@ -156,10 +165,37 @@ page {
   padding: 0 !important;
 }
 
-.answerWrapper .contentWrapperNo {
+/* .answerWrapper .contentWrapperNo {
   padding: 24px;
-}
+} */
 
 .actionButton:not(:last-child) {
   border-right: 1px solid #eee;
+}
+
+.anna-row-align-top {
+  background: #fff;
+  border-top: 1px solid #eee;
+}
+
+.anna-col-8 {
+  padding: 0px;
+  padding-top: 5px;
+  border-right: 1px solid #eee;
+}
+
+.anna-icon {
+  font-size: 36px !important;
+  position: relative;
+  top: 5px;
+}
+
+.anna-popup-container-center, .anna-popup-container-active {
+  width: 80%;
+  padding: 24px;
+  padding-top: 48px;
+}
+
+.anna-popup-container-center {
+  top: 40% !important;
 }

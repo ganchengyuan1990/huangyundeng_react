@@ -27,3 +27,9 @@ class QaRecord(BaseModel):
     answer = models.TextField('回答', null=True)
 
 
+class QaRecordFeedback(BaseModel):
+    record = models.ForeignKey(QaRecord, on_delete=models.CASCADE)
+    attitude = models.CharField('态度', max_length=255, null=True)
+    message = models.TextField('详细信息', null=True)
+
+
