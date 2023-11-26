@@ -8,7 +8,7 @@ load_dotenv()
 
 config = {
     'debug': True,
-    'site_url': 'http://localhost:8000/',
+    'site_url': 'https://aichan.info/',
     'SECRET_KEY': 'django-insecure-^leio-ylom9bh^d*$zil_x6(shm#)95&dc@yd#g61ao=rqd5eo',
     'db_default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -20,6 +20,12 @@ config = {
     },
     'qdrant': {
         'url': "127.0.0.1",
+    },
+    'qiniu': {
+        'obj_bucket': 'fangxiaotong',
+        'obj_host': 'oss.aichan.info',
+        'ak': 'qEpYKYzApLC……',
+        'sk': '……',
     },
 }
 

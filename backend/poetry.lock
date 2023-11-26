@@ -2012,6 +2012,28 @@ url = "http://mirrors.aliyun.com/pypi/simple"
 reference = "aliyun"
 
 [[package]]
+name = "qiniu"
+version = "7.12.1"
+description = "Qiniu Resource Storage SDK"
+optional = false
+python-versions = "*"
+files = [
+    {file = "qiniu-7.12.1-py3-none-any.whl", hash = "sha256:388814c01c58c2cbcbb55d008fb530d01e975a22c788883b0ea6780f3c5a1ecb"},
+    {file = "qiniu-7.12.1.tar.gz", hash = "sha256:42fede25c6c5d46323f266e77ad5ade823999b1e628ca0559a532df3c8f1954a"},
+]
+
+[package.dependencies]
+requests = {version = "*", markers = "python_version >= \"3.7\""}
+
+[package.extras]
+dev = ["codecov", "coverage (<7.2)", "flake8", "freezegun", "pytest", "pytest-cov", "scrutinizer-ocular"]
+
+[package.source]
+type = "legacy"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
+
+[[package]]
 name = "regex"
 version = "2023.10.3"
 description = "Alternative regular expression module, to replace re."
@@ -2599,4 +2621,4 @@ reference = "aliyun"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.11,<3.12"
-content-hash = "2a77330aaca42568ffc4fc7d5673cfa1ab731ec304af58e5b208edc8f3c5e11e"
+content-hash = "891f19bb3ed145c2c8a047fca3ef819ec76dcabcd1d11810cd5cc9fb292defe8"

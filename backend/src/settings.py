@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'src.base',
     'src.account',
     'src.qa',
+    'src.fform',
 
     'django.contrib.admin',
     'django.contrib.auth',

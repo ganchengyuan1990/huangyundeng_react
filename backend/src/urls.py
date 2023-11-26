@@ -21,7 +21,8 @@ from ninja.errors import HttpError
 from ninja.security import APIKeyQuery, APIKeyHeader
 
 from src.utils.api import UserException, ApiResponse, ApiResponseResultCode
-from src.qa.views import router as router_router
+from src.qa.views import router as qa_router
+from src.fform.views import router as fform_router
 from src.account.views import router as account_router
 
 
@@ -57,7 +58,8 @@ class FakeHeaderAuth(APIKeyHeader):
 
 api = NinjaAPI(auth=[FakeHeaderAuth(), FakeQueryAuth()])
 api.add_router("/account/", account_router, tags=['account'])
-api.add_router("/qa/", router_router, tags=['qa'])
+api.add_router("/qa/", qa_router, tags=['qa'])
+api.add_router("/fform/", fform_router, tags=['fform'])
 
 
 @api.exception_handler(UserException)
