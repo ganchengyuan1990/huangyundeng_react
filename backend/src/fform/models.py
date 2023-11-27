@@ -46,9 +46,10 @@ class FormFile(BaseModel):
 
 
 class FormValue(BaseModel):
-    form = models.ForeignKey(Form, on_delete=models.CASCADE)
-    key = models.ForeignKey(FormColumn, on_delete=models.CASCADE)
+    form = models.ForeignKey(Form, related_name='values', on_delete=models.CASCADE)
+    column = models.ForeignKey(FormColumn, on_delete=models.CASCADE)
     value_string = models.CharField(max_length=255, null=True)
     value_boolean = models.BooleanField(null=True)
+    value_file = models.ForeignKey(FormFile, on_delete=models.CASCADE, null=True)
 
 
