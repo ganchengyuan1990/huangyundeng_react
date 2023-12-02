@@ -73,6 +73,29 @@ def 更新表单(request: Request, data: UpsertFormIn):
     return ApiResponse.success(form_id=form.id, values=values)
 
 
+class FormSubmitAuditIn(Schema):
+    form_id: int
+
+@router.post('/form-submit-audit', auth=None)
+def 表单提交审核(request: Request, data: FormSubmitAuditIn):
+    form = get_object_or_404(Form, id=data.form_id)
+    form.status = Form.Status.auditing
+    form.save()
+    return ApiResponse.success()
+
+
+class FormChangeStatusIn(Schema):
+    form_id: int
+    target_status: Form.Status.for_ninjia_in()
+
+@router.post('/form-submit-audit', auth=None)
+def 表单修改状态(request: Request, data: FormChangeStatusIn):
+    form = get_object_or_404(Form, id=data.form_id)
+    form.status = data.target_status
+    form.save()
+    return ApiResponse.success()
+
+
 @router.get('/upload-token', auth=None)
 def 上传form图片的token(request: Request, form_id: str):
     bucket_name = config['qiniu']['obj_bucket']
@@ -85,7 +108,7 @@ def 上传form图片的token(request: Request, form_id: str):
         'saveKey': 'fform/$(year)$(mon)/$(day)/$(hour)$(min)/$(etag)',
         "mimeLimit": 'image/*',
         'callbackUrl': config['site_url'] + 'api/base/img/upload-callback',
-        'callbackBody': f'{"qiniu_key":"$(key)","fprefix":"$(fprefix)","form_id":{form.id}}',
+        'callbackBody': f'{{"qiniu_key":"$(key)","fprefix":"$(fprefix)","form_id":"{form.id}}}"',
         'callbackBodyType': 'application/json',
     }
     token = q.upload_token(bucket_name, None, 3600, policy)
