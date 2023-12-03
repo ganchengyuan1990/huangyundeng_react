@@ -107,8 +107,8 @@ def 上传form图片的token(request: Request, form_id: str):
         'forceSaveKey': True,
         'saveKey': 'fform/$(year)$(mon)/$(day)/$(hour)$(min)/$(etag)',
         "mimeLimit": 'image/*',
-        'callbackUrl': config['site_url'] + 'api/base/img/upload-callback',
-        'callbackBody': f'{{"qiniu_key":"$(key)","fprefix":"$(fprefix)","form_id":"{form.id}}}"',
+        'callbackUrl': config['site_url'] + 'api/fform/upload-callback',
+        'callbackBody': f'{{"qiniu_key":"$(key)","fprefix":"$(fprefix)","form_id":"{form.id}"}}',
         'callbackBodyType': 'application/json',
     }
     token = q.upload_token(bucket_name, None, 3600, policy)
