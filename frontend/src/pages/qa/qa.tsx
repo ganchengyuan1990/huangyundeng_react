@@ -193,14 +193,14 @@ export default () => {
               <Popup open={showTextArea} closeable={true} onClose={() => {
                 setShowTextArea(false)
               }}>
-                <form bindsubmit={async (e) => {
+                {showTextArea ? <form bindsubmit={async (e) => {
                   const res = await requestFeedback(qa, 'fix', e.detail.value.textarea)
                   setShowTextArea(false);
                   console.log(res, 123)
                 }}>
                   <textarea style="margin: 10px 0; padding: 12px; background: #eee; border-radius: 8px; width: calc(100% - 24px);" placeholder="请输入" name="textarea" />
                   <button style="height: 38px; line-height: 38px; border: 1px solid rgb(9, 191, 255); background: rgba(0, 191, 255, 0.5); color: #fff" form-type="submit"> 提交 </button>
-                </form>
+                </form> : null}
               </Popup>
 
               {/* {showTextArea ? <form bindsubmit={async (e) => {
