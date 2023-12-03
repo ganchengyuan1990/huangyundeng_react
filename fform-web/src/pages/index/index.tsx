@@ -27,6 +27,8 @@ import {
   FormValueOut
 } from '../../apis/fform';
 import { UploadChangeParam, UploadFile } from 'antd/es/upload/interface';
+import "./index.css"
+
 
 
 export const IndexPage = () => {
@@ -39,8 +41,8 @@ export const IndexPage = () => {
 
   useEffect(() => {
     let account: AccountModel | null = accountManager.getAccount();
-    accountManager.listenAccountChange(v => account=v);
-    (async function() {
+    accountManager.listenAccountChange(v => account = v);
+    (async function () {
     })()
   }, [])
   const getUserInfoFunc = async (question: string = '', tag: string = '') => {
@@ -57,7 +59,7 @@ export const IndexPage = () => {
     setCurrent(current - 1);
   };
 
-  const onUpsertForm = async(needCreate: boolean) => {
+  const onUpsertForm = async (needCreate: boolean) => {
     let formId = fformId, values
     if (needCreate) {
       // 姓名填完后，请求并创建fform
@@ -70,12 +72,12 @@ export const IndexPage = () => {
     await apiFformUpsertForm(formId, form.getFieldsValue())
   }
 
-  const onSyncForm = async() => {
+  const onSyncForm = async () => {
     setFormValues(form.getFieldsValue())
     await onUpsertForm(!fformId)
   }
 
-  const onFinish = async(values: Record<string, FormValueIn>) => {
+  const onFinish = async (values: Record<string, FormValueIn>) => {
     setIsSubmit(true)
     await onUpsertForm(!fformId)
     await apiFformSubmitAudit(fformId)
@@ -84,7 +86,7 @@ export const IndexPage = () => {
   }
 
   useEffect(() => {
-    (async() => {
+    (async () => {
       if (fformId) {
         const response = await apiFformUploadToken(fformId)
         setToken(response.token)
@@ -114,7 +116,7 @@ export const IndexPage = () => {
     }
   };
 
-  const steps = ['卖方登录', '卖方信息补充', '买方信息补充', '材料清单上传', ];
+  const steps = ['卖方登录', '卖方信息补充', '买方信息补充', '材料清单上传',];
   const stepItems = steps.map((v) => ({ key: v, title: v }));
 
   const fileInfos = useMemo(() => {
@@ -145,57 +147,63 @@ export const IndexPage = () => {
     {
       key: '0',
       label: '',
-      children: <>
+      children: <div className="inputWrapper whole-line">
+        <Typography.Title level={1}>卖方登录</Typography.Title>
         <Form.Item name="seller_id_card_name" label="卖方姓名"
-                   rules={[{ required: true, message: '请输入卖方姓名' }]} required>
-          <Input/>
+          rules={[{ required: true, message: '请输入卖方姓名' }]} required>
+          <Input />
         </Form.Item>
         <Form.Item name="seller_id_card_number" label="卖方身份证号"
-                   rules={[{ required: true, message: '请输入卖方姓名' }]} required>
-          <Input/>
+          rules={[{ required: true, message: '请输入卖方姓名' }]} required>
+          <Input />
         </Form.Item>
         <Form.Item name="contract_number" label="网签合同号"
-                   rules={[{ required: true, message: '请输入网签合同号' }]} required>
-          <Input/>
+          rules={[{ required: true, message: '请输入网签合同号' }]} required>
+          <Input />
         </Form.Item>
-      </>,
+      </div>,
     },
     {
       key: '1',
       label: '',
-      children: <>
+      children: <div className="inputWrapper">
         <Typography.Title level={1}>卖方信息补充</Typography.Title>
-        <Form.Item name="sq1" label="1. 本次出售房屋是否为普通商品房住宅？"
-                   rules={[{ required: true, message: '请选择' }]} required>
+        <div className="question">1. 本次出售房屋是否为普通商品房住宅？</div>
+        <Form.Item name="sq1"
+          rules={[{ required: true, message: '请选择' }]} required>
           <Radio.Group>
             <Radio value={true}>是</Radio>
             <Radio value={false}>否</Radio>
           </Radio.Group>
         </Form.Item>
-        <Form.Item name="sq2" label="2. 是否提供购房发票扣减?"
-                   rules={[{ required: true, message: '请选择' }]} required>
+        <div className="question">2. 是否提供购房发票扣减？</div>
+        <Form.Item name="sq2"
+          rules={[{ required: true, message: '请选择' }]} required>
           <Radio.Group>
             <Radio value={true}>是</Radio>
             <Radio value={false}>否</Radio>
           </Radio.Group>
         </Form.Item>
-        <Form.Item name="sq3" label="3. 本次出售房屋面积面积为多少?"
-                   rules={[{ required: true, message: '请选择' }]} required>
+        <div className="question">3. 本次出售房屋面积面积为多少？</div>
+        <Form.Item name="sq3"
+          rules={[{ required: true, message: '请选择' }]} required>
           <Radio.Group>
             <Radio value={'≤90平方米'}>≤90平方米</Radio>
             <Radio value={'>90平方米'}>{'>90平方米'}</Radio>
           </Radio.Group>
         </Form.Item>
-        <Form.Item name="sq4" label="4. 本次出售房屋持有时间（自购房之日起）？"
-                   rules={[{ required: true, message: '请选择' }]} required>
+        <div className="question">4. 本次出售房屋持有时间（自购房之日起）？</div>
+        <Form.Item name="sq4"
+          rules={[{ required: true, message: '请选择' }]} required>
           <Radio.Group>
             <Radio value={'<2年'}>{'<2年'}</Radio>
             <Radio value={'≧2年'}>≧2年</Radio>
             <Radio value={'≧5年'}>≧5年</Radio>
           </Radio.Group>
         </Form.Item>
-        <Form.Item name="sq5-1" label="5. 出售方婚姻状况？"
-                   rules={[{ required: true, message: '请选择' }]} required>
+        <div className="question">5. 出售方婚姻状况？</div>
+        <Form.Item name="sq5-1"
+          rules={[{ required: true, message: '请选择' }]} required>
           <Radio.Group>
             <Radio value={'未婚'}>未婚</Radio>
             <Radio value={'已婚'}>已婚</Radio>
@@ -204,37 +212,44 @@ export const IndexPage = () => {
         </Form.Item>
         <Form.Item dependencies={['sq5-1']} noStyle>
           {() => ['已婚', '离异'].includes(form.getFieldValue('sq5-1')) &&
-            <Form.Item name="sq5-2" label="是否存在未成年子女？"
-                       rules={[{ required: true, message: '请选择' }]}>
+            <>
+            <div className="question">是否存在未成年子女？</div>
+            <Form.Item name="sq5-2"
+              rules={[{ required: true, message: '请选择' }]}>
               <Radio.Group>
                 <Radio value={true} defaultChecked>有</Radio>
                 <Radio value={false}>没有</Radio>
               </Radio.Group>
-            </Form.Item>}
+            </Form.Item>
+            </>}
         </Form.Item>
-        <Form.Item name="sq6" label="6. 本次出售的房屋是否为出售方家庭唯一住房？"
-                   rules={[{ required: true, message: '请选择' }]} required>
+        <div className="question">6. 本次出售的房屋是否为出售方家庭唯一住房？</div>
+        <Form.Item name="sq6"
+          rules={[{ required: true, message: '请选择' }]} required>
+            
           <Radio.Group>
             <Radio value={true}>是</Radio>
             <Radio value={false}>否</Radio>
           </Radio.Group>
         </Form.Item>
-      </>,
+      </div>,
     },
     {
       key: '2',
       label: '',
-      children: <>
+      children: <div className="inputWrapper">
         <Typography.Title level={1}>买方信息补充</Typography.Title>
-        <Form.Item name="bq1" label="1.	买方是否广州市户籍？"
-                   rules={[{ required: true, message: '请选择' }]} required>
+        <div className="question">1.	买方是否广州市户籍？</div>
+        <Form.Item name="bq1"
+          rules={[{ required: true, message: '请选择' }]} required>
           <Radio.Group>
             <Radio value={true}>是</Radio>
             <Radio value={false}>否</Radio>
           </Radio.Group>
         </Form.Item>
-        <Form.Item name="bq2-1" label="2.	买方婚姻状况？"
-                   rules={[{ required: true, message: '请选择' }]} required>
+        <div className="question">2.	买方婚姻状况？</div>
+        <Form.Item name="bq2-1"
+          rules={[{ required: true, message: '请选择' }]} required>
           <Radio.Group>
             <Radio value={'未婚'}>未婚</Radio>
             <Radio value={'已婚'}>已婚</Radio>
@@ -243,23 +258,28 @@ export const IndexPage = () => {
         </Form.Item>
         <Form.Item dependencies={['bq2-1']} noStyle>
           {() => ['已婚', '离异'].includes(form.getFieldValue('sq5-1')) &&
+          <>
+            <div className="question">是否存在未成年子女？</div>
             <Form.Item name="bq2-2" label="是否存在未成年子女？"
-                       rules={[{ required: true, message: '请选择' }]}>
+              rules={[{ required: true, message: '请选择' }]}>
               <Radio.Group>
                 <Radio value={true} defaultChecked>有</Radio>
                 <Radio value={false}>没有</Radio>
               </Radio.Group>
-            </Form.Item>}
+            </Form.Item>
+            </>}
         </Form.Item>
-        <Form.Item name="bq3" label="3. 本次出售的房屋是否为购买方家庭唯一住房？"
-                   rules={[{ required: true, message: '请选择' }]} required>
+        <div className="question">3. 本次出售的房屋是否为购买方家庭唯一住房？</div>
+        <Form.Item name="bq3"
+          rules={[{ required: true, message: '请选择' }]} required>
           <Radio.Group>
             <Radio value={true}>是</Radio>
             <Radio value={false}>否</Radio>
           </Radio.Group>
         </Form.Item>
-        <Form.Item name="bq4" label="4.	本次交易是否属于近亲交易？"
-                   rules={[{ required: true, message: '请选择' }]} required>
+        <div className="question">4.	本次交易是否属于近亲交易？</div>
+        <Form.Item name="bq4"
+          rules={[{ required: true, message: '请选择' }]} required>
           <Radio.Group>
             <Radio value={true}>是（近亲交易范围包括配偶、父母、子女、祖父母、外祖父母、孙子女、外孙子女、兄弟姐妹等）</Radio>
             <Radio value={false}>否</Radio>
@@ -270,28 +290,28 @@ export const IndexPage = () => {
         </Form.Item>
         <Form.Item dependencies={['bq5']} noStyle>
           {() => form.getFieldValue('bq5') &&
-            <>
+            <div className="whole-line">
               <Typography.Title level={2}>领证人信息</Typography.Title>
               <Form.Item name="receiver_name" label="姓名"
-                         rules={[{ required: true, message: '请输入领证人姓名' }]} required>
-                <Input/>
+                rules={[{ required: true, message: '请输入领证人姓名' }]} required>
+                <Input />
               </Form.Item>
               <Form.Item name="receiver_id_card_number" label="身份证号码"
-                         rules={[{ required: true, message: '请输入领证人身份证号码' }]} required>
-                <Input/>
+                rules={[{ required: true, message: '请输入领证人身份证号码' }]} required>
+                <Input />
               </Form.Item>
               <Form.Item name="receiver_tel" label="手机联系方式"
-                         rules={[{ required: true, message: '请输入领证人手机联系方式' }]} required>
-                <Input/>
+                rules={[{ required: true, message: '请输入领证人手机联系方式' }]} required>
+                <Input />
               </Form.Item>
-            </>}
+            </div>}
         </Form.Item>
-      </>,
+      </div>,
     },
     {
       key: '3',
       label: '',
-      children: <>
+      children: <div className="inputWrapper">
         <Typography.Title level={1}>材料清单</Typography.Title>
         <table>
           <tr>
@@ -301,25 +321,25 @@ export const IndexPage = () => {
             <th>操作</th>
           </tr>
           <tbody>
-          {fileInfos && fileInfos.map((fileInfo, index) => (<tr key={index}>
-            <th>{index+1}</th>
-            <th>{fileInfo.title}</th>
-            <th>{formValues[fileInfo.name] ? '已上传' : '未上传'}</th>
-            <th>
-              <Upload {...props} onChange={onChangeHoc(fileInfo.name)}>
-                <Button style={{ margin: '0 8px' }} type="primary">上传</Button>
-              </Upload>
-              <Button style={{ margin: '0 8px' }} onClick={() => alert('敬请期待')}>要求与示例</Button>
-              {formValues[fileInfo.name] && <Button style={{ margin: '0 8px' }} danger onClick={() => prev()}>删除</Button>}
-            </th>
-          </tr>))}
+            {fileInfos && fileInfos.map((fileInfo, index) => (<tr key={index}>
+              <th>{index + 1}</th>
+              <th>{fileInfo.title}</th>
+              <th>{formValues[fileInfo.name] ? '已上传' : '未上传'}</th>
+              <th>
+                <Upload {...props} onChange={onChangeHoc(fileInfo.name)}>
+                  <Button style={{ margin: '0 8px' }} type="primary">上传</Button>
+                </Upload>
+                <Button style={{ margin: '0 8px' }} onClick={() => alert('敬请期待')}>要求与示例</Button>
+                {formValues[fileInfo.name] && <Button style={{ margin: '0 8px' }} danger onClick={() => prev()}>删除</Button>}
+              </th>
+            </tr>))}
           </tbody>
         </table>
-      </>,
+      </div>,
     },
   ];
 
-  return (<>
+  return (<div className="wrapper">
     <Form
       form={form}
       onFinish={onFinish}
@@ -346,5 +366,5 @@ export const IndexPage = () => {
       </div>
     </Form>
 
-  </>);
+  </div>);
 };
