@@ -75,7 +75,7 @@ class Migration(migrations.Migration):
                         max_length=255,
                     ),
                 ),
-                ("validator", models.JSONField(default={}, verbose_name="验证规则")),
+                ("validator", models.JSONField(default=dict(), verbose_name="验证规则")),
             ],
         ),
         migrations.CreateModel(

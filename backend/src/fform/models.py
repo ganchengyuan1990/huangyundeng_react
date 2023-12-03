@@ -19,7 +19,7 @@ class FormColumn(BaseModel):
         boolean = 'boolean'
         file = 'file'
     value_type = models.CharField(max_length=255, choices=ValueType.model_items(), default=ValueType.string)
-    validator = models.JSONField('验证规则', default={})
+    validator = models.JSONField('验证规则', default=dict())
 
     class Meta:
         unique_together = ('form_interface', 'key')
