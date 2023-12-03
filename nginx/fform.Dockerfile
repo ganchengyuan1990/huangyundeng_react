@@ -4,11 +4,11 @@ VOLUME /root/.npm
 
 WORKDIR /code
 RUN npm i -g npm
-COPY ./fform/package.json ./fform/package-lock.json /code/
+COPY ./fform-web/package.json ./fform-web/package-lock.json /code/
 RUN npm ci
 
 ENV NODE_ENV="production"
-COPY ./fform/ /code/
+COPY ./fform-web/ /code/
 RUN QUIET=true npm run build
 
 
