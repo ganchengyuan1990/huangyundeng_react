@@ -38,7 +38,7 @@ class Form(BaseModel):
 class FormFile(BaseModel):
     form = models.ForeignKey(Form, on_delete=models.CASCADE)
     fname = models.CharField('文件原名', max_length=255, null=True)
-    key = models.CharField('文件名', max_length=255, unique=True)
+    key = models.CharField('文件名', max_length=255)
     in_use = models.BooleanField('是否在用', default=True)
 
     def __str__(self):

@@ -3,7 +3,7 @@ from typing import Dict
 import qiniu
 
 from src.config import config
-from src.fform.models import Form, FormColumn, FormValue
+from src.fform.models import Form, FormColumn, FormValue, FormFile
 
 
 class FformService(object):
@@ -27,7 +27,10 @@ class FformService(object):
             elif form_column.value_type == FormColumn.ValueType.boolean:
                 form_value.value_boolean = values[form_column.key]
             elif form_column.value_type == FormColumn.ValueType.file:
-                form_value.value_file = values[form_column.key]
+                form_file = FormFile.objects.get(id=values[form_column.key])
+                if form_file.form_id != form.id:
+                    raise Exception('File not exists ' + values[form_column.key])
+                form_value.value_file = form_file
             form_value.save()
 
         return values

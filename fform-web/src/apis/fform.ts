@@ -1,7 +1,8 @@
 import { apiRequest, ApiResponse, requestApiWithToken } from '../utils/request';
 
+export type FormFileOut = { id: string, fname: string, url: string }
 export type FormValueIn = string | boolean
-export type FormValueOut = string | boolean | { id: string, fname: string, url: string }
+export type FormValueOut = string | boolean | FormFileOut
 
 // 尝试创建表单
 export async function apiFformCreateForm(formInterfaceId: string, primaryColumnKey: string, value: string): Promise<{ formId: string, values: Record<string, FormValueOut> } & ApiResponse> {
