@@ -44,6 +44,7 @@ export const CompletePage = () => {
           title='确认操作'
           open={showModal}
           footer={null}
+          okText={"提交"}
           onCancel={() => setShowModal(false)}
           onOk={() => setShowModal(false)}
         >
