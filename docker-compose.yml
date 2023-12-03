@@ -49,6 +49,14 @@ services:
     depends_on:
       - django
 
+  fform:
+    image: registry.cn-shanghai.aliyuncs.com/fangxt/fform:$version
+    restart: on-failure
+    ports:
+      - "82:80"
+    depends_on:
+      - django
+
 volumes:
   qdrant-storage:
   postgres-storage:
