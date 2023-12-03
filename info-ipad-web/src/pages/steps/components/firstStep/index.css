@@ -1,0 +1,10 @@
+.question {
+  margin-bottom: 10px;
+  text-align: left;
+  /* margin-left: 16%; */
+}
+
+.form1 :where(.css-dev-only-do-not-override-qgg3xn).ant-form-item .ant-form-item-control-input-content {
+  flex: auto !important;
+  max-width: 100%;
+}

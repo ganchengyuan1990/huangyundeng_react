@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Button, Card, Icon, Ling, Skeleton, Tabs, Tag } from 'annar';
 import Frame from '../../utils/frame';
 import Block from '../../utils/block';
-import { getUserProfile, Image, login as wxLogin, redirectTo } from 'remax/wechat';
+import { getUserProfile, Image, login as wxLogin, redirectTo, showShareMenu, showShareImageMenu } from 'remax/wechat';
 import { useEffect, useRef, useState } from 'react';
 import { getBase, postLogin, postMyInfo } from '../../apis/account';
 import accountManager from '../account/accountManager';
@@ -59,6 +59,10 @@ export default () => {
         errorMessageSetter('服务器连接失败，请稍后再试： '+e.message)
       }
     })()
+    showShareMenu({
+      menus: ["shareAppMessage", "shareTimeline"]
+    })
+    showShareImageMenu();
   }, [])
   const getUserInfoFunc = async (question: string = '', tag: string = '') => {
     isInfoLoadingSetter(true)
