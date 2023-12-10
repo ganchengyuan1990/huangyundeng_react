@@ -24,8 +24,9 @@ import {
   apiFformUpsertForm, FormFileOut,
   FormValueIn, FormValueOut
 } from '../../apis/fform';
+import { Header } from '../../components/header';
 import { UploadChangeParam } from 'antd/es/upload/interface';
-import './index.css'
+import "./index.css"
 
 
 export const IndexPage = () => {
@@ -46,10 +47,22 @@ export const IndexPage = () => {
     await navigate(`/qa/qa?question=${question}&tag=${tag}`)
   }
 
-  const [current, setCurrent] = useState(0);
+  const [current, setCurrent] = useState(2);
 
   const next = () => {
-    setCurrent(current + 1);
+    const values = form.getFieldsValue();
+    let validateResult = true;
+    // 确保表单数据都填写了，才能切到写一步
+    // Object.keys(values).map(item => {
+    //   if (!values[item]) {
+    //     validateResult = false
+    //   }
+    // });
+    if (validateResult) {
+      setCurrent(current + 1);
+    } else {
+      message.error(`请填写内容以后再点击`)
+    }
   };
 
   const prev = () => {
@@ -158,7 +171,7 @@ export const IndexPage = () => {
         </Form.Item>
         <Form.Item name="seller_id_card_number" label="卖方身份证号"
           rules={[{ required: true, message: '请输入卖方姓名' }]} required>
-          <Input />
+          <Input maxLength={18}/>
         </Form.Item>
         <Form.Item name="contract_number" label="网签合同号"
           rules={[{ required: true, message: '请输入网签合同号' }]} required>
@@ -215,16 +228,40 @@ export const IndexPage = () => {
         </Form.Item>
         <Form.Item dependencies={['sq5-1']} noStyle>
           {() => ['已婚', '离异'].includes(form.getFieldValue('sq5-1')) &&
-            <>
-            <div className="question">是否存在未成年子女？</div>
-            <Form.Item name="sq5-2"
-              rules={[{ required: true, message: '请选择' }]}>
-              <Radio.Group>
-                <Radio value={true} defaultChecked>有</Radio>
-                <Radio value={false}>没有</Radio>
-              </Radio.Group>
-            </Form.Item>
-            </>}
+            // <>
+            //   <div className="question">是否存在未成年子女？</div>
+            //   <Form.Item name="sq5-2"
+            //     rules={[{ required: true, message: '请选择' }]}>
+            //     <Radio.Group>
+            //       <Radio value={true} defaultChecked>有</Radio>
+            //       <Radio value={false}>没有</Radio>
+            //     </Radio.Group>
+            //   </Form.Item>
+            // </>
+            <div className="whole-line">
+              <Typography.Title level={2}>家属信息</Typography.Title>
+              <div className="flex-box">
+                <Form.Item name="seller_partner_name" label="卖方配偶姓名"
+                  rules={[{ required: true, message: '请输入卖方配偶姓名' }]} required>
+                  <Input />
+                </Form.Item>
+                <Form.Item name="seller_partner_id_card_number" label="卖方配偶身份证号码"
+                  rules={[{ required: true, message: '请输入卖方配偶身份证号码' }]} required>
+                  <Input maxLength={18}/>
+                </Form.Item>
+              </div>
+              <div className="flex-box">
+                <Form.Item name="seller_child_name" label="卖方子女姓名"
+                  rules={[{ required: true, message: '请输入卖方子女姓名' }]} required>
+                  <Input />
+                </Form.Item>
+                <Form.Item name="seller_child_id_card_number" label="卖方子女身份证号码"
+                  rules={[{ required: true, message: '请输入卖方子女身份证号码' }]} required>
+                  <Input maxLength={18}/>
+                </Form.Item>
+              </div>
+            </div>
+          }
         </Form.Item>
         <div className="question">6. 本次出售的房屋是否为出售方家庭唯一住房？</div>
         <Form.Item name="sq6"
@@ -259,17 +296,41 @@ export const IndexPage = () => {
           </Radio.Group>
         </Form.Item>
         <Form.Item dependencies={['bq2-1']} noStyle>
-          {() => ['已婚', '离异'].includes(form.getFieldValue('sq5-1')) &&
-          <>
-            <div className="question">是否存在未成年子女？</div>
-            <Form.Item name="bq2-2" label="是否存在未成年子女？"
-              rules={[{ required: true, message: '请选择' }]}>
-              <Radio.Group>
-                <Radio value={true} defaultChecked>有</Radio>
-                <Radio value={false}>没有</Radio>
-              </Radio.Group>
-            </Form.Item>
-            </>}
+          {() => ['已婚', '离异'].includes(form.getFieldValue('bq2-1')) &&
+            // <>
+            //   <div className="question">是否存在未成年子女？</div>
+            //   <Form.Item name="bq2-2" label="是否存在未成年子女？"
+            //     rules={[{ required: true, message: '请选择' }]}>
+            //     <Radio.Group>
+            //       <Radio value={true} defaultChecked>有</Radio>
+            //       <Radio value={false}>没有</Radio>
+            //     </Radio.Group>
+            //   </Form.Item>
+            // </>
+            <div className="whole-line">
+              <Typography.Title level={2}>家属信息</Typography.Title>
+              <div className="flex-box">
+                <Form.Item name="receiver_partner_name" label="买方配偶姓名"
+                  rules={[{ required: true, message: '请输入买方配偶姓名' }]} required>
+                  <Input />
+                </Form.Item>
+                <Form.Item name="receiver_partner_id_card_number" label="买方配偶身份证号码"
+                  rules={[{ required: true, message: '请输入买方配偶身份证号码' }]} required>
+                  <Input maxLength={18}/>
+                </Form.Item>
+              </div>
+              <div className="flex-box">
+                <Form.Item name="receiver_child_name" label="买方子女姓名"
+                  rules={[{ required: true, message: '请输入买方子女姓名' }]} required>
+                  <Input />
+                </Form.Item>
+                <Form.Item name="receiver_child_id_card_number" label="买方子女身份证号码"
+                  rules={[{ required: true, message: '请输入买方子女身份证号码' }]} required>
+                  <Input maxLength={18}/>
+                </Form.Item>
+              </div>
+            </div>
+          }
         </Form.Item>
         <div className="question">3. 本次出售的房屋是否为购买方家庭唯一住房？</div>
         <Form.Item name="bq3"
@@ -287,26 +348,34 @@ export const IndexPage = () => {
             <Radio value={false}>否</Radio>
           </Radio.Group>
         </Form.Item>
-        <Form.Item name="bq5" valuePropName="checked">
-          <Checkbox>是否同时办理银行抵押权登记</Checkbox>
+        <div className="question">5.	是否同时办理银行抵押权登记？</div>
+        {/* <Form.Item name="bq5" valuePropName="checked"> */}
+        <Form.Item name="bq5">
+          <Radio.Group>
+            <Radio value={true}>是（近亲交易范围包括配偶、父母、子女、祖父母、外祖父母、孙子女、外孙子女、兄弟姐妹等）</Radio>
+            <Radio value={false}>否</Radio>
+          </Radio.Group>
         </Form.Item>
         <Form.Item dependencies={['bq5']} noStyle>
-          {() => form.getFieldValue('bq5') &&
-            <div className="whole-line">
-              <Typography.Title level={2}>领证人信息</Typography.Title>
-              <Form.Item name="receiver_name" label="姓名"
-                rules={[{ required: true, message: '请输入领证人姓名' }]} required>
-                <Input />
-              </Form.Item>
-              <Form.Item name="receiver_id_card_number" label="身份证号码"
-                rules={[{ required: true, message: '请输入领证人身份证号码' }]} required>
-                <Input />
-              </Form.Item>
-              <Form.Item name="receiver_tel" label="手机联系方式"
-                rules={[{ required: true, message: '请输入领证人手机联系方式' }]} required>
-                <Input />
-              </Form.Item>
-            </div>}
+          {() => {
+            return(
+              <div className="whole-line">
+                <Typography.Title level={2}>领证人信息</Typography.Title>
+                <Form.Item name="receiver_name" label="姓名"
+                  rules={[{ required: true, message: '请输入领证人姓名' }]} required>
+                  <Input />
+                </Form.Item>
+                <Form.Item name="receiver_id_card_number" label="身份证号码"
+                  rules={[{ required: true, message: '请输入领证人身份证号码' }]} required>
+                  <Input />
+                </Form.Item>
+                <Form.Item name="receiver_tel" label="手机联系方式"
+                  rules={[{ required: true, message: '请输入领证人手机联系方式' }]} required>
+                  <Input />
+                </Form.Item>
+              </div>
+            );
+          }}
         </Form.Item>
       </div>,
     },
@@ -316,11 +385,11 @@ export const IndexPage = () => {
       children: <div className="inputWrapper">
         <Typography.Title level={1}>材料清单</Typography.Title>
         <table>
-          <tr>
-            <th>序号</th>
+          <tr style={{ fontSize: 20, marginBottom: 38 }}>
+            <th style={{ width: 100 }}>序号</th>
             <th>材料</th>
             <th>状态</th>
-            <th>操作</th>
+            <th style={{ width: 200 }}>操作</th>
           </tr>
           <tbody>
             {fileInfos && fileInfos.map((fileInfo, index) => (
@@ -328,15 +397,15 @@ export const IndexPage = () => {
                 <tr key={index}>
                   <th>{index + 1}</th>
                   <th>{fileInfo.title}</th>
-                  <th>{formValues[fileInfo.name] ? '已上传' : '未上传'}</th>
-                  <th>
-                    <Upload {...props} onChange={onChangeHoc(fileInfo.name)} listType="picture" maxCount={1} onRemove={() => {
-                      form.setFieldValue(fileInfo.name, undefined)
-                      onSyncForm()
-                    }}>
-                      <Button style={{ margin: '0 8px' }} type="primary">上传</Button>
-                    </Upload>
-                    <Button style={{ margin: '0 8px' }} onClick={() => alert('敬请期待')}>要求与示例</Button>
+                  <th style={{ width: 100 }}>{formValues[fileInfo.name] ? '已上传' : '未上传'}</th>
+                  <th style={{ width: 200 }}>
+                    <div className="volumnFour">
+                      <Upload {...props} onChange={onChangeHoc(fileInfo.name)}>
+                        <Button style={{ margin: '0 8px' }} type="primary">上传</Button>
+                      </Upload>
+                      <Button style={{ margin: '0 8px' }} onClick={() => alert('敬请期待')}>要求与示例</Button>
+                      {formValues[fileInfo.name] && <Button style={{ margin: '0 8px' }} danger onClick={() => prev()}>删除</Button>}
+                    </div>
                   </th>
                 </tr>
               </Form.Item>))}
@@ -346,32 +415,37 @@ export const IndexPage = () => {
     },
   ];
 
-  return (<div className="wrapper">
-    <Form
-      form={form}
-      onFinish={onFinish}
-    >
-      <Steps current={current} items={stepItems} />
-      <Tabs activeKey={`${current}`} items={tabItems} renderTabBar={() => <></>} />
-      <div style={{ marginTop: 24 }}>
-        {current > 0 && (
-          <Button style={{ margin: '0 8px' }} onClick={() => prev()}>
-            上一步
-          </Button>
-        )}
-        {current < steps.length - 1 && (
-          <Button type="primary" onClick={() => {
-            next();
-            onSyncForm()
-          }}>
-            确认 & 下一步
-          </Button>
-        )}
-        {current === steps.length - 1 && (
-          <Button htmlType="submit" size="middle" loading={isSubmit} type="primary">提交</Button>
-        )}
-      </div>
-    </Form>
+  return (
+    <>
+      <Header />
+      <div className="background"></div>
+      <div className="wrapper">
+        <Form
+          form={form}
+          onFinish={onFinish}
+        >
+          <Steps current={current} items={stepItems} />
+          <Tabs activeKey={`${current}`} items={tabItems} renderTabBar={() => <></>} />
+          <div style={{ marginTop: 24 }}>
+            {current > 0 && (
+              <Button style={{ margin: '0 8px' }} onClick={() => prev()}>
+                上一步
+              </Button>
+            )}
+            {current < steps.length - 1 && (
+              <Button type="primary" onClick={() => {
+                next();
+                onSyncForm()
+              }}>
+                确认 & 下一步
+              </Button>
+            )}
+            {current === steps.length - 1 && (
+              <Button htmlType="submit" size="middle" loading={isSubmit} type="primary">提交</Button>
+            )}
+          </div>
+        </Form>
 
-  </div>);
+      </div>
+    </>);
 };

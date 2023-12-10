@@ -51,14 +51,6 @@
   font-size: 16px;
 }
 
-.volumnFour {
-  display: flex;
-}
-
-.flex-box {
-  display: flex;
-}
-
-:where(.css-dev-only-do-not-override-qgg3xn).ant-row {
-  margin-right: 30px;
+.button_primary {
+  border: 1px solid #999;
 }
