@@ -98,6 +98,7 @@ export const FormPage = () => {
     await apiFformSubmitAudit(fformId)
     form.resetFields()
     setIsSubmit(false)
+    navigate('/complete')
   }
 
   useEffect(() => {
