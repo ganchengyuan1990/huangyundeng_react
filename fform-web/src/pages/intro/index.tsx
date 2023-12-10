@@ -52,11 +52,11 @@ export const IntroPage = () => {
                 return
               }
               setShowModal(false)
-              window.location.href = './'
+              navigate('/form')
             }}
           >
             <>
-              <div style={{ marginBottom: 30, marginTop: 20 }}> 
+              <div style={{ marginBottom: 30, marginTop: 20 }}>
                 <div>1、自助办理流程：提交申请——后台审核，审核通过后全部申请人携带纸质申请材料原件到大厅窗口现场核验、当场缴纳税费、领证。</div>
                 <div>2、申请人应是权利人或权利人依法授权的代理人，并具备完全民事能力，应符合法律法规和政策规定的主体条件。</div>
                 <div>3、申请人应认真如实填写有关信息，所申请事项及上传的影像材料应真实、合法、有效。如提供虚假材料、虚假信息的，将列入诚信黑名单，并应承担相应法律责任。</div>

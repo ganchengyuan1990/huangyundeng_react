@@ -9,7 +9,7 @@ class FormInterface(BaseModel):
 
 
 class FormColumn(BaseModel):
-    form_interface = models.ForeignKey(FormInterface, on_delete=models.CASCADE)
+    form_interface = models.ForeignKey(FormInterface, related_name='columns', on_delete=models.CASCADE)
     key = models.CharField('key', max_length=255)
     name = models.CharField('name', max_length=255)
     tip = models.CharField('tip', max_length=255, null=True)
@@ -33,6 +33,9 @@ class Form(BaseModel):
         auditing = 'auditing'
         confirmed = 'confirmed'
     status = models.CharField(max_length=255, choices=Status.model_items(), default=Status.editing)
+
+    submit_time = models.DateTimeField(null=True)
+    audit_time = models.DateTimeField(null=True)
 
 
 class FormFile(BaseModel):

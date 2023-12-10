@@ -1,13 +1,15 @@
-from typing import Dict
+from typing import Dict, List
 
 import qiniu
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from ninja import Router, Schema
 
 from src.base.request_defined import Request
 from src.config import config
 from src.fform.fform_service import FformService
 from src.fform.models import Form, FormFile, FormValue, FormInterface
+from src.fform.serializers import FormSerializer
 from src.utils.api import ApiResponse
 
 router = Router()
@@ -46,14 +48,48 @@ def 创建表单(request: Request, data: CreateFormIn):
     return ApiResponse.success(form_id=form.id, values=values)
 
 class GetFormOut(Schema):
-    form_id: int
-    values: Dict
+    fform: FormSerializer
 
-@router.post('/get-form', auth=None, response=GetFormOut)
-def 更新表单(request: Request, form_id: str):
+@router.get('/get-form', auth=None, response=GetFormOut)
+def 获取单个表单(request: Request, form_id: str):
     form = get_object_or_404(Form, id=form_id)
     values = FformService.form_to_values(form)
-    return ApiResponse.success(form_id=form.id, values=values)
+    return ApiResponse.success(fform=form)
+
+
+class GetFormsIn(Schema):
+    form_interface_id: int
+    status: Form.Status.for_ninjia_in() = None
+    audit_time_start: str = None
+    audit_time_end: str = None
+    submit_time_start: str = None
+    submit_time_end: str = None
+    filter_values: Dict = None
+
+class GetFormsOut(Schema):
+    fforms: List[FormSerializer]
+
+@router.post('/get-forms', auth=None, response=GetFormsOut)
+def 获取多个表单(request: Request, data: GetFormsIn):
+    fforms_query = Form.objects.order_by('-id')
+    if data.form_interface_id:
+        fforms_query = fforms_query.filter(form_interface_id=data.form_interface_id)
+    if data.status:
+        fforms_query = fforms_query.filter(status=data.status)
+    if data.audit_time_start:
+        fforms_query = fforms_query.filter(audit_time__gte=data.audit_time_start)
+    if data.audit_time_end:
+        fforms_query = fforms_query.filter(audit_time__lte=data.audit_time_end)
+    if data.submit_time_start:
+        fforms_query = fforms_query.filter(submit_time__gte=data.submit_time_start)
+    if data.submit_time_end:
+        fforms_query = fforms_query.filter(submit_time__lte=data.submit_time_end)
+    if data.filter_values:
+        print(data.filter_values)
+        for filter_key in data.filter_values:
+            fforms_query = fforms_query.filter(values__column__key=filter_key, values__value_string=data.filter_values[filter_key])
+    fforms = list(fforms_query.all())
+    return ApiResponse.success(fforms=fforms)
 
 
 class UpsertFormIn(Schema):
@@ -80,6 +116,7 @@ class FormSubmitAuditIn(Schema):
 def 表单提交审核(request: Request, data: FormSubmitAuditIn):
     form = get_object_or_404(Form, id=data.form_id)
     form.status = Form.Status.auditing
+    form.submit_time = timezone.now()
     form.save()
     return ApiResponse.success()
 
@@ -88,10 +125,11 @@ class FormChangeStatusIn(Schema):
     form_id: int
     target_status: Form.Status.for_ninjia_in()
 
-@router.post('/form-submit-audit', auth=None)
+@router.post('/form-change-audit', auth=None)
 def 表单修改状态(request: Request, data: FormChangeStatusIn):
     form = get_object_or_404(Form, id=data.form_id)
     form.status = data.target_status
+    form.audit_time = timezone.now()
     form.save()
     return ApiResponse.success()
 

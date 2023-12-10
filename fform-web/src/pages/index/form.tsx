@@ -21,15 +21,15 @@ import {
   apiFformCreateForm,
   apiFformSubmitAudit,
   apiFformUploadToken,
-  apiFformUpsertForm, FormFileOut,
-  FormValueIn, FormValueOut
+  apiFformUpsertForm
 } from '../../apis/fform';
 import { Header } from '../../components/header';
 import { UploadChangeParam } from 'antd/es/upload/interface';
 import "./index.css"
+import { FormValueIn, FormValueOut } from '../../types/fform';
 
 
-export const IndexPage = () => {
+export const FormPage = () => {
   const [form] = Form.useForm()
   const [isSubmit, setIsSubmit] = React.useState(false)
   const [formValues, setFormValues] = React.useState<Record<string, FormValueIn>>({})
@@ -47,7 +47,7 @@ export const IndexPage = () => {
     await navigate(`/qa/qa?question=${question}&tag=${tag}`)
   }
 
-  const [current, setCurrent] = useState(2);
+  const [current, setCurrent] = useState(0);
 
   const next = () => {
     const values = form.getFieldsValue();
@@ -385,30 +385,31 @@ export const IndexPage = () => {
       children: <div className="inputWrapper">
         <Typography.Title level={1}>材料清单</Typography.Title>
         <table>
+          <tbody>
           <tr style={{ fontSize: 20, marginBottom: 38 }}>
             <th style={{ width: 100 }}>序号</th>
             <th>材料</th>
             <th>状态</th>
             <th style={{ width: 200 }}>操作</th>
           </tr>
-          <tbody>
-            {fileInfos && fileInfos.map((fileInfo, index) => (
-              <Form.Item name={fileInfo.name} noStyle>
-                <tr key={index}>
-                  <th>{index + 1}</th>
-                  <th>{fileInfo.title}</th>
-                  <th style={{ width: 100 }}>{formValues[fileInfo.name] ? '已上传' : '未上传'}</th>
-                  <th style={{ width: 200 }}>
-                    <div className="volumnFour">
-                      <Upload {...props} onChange={onChangeHoc(fileInfo.name)}>
-                        <Button style={{ margin: '0 8px' }} type="primary">上传</Button>
-                      </Upload>
-                      <Button style={{ margin: '0 8px' }} onClick={() => alert('敬请期待')}>要求与示例</Button>
-                      {formValues[fileInfo.name] && <Button style={{ margin: '0 8px' }} danger onClick={() => prev()}>删除</Button>}
-                    </div>
-                  </th>
-                </tr>
-              </Form.Item>))}
+          {fileInfos && fileInfos.map((fileInfo, index) => (
+            <Form.Item name={fileInfo.name} noStyle>
+              <tr key={index}>
+                <th>{index + 1}</th>
+                <td>{fileInfo.title}</td>
+                <td style={{ width: 100 }}>{formValues[fileInfo.name] ? '已上传' : '未上传'}</td>
+                <td style={{ width: 200 }}>
+                  <div className="volumnFour">
+                    <Upload {...props} onChange={onChangeHoc(fileInfo.name)}>
+                      <Button style={{ margin: '0 8px' }} type="primary">上传</Button>
+                    </Upload>
+                    <Button style={{ margin: '0 8px' }} onClick={() => alert('敬请期待')}>要求与示例</Button>
+                    {formValues[fileInfo.name] &&
+                      <Button style={{ margin: '0 8px' }} danger onClick={() => prev()}>删除</Button>}
+                  </div>
+                </td>
+              </tr>
+            </Form.Item>))}
           </tbody>
         </table>
       </div>,

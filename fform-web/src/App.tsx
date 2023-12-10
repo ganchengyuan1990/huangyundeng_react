@@ -1,9 +1,11 @@
 import React, { createContext, useEffect, useState } from 'react';
 import './App.css';
 import { Route, Routes } from 'react-router-dom';
-import { IndexPage } from './pages/index';
+import { FormPage } from './pages/index/form';
 import { IntroPage } from './pages/intro';
 import { CompletePage } from './pages/complete';
+import { FformAdminPage } from './pages/admin';
+import { AdminLayout } from './pages/admin/layout';
 
 // import { QaPage } from './pages/qa/qa';
 
@@ -14,12 +16,14 @@ function App() {
     <div className="App">
       <AppContext.Provider value={{}}>
         <Routes>
-          <Route path="/" element={<IndexPage />} />
-          {/*<Route path="/qa/qa" element={<QaPage />} />*/}
-
-          <Route path="/admin" element={<IndexPage />} />
-          <Route path="/intro" element={<IntroPage />} />
+          <Route path="/" element={<IntroPage />} />
+          <Route path="/form" element={<FormPage />} />
           <Route path="/complete" element={<CompletePage />} />
+
+
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route path="fform" element={<FformAdminPage />} />
+          </Route>
         </Routes>
       </AppContext.Provider>
     </div>

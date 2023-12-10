@@ -4,10 +4,12 @@ import {
   Button,
 } from 'antd';
 import "./index.css"
+import { useNavigate } from 'react-router-dom';
 
 
 
 export const Header = () => {
+  const navigate = useNavigate()
 
   useEffect(() => {
   }, [])
@@ -23,7 +25,7 @@ export const Header = () => {
         二手房转移登记智能申报系统
       </div>
       <Button className="header-wrapper-button" onClick={() => {
-        window.location.href = './intro'
+        navigate('/')
       }}>返回首页</Button>
     </div>
   );
