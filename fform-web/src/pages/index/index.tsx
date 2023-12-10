@@ -6,30 +6,27 @@ import { AccountModel } from '../../types/account';
 import {
   Button,
   Checkbox,
-  Col,
   Form,
   Input,
   message,
   Radio,
-  Row,
   Steps,
   Tabs,
   TabsProps,
   Typography,
-  Upload, UploadProps
+  Upload,
+  UploadProps
 } from 'antd';
 import {
   apiFformCreateForm,
   apiFformSubmitAudit,
   apiFformUploadToken,
-  apiFformUpsertForm,
-  FormValueIn,
-  FormValueOut
+  apiFformUpsertForm, FormFileOut,
+  FormValueIn, FormValueOut
 } from '../../apis/fform';
 import { Header } from '../../components/header';
-import { UploadChangeParam, UploadFile } from 'antd/es/upload/interface';
+import { UploadChangeParam } from 'antd/es/upload/interface';
 import "./index.css"
-
 
 
 export const IndexPage = () => {
@@ -56,11 +53,11 @@ export const IndexPage = () => {
     const values = form.getFieldsValue();
     let validateResult = true;
     // 确保表单数据都填写了，才能切到写一步
-    Object.keys(values).map(item => {
-      if (!values[item]) {
-        validateResult = false
-      }
-    })
+    // Object.keys(values).map(item => {
+    //   if (!values[item]) {
+    //     validateResult = false
+    //   }
+    // });
     if (validateResult) {
       setCurrent(current + 1);
     } else {
@@ -73,12 +70,17 @@ export const IndexPage = () => {
   };
 
   const onUpsertForm = async (needCreate: boolean) => {
-    let formId = fformId, values
+    let formId = fformId, values: Record<string, FormValueOut>
     if (needCreate) {
       // 姓名填完后，请求并创建fform
       ({ formId, values } = await apiFformCreateForm('1', 'seller_id_card_number', form.getFieldValue('seller_id_card_number')))
-      form.setFieldsValue(values)
-      // setFormValues(values)
+      const newValues: Record<string, FormValueIn> = {}
+      for (let key in values) {
+        // @ts-ignore
+        newValues[key] = typeof values[key] === 'object' ? values[key].id : values[key]
+      }
+      setFormValues(newValues)
+      form.setFieldsValue(newValues)
       setFformId(formId)
     }
     // 后面的步骤，更新fform
@@ -122,7 +124,8 @@ export const IndexPage = () => {
       }
       if (info.file.status === 'done') {
         message.success(`${info.file.name} 上传成功`)
-        console.log(formName)
+        form.setFieldValue(formName, info.file.response.form_file_id)
+        onSyncForm()
       } else if (info.file.status === 'error') {
         message.error(`${info.file.name} 上传失败`)
       }
@@ -263,7 +266,6 @@ export const IndexPage = () => {
         <div className="question">6. 本次出售的房屋是否为出售方家庭唯一住房？</div>
         <Form.Item name="sq6"
           rules={[{ required: true, message: '请选择' }]} required>
-
           <Radio.Group>
             <Radio value={true}>是</Radio>
             <Radio value={false}>否</Radio>
@@ -390,20 +392,23 @@ export const IndexPage = () => {
             <th style={{ width: 200 }}>操作</th>
           </tr>
           <tbody>
-            {fileInfos && fileInfos.map((fileInfo, index) => (<tr key={index}>
-              <th>{index + 1}</th>
-              <th>{fileInfo.title}</th>
-              <th style={{ width: 100 }}>{formValues[fileInfo.name] ? '已上传' : '未上传'}</th>
-              <th style={{ width: 200 }}>
-                <div className="volumnFour">
-                  <Upload {...props} onChange={onChangeHoc(fileInfo.name)}>
-                    <Button style={{ margin: '0 8px' }} type="primary">上传</Button>
-                  </Upload>
-                  <Button style={{ margin: '0 8px' }} onClick={() => alert('敬请期待')}>要求与示例</Button>
-                  {formValues[fileInfo.name] && <Button style={{ margin: '0 8px' }} danger onClick={() => prev()}>删除</Button>}
-                </div>
-              </th>
-            </tr>))}
+            {fileInfos && fileInfos.map((fileInfo, index) => (
+              <Form.Item name={fileInfo.name} noStyle>
+                <tr key={index}>
+                  <th>{index + 1}</th>
+                  <th>{fileInfo.title}</th>
+                  <th style={{ width: 100 }}>{formValues[fileInfo.name] ? '已上传' : '未上传'}</th>
+                  <th style={{ width: 200 }}>
+                    <div className="volumnFour">
+                      <Upload {...props} onChange={onChangeHoc(fileInfo.name)}>
+                        <Button style={{ margin: '0 8px' }} type="primary">上传</Button>
+                      </Upload>
+                      <Button style={{ margin: '0 8px' }} onClick={() => alert('敬请期待')}>要求与示例</Button>
+                      {formValues[fileInfo.name] && <Button style={{ margin: '0 8px' }} danger onClick={() => prev()}>删除</Button>}
+                    </div>
+                  </th>
+                </tr>
+              </Form.Item>))}
           </tbody>
         </table>
       </div>,

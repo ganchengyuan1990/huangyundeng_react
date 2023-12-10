@@ -19,7 +19,7 @@ class FormColumn(BaseModel):
         boolean = 'boolean'
         file = 'file'
     value_type = models.CharField(max_length=255, choices=ValueType.model_items(), default=ValueType.string)
-    validator = models.JSONField('验证规则', default={})
+    validator = models.JSONField('验证规则', default=dict())
 
     class Meta:
         unique_together = ('form_interface', 'key')
@@ -38,7 +38,7 @@ class Form(BaseModel):
 class FormFile(BaseModel):
     form = models.ForeignKey(Form, on_delete=models.CASCADE)
     fname = models.CharField('文件原名', max_length=255, null=True)
-    key = models.CharField('文件名', max_length=255, unique=True)
+    key = models.CharField('文件名', max_length=255)
     in_use = models.BooleanField('是否在用', default=True)
 
     def __str__(self):
