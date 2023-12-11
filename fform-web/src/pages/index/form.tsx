@@ -26,13 +26,14 @@ import {
 import { Header } from '../../components/header';
 import { UploadChangeParam } from 'antd/es/upload/interface';
 import "./index.css"
-import { FormValueIn, FormValueOut } from '../../types/fform';
+import { FormFileOut, FormValueIn, FormValueOut } from '../../types/fform';
 
 
 export const FormPage = () => {
   const [form] = Form.useForm()
   const [isSubmit, setIsSubmit] = React.useState(false)
   const [formValues, setFormValues] = React.useState<Record<string, FormValueIn>>({})
+  const [files, setFiles] = React.useState<Record<string, FormFileOut>>({})
   const [fformId, setFformId] = useState<string>('')
   const [token, setToken] = useState<string>('')
   const navigate = useNavigate()
@@ -48,10 +49,19 @@ export const FormPage = () => {
   }
 
   const [current, setCurrent] = useState(0);
+  const [maxStep, setMaxStep] = useState(0);
 
-  const next = () => {
+  const onNext = async () => {
     const values = form.getFieldsValue();
-    let validateResult = true;
+    let validateResult = true
+    if (current >= maxStep) {
+      try {
+        validateResult = await form.validateFields();
+      } catch (e) {
+        console.error(e)
+        validateResult = false
+      }
+    }
     // 确保表单数据都填写了，才能切到写一步
     // Object.keys(values).map(item => {
     //   if (!values[item]) {
@@ -60,9 +70,11 @@ export const FormPage = () => {
     // });
     if (validateResult) {
       setCurrent(current + 1);
+      setMaxStep(Math.max(maxStep, current + 1))
     } else {
       message.error(`请填写内容以后再点击`)
     }
+    await onSyncForm()
   };
 
   const prev = () => {
@@ -75,11 +87,21 @@ export const FormPage = () => {
       // 姓名填完后，请求并创建fform
       ({ formId, values } = await apiFformCreateForm('1', 'seller_id_card_number', form.getFieldValue('seller_id_card_number')))
       const newValues: Record<string, FormValueIn> = {}
+      const newFiles: Record<string, FormFileOut> = {}
       for (let key in values) {
-        // @ts-ignore
-        newValues[key] = typeof values[key] === 'object' ? values[key].id : values[key]
+        if (typeof values[key] === 'object' && values[key] != null) {
+          // @ts-ignore
+          newValues[key] =  values[key].id
+          // @ts-ignore
+          newFiles[key] = values[key]
+        } else {
+          // @ts-ignore
+          newValues[key] =  values[key]
+        }
       }
       setFormValues(newValues)
+      console.log(newValues)
+      setFiles(newFiles)
       form.setFieldsValue(newValues)
       setFformId(formId)
     }
@@ -88,11 +110,17 @@ export const FormPage = () => {
   }
 
   const onSyncForm = async () => {
-    setFormValues(form.getFieldsValue())
+    setFormValues(v => ({ ...v, ...form.getFieldsValue() }))
     await onUpsertForm(!fformId)
   }
 
   const onFinish = async (values: Record<string, FormValueIn>) => {
+    for (let fileInfo of fileInfos) {
+      if (!formValues[fileInfo.name]) {
+        message.error(`${fileInfo.title} 文件尚未上传！`)
+        return
+      }
+    }
     setIsSubmit(true)
     await onUpsertForm(!fformId)
     await apiFformSubmitAudit(fformId)
@@ -120,6 +148,7 @@ export const FormPage = () => {
   };
   const onChangeHoc = (formName: string) => {
     return (info: UploadChangeParam) => {
+      console.log(info)
       if (info.file.status !== 'uploading') {
         console.log(info.file, info.fileList)
       }
@@ -172,7 +201,8 @@ export const FormPage = () => {
         </Form.Item>
         <Form.Item name="seller_id_card_number" label="卖方身份证号"
           rules={[{ required: true, message: '请输入卖方姓名' }]} required>
-          <Input maxLength={18}/>
+          {/* fformId是否已经获取过了，如果是，那么主键就不再允许修改了 */}
+          <Input maxLength={18} disabled={!!fformId}/>
         </Form.Item>
         <Form.Item name="contract_number" label="网签合同号"
           rules={[{ required: true, message: '请输入网签合同号' }]} required>
@@ -219,7 +249,7 @@ export const FormPage = () => {
           </Radio.Group>
         </Form.Item>
         <div className="question">5. 出售方婚姻状况？</div>
-        <Form.Item name="sq5-1"
+        <Form.Item name="sq51"
           rules={[{ required: true, message: '请选择' }]} required>
           <Radio.Group>
             <Radio value={'未婚'}>未婚</Radio>
@@ -227,11 +257,11 @@ export const FormPage = () => {
             <Radio value={'离异'}>离异</Radio>
           </Radio.Group>
         </Form.Item>
-        <Form.Item dependencies={['sq5-1']} noStyle>
-          {() => ['已婚', '离异'].includes(form.getFieldValue('sq5-1')) &&
+        <Form.Item dependencies={['sq51']} noStyle>
+          {() => ['已婚', '离异'].includes(form.getFieldValue('sq51')) &&
             // <>
             //   <div className="question">是否存在未成年子女？</div>
-            //   <Form.Item name="sq5-2"
+            //   <Form.Item name="sq52"
             //     rules={[{ required: true, message: '请选择' }]}>
             //     <Radio.Group>
             //       <Radio value={true} defaultChecked>有</Radio>
@@ -288,7 +318,7 @@ export const FormPage = () => {
           </Radio.Group>
         </Form.Item>
         <div className="question">2.	买方婚姻状况？</div>
-        <Form.Item name="bq2-1"
+        <Form.Item name="bq21"
           rules={[{ required: true, message: '请选择' }]} required>
           <Radio.Group>
             <Radio value={'未婚'}>未婚</Radio>
@@ -296,11 +326,11 @@ export const FormPage = () => {
             <Radio value={'离异'}>离异</Radio>
           </Radio.Group>
         </Form.Item>
-        <Form.Item dependencies={['bq2-1']} noStyle>
-          {() => ['已婚', '离异'].includes(form.getFieldValue('bq2-1')) &&
+        <Form.Item dependencies={['bq21']} noStyle>
+          {() => ['已婚', '离异'].includes(form.getFieldValue('bq21')) &&
             // <>
             //   <div className="question">是否存在未成年子女？</div>
-            //   <Form.Item name="bq2-2" label="是否存在未成年子女？"
+            //   <Form.Item name="bq22" label="是否存在未成年子女？"
             //     rules={[{ required: true, message: '请选择' }]}>
             //     <Radio.Group>
             //       <Radio value={true} defaultChecked>有</Radio>
@@ -362,15 +392,15 @@ export const FormPage = () => {
             return(
               <div className="whole-line">
                 <Typography.Title level={2}>领证人信息</Typography.Title>
-                <Form.Item name="receiver_name" label="姓名"
+                <Form.Item name="receiverName" label="姓名"
                   rules={[{ required: true, message: '请输入领证人姓名' }]} required>
                   <Input />
                 </Form.Item>
-                <Form.Item name="receiver_id_card_number" label="身份证号码"
+                <Form.Item name="receiverIdCardNumber" label="身份证号码"
                   rules={[{ required: true, message: '请输入领证人身份证号码' }]} required>
                   <Input />
                 </Form.Item>
-                <Form.Item name="receiver_tel" label="手机联系方式"
+                <Form.Item name="receiverTel" label="手机联系方式"
                   rules={[{ required: true, message: '请输入领证人手机联系方式' }]} required>
                   <Input />
                 </Form.Item>
@@ -394,23 +424,28 @@ export const FormPage = () => {
             <th style={{ width: 200 }}>操作</th>
           </tr>
           {fileInfos && fileInfos.map((fileInfo, index) => (
-            <Form.Item name={fileInfo.name} noStyle>
-              <tr key={index}>
+            <Form.Item shouldUpdate noStyle>
+              {() => <tr key={index}>
                 <th>{index + 1}</th>
                 <td>{fileInfo.title}</td>
                 <td style={{ width: 100 }}>{formValues[fileInfo.name] ? '已上传' : '未上传'}</td>
                 <td style={{ width: 200 }}>
                   <div className="volumnFour">
+                    <Form.Item name={fileInfo.name} noStyle><></></Form.Item>
+                    <Button style={{ margin: '0 8px' }} onClick={() => alert('敬请期待')}>要求与示例</Button>
                     <Upload {...props} onChange={onChangeHoc(fileInfo.name)}>
                       <Button style={{ margin: '0 8px' }} type="primary">上传</Button>
                     </Upload>
-                    <Button style={{ margin: '0 8px' }} onClick={() => alert('敬请期待')}>要求与示例</Button>
                     {formValues[fileInfo.name] &&
-                      <Button style={{ margin: '0 8px' }} danger onClick={() => prev()}>删除</Button>}
+                      <Button style={{ margin: '0 8px' }} danger onClick={() => {
+                        form.setFieldValue(fileInfo.name, null)
+                        onSyncForm()
+                      }}>删除</Button>}
                   </div>
                 </td>
-              </tr>
-            </Form.Item>))}
+              </tr>}
+            </Form.Item>
+            ))}
           </tbody>
         </table>
       </div>,
@@ -435,10 +470,7 @@ export const FormPage = () => {
               </Button>
             )}
             {current < steps.length - 1 && (
-              <Button type="primary" onClick={() => {
-                next();
-                onSyncForm()
-              }}>
+              <Button type="primary" onClick={onNext}>
                 确认 & 下一步
               </Button>
             )}

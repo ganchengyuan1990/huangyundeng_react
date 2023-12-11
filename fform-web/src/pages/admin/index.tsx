@@ -36,6 +36,7 @@ export const FformAdminPage = () => {
   useEffect(() => {
     (async() => {
       if (fformId) {
+        setOpenForm(null)
         const { fform } = await apiFformGetForm(fformId)
         for (const column of fform.formInterface.columns) {
           column.key = camelCase(column.key)
@@ -59,6 +60,7 @@ export const FformAdminPage = () => {
   const handleAuditReject = async() => {
     if (fformId) {
       await apiFformChangeAudit(fformId, 'editing')
+      setFformId(null)
       setFforms(fforms => {
         for (let fform of fforms) {
           if (fformId == fform.id) {
@@ -73,6 +75,7 @@ export const FformAdminPage = () => {
   const handleAuditAccept = async() => {
     if (fformId) {
       await apiFformChangeAudit(fformId, 'confirmed')
+      setFformId(null)
       setFforms(fforms => {
         for (let fform of fforms) {
           if (fformId == fform.id) {
