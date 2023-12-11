@@ -41,12 +41,12 @@ export async function apiFformUpsertForm(formId: string, values: Record<string, 
     } });
 }
 
-// 提交审核
+// 提交审批
 export async function apiFformSubmitAudit(formId: string | number): Promise<ApiResponse> {
   return await requestApiWithToken({ path: 'api/fform/form-submit-audit', method: 'POST', data: { formId } });
 }
 
-// 审核表单
+// 审批表单
 export async function apiFformChangeAudit(formId: string | number, targetStatus: 'editing' | 'auditing' | 'confirmed'): Promise<ApiResponse> {
   return await requestApiWithToken({ path: 'api/fform/form-change-audit', method: 'POST', data: { formId, targetStatus } });
 }

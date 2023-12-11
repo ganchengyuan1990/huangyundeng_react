@@ -90,9 +90,9 @@ export const FformAdminPage = () => {
 
   const columns: ColumnsType<FformModel> = [
     {
-      title: 'id',
+      title: '序号',
       dataIndex: 'id',
-      key: 'name',
+      key: 'id',
     },
     {
       title: '申请人',
@@ -105,22 +105,22 @@ export const FformAdminPage = () => {
       key: 'submitTime',
     },
     {
-      title: '审核状态',
+      title: '审批状态',
       key: 'status',
-      render: (_, record) => (record.status ? {'editing': '修改中', 'auditing': '等待审核',  'confirmed': '审核通过'}[record.status] : '未知'),
+      render: (_, record) => (record.status ? {'editing': '审批不通过/修改中', 'auditing': '等待审批',  'confirmed': '审批通过'}[record.status] : '未知'),
     },
     {
-      title: '审核人',
+      title: '审批人',
       key: 'auditAccount',
       render: (_, record) => '管理员',
     },
     {
-      title: '审核时间',
+      title: '审批时间',
       dataIndex: 'auditTime',
       key: 'auditTime',
     },
     {
-      title: 'Action',
+      title: '操作',
       key: 'action',
       render: (_, record) => (
         <Space size="middle">
@@ -135,48 +135,54 @@ export const FformAdminPage = () => {
     <>
       {contextHolder}
 
-      <Form form={searchForm} name="horizontal_login" layout="inline" onFinish={onFinish}>
-        <Form.Item
-          name="seller_id_card_name"
-          label="申请人"
-        >
-          <Input/>
-        </Form.Item>
-        <Form.Item
-          name="submit_time_range"
-          label="申请时间"
-        >
-          <DatePicker.RangePicker
-            showTime={{ format: 'HH:mm' }}
-            format="YYYY-MM-DD HH:mm"
-          />
-        </Form.Item>
-        <Form.Item
-          name="status"
-          label="审批状态"
-        >
-          <Select
-            style={{ width: 150 }}
-            allowClear
-            options={[
-              { value: 'editing', label: '修改中' },
-              { value: 'auditing', label: '审批中' },
-              { value: 'confirmed', label: '已审批通过' },
-            ]}
-          />
-        </Form.Item>
-        <Form.Item
-          name="audit_time_range"
-          label="审批时间"
-        >
-          <DatePicker.RangePicker
-            showTime={{ format: 'HH:mm' }}
-            format="YYYY-MM-DD HH:mm"
-          />
-        </Form.Item>
-        <Form.Item>
-          <Button type="primary" htmlType="submit">查询</Button>
-        </Form.Item>
+      <Form form={searchForm} onFinish={onFinish} style={{ textAlign: 'left' }}>
+        <Space>
+          <Form.Item
+            name="seller_id_card_name"
+            label="申请人"
+          >
+            <Input/>
+          </Form.Item>
+          <Form.Item
+            name="submit_time_range"
+            label="申请时间"
+          >
+            <DatePicker.RangePicker
+              placeholder={['开始时间', '结束时间']}
+              showTime={{ format: 'HH:mm' }}
+              format="YYYY-MM-DD HH:mm"
+            />
+          </Form.Item>
+        </Space>
+        <Space>
+          <Form.Item
+            name="status"
+            label="审批状态"
+          >
+            <Select
+              style={{ width: 167 }}
+              allowClear
+              options={[
+                { value: 'editing', label: '审批不通过/修改中' },
+                { value: 'auditing', label: '审批中' },
+                { value: 'confirmed', label: '已审批通过' },
+              ]}
+            />
+          </Form.Item>
+          <Form.Item
+            name="audit_time_range"
+            label="审批时间"
+          >
+            <DatePicker.RangePicker
+              placeholder={['开始时间', '结束时间']}
+              showTime={{ format: 'HH:mm' }}
+              format="YYYY-MM-DD HH:mm"
+            />
+          </Form.Item>
+          <Form.Item>
+            <Button type="primary" htmlType="submit">查询</Button>
+          </Form.Item>
+        </Space>
       </Form>
 
 

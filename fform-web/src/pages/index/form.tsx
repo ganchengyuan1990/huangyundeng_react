@@ -99,7 +99,6 @@ export const FormPage = () => {
         }
       }
       setFormValues(newValues)
-      console.log(newValues)
       setFiles(newFiles)
       form.setFieldsValue(newValues)
       setFformId(formId)

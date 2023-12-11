@@ -1,29 +1,11 @@
 import * as React from 'react';
-import { useContext, useEffect, useState } from 'react';
-import {
-  Button,
-  Modal,
-  message,
-  Checkbox,
-  Card,
-  Skeleton,
-  Tabs,
-  Table,
-  Space,
-  Tag,
-  Breadcrumb,
-  Layout,
-  Menu
-} from 'antd';
-import { Link, Outlet, useNavigate } from 'react-router-dom';
-import type { ColumnsType } from 'antd/es/table';
-
+import { Breadcrumb, Layout, Menu } from 'antd';
+import { Link, Outlet } from 'react-router-dom';
 
 
 export const AdminLayout = () => {
   return (
-    <div className="App">
-
+    <div>
       <Layout className="layout">
         <Layout.Header style={{ display: 'flex', alignItems: 'center' }}>
           <Menu
@@ -31,7 +13,7 @@ export const AdminLayout = () => {
             mode="horizontal"
             defaultSelectedKeys={['2']}
             items={[
-              { key: 1, label: <Link to="/admin/fform">填表管理</Link> },
+              { key: 1, label: <Link to="/admin/fform">后台审核</Link> },
             ]}
           />
         </Layout.Header>
