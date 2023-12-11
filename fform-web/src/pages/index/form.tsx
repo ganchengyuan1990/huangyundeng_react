@@ -49,19 +49,14 @@ export const FormPage = () => {
 
   const [current, setCurrent] = useState(0);
 
-  const next = () => {
-    const values = form.getFieldsValue();
-    let validateResult = true;
-    // 确保表单数据都填写了，才能切到写一步
-    // Object.keys(values).map(item => {
-    //   if (!values[item]) {
-    //     validateResult = false
-    //   }
-    // });
-    if (validateResult) {
+  const next = async () => {
+    try {
+      const validateRes = await form.validateFields();
       setCurrent(current + 1);
-    } else {
-      message.error(`请填写内容以后再点击`)
+    } catch(e: any) {
+      if (e?.errorFields?.length) {
+        message.error(`请填写内容以后再点击`)
+      }
     }
   };
 
@@ -147,6 +142,27 @@ export const FormPage = () => {
       { name: 'file7', title: '家庭成员户口簿（原件）', },
       { name: 'file8', title: '婚姻情况证明（结婚证、离婚证等）', },
     ]
+    if (formValues['bq1'] === false) {
+      files.push(...[
+        { name: 'file9', title: '在本市缴交个人所得税或社会保险的缴纳证明', },
+      ])
+    }
+    if (formValues['sq6'] === true) {
+      files.push(...[
+        { name: 'file10', title: '卖方个人名下查询', },
+        { name: 'file11', title: '家庭成员（卖方夫妻双方）户口簿、身份证明、婚姻证明(结婚证、离婚证)', },
+      ])
+    }
+    if (formValues['sq2'] === false) {
+      files.push(...[
+        { name: 'file12', title: '购房发票、契税完税证明等房产原值、合理费用凭证', },
+      ])
+    }
+    if (formValues['bq4'] === true) {
+      files.push(...[
+        { name: 'file13', title: '关系材料(如结婚证、户口簿、出生证、人民法院判决书、人民法院调解书或者其他有资质的机构部门出具的能够说明双方关系的材料）', },
+      ])
+    }
     if (formValues['']) {
       files.push(...[
         { name: 'file9', title: '在本市缴交个人所得税或社会保险的缴纳证明', },
@@ -353,7 +369,7 @@ export const FormPage = () => {
         {/* <Form.Item name="bq5" valuePropName="checked"> */}
         <Form.Item name="bq5">
           <Radio.Group>
-            <Radio value={true}>是（近亲交易范围包括配偶、父母、子女、祖父母、外祖父母、孙子女、外孙子女、兄弟姐妹等）</Radio>
+            <Radio value={true}>是</Radio>
             <Radio value={false}>否</Radio>
           </Radio.Group>
         </Form.Item>
@@ -425,6 +441,7 @@ export const FormPage = () => {
         <Form
           form={form}
           onFinish={onFinish}
+          onFinishFailed={() => navigate('../complete')}
         >
           <Steps current={current} items={stepItems} />
           <Tabs activeKey={`${current}`} items={tabItems} renderTabBar={() => <></>} />

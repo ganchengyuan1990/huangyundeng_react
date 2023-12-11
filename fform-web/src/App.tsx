@@ -4,6 +4,7 @@ import { Route, Routes } from 'react-router-dom';
 import { FormPage } from './pages/index/form';
 import { IntroPage } from './pages/intro';
 import { CompletePage } from './pages/complete';
+import { CommitPage } from './pages/commit';
 import { FformAdminPage } from './pages/admin';
 import { AdminLayout } from './pages/admin/layout';
 
@@ -19,6 +20,7 @@ function App() {
           <Route path="/" element={<IntroPage />} />
           <Route path="/form" element={<FormPage />} />
           <Route path="/complete" element={<CompletePage />} />
+          <Route path="/commit" element={<CommitPage />} />
 
 
           <Route path="/admin" element={<AdminLayout />}>

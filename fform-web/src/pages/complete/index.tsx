@@ -55,7 +55,9 @@ export const CompletePage = () => {
               wrapperCol={{ span: 16 }}
               style={{ maxWidth: 1000 }}
               initialValues={{ remember: true }}
-              onFinish={() => { }}
+              onFinish={() => { 
+                window.location.href = './commit'
+              }}
               onFinishFailed={() => { }}
               autoComplete="off"
             >
@@ -70,8 +72,8 @@ export const CompletePage = () => {
 
               <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
                 <Button type="primary" htmlType="submit">
-                  Submit
-      </Button>
+                  提交
+                </Button>
               </Form.Item>
             </Form>
           </>
