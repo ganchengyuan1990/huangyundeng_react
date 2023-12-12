@@ -24,6 +24,27 @@ class AccountService(object):
         login(request, account)
         return account
 
+    @staticmethod
+    def login(request: HttpRequest, account: Account):
+        """ 用户对象直接登录 """
+        login(request, account)
+
+    @staticmethod
+    def login_by_username(request: HttpRequest, username: str, password: str) -> Optional[Account]:
+        """ 用户名或邮箱登录 """
+        try:
+            # 检查邮箱合法性，合法则为邮箱登录
+            validate_email(username)
+            account = authenticate(request, username=Account.objects.get(email=username).username, password=password)
+        except:
+            # 否则是用户名登录
+            account = authenticate(request, username=username, password=password)
+        if account is not None:
+            login(request, account)
+            return account
+        else:
+            return None
+
     class UpdateInfoKeys(Enum):
         nickname = 'nickname'
         sex = 'sex'

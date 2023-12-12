@@ -3,6 +3,7 @@ from typing import List
 
 from django.contrib.auth import logout
 from django.contrib.sessions.models import Session
+from django.http import Http404, HttpResponse
 from django.middleware.csrf import get_token
 from ninja import Router, Schema
 
@@ -51,6 +52,25 @@ def account_login(request: Request, data: LoginIn):
     account = AccountService.login_or_register_by_openid(request, data.mini_id, openid)
     session: Session = request.session
     return ApiResponse.success(account=account, sessionid=session.session_key, need_update_info=not account.avatar_url)
+
+
+class UpLoginIn(Schema):
+    username: str
+    password: str
+
+class UpLoginOut(ApiResponse):
+    account: AccountSerializer
+    sessionid: str
+
+@router.post('/up-login', auth=None, response=UpLoginOut)
+def account_up_login(request: Request, data: UpLoginIn):
+    """ 用户名密码登录 """
+    account = AccountService.login_by_username(request, data.username, data.password)
+    if account:
+        session: Session = request.session
+        return ApiResponse.success(account=account, sessionid=session.session_key)
+    else:
+        raise UserException('用户名/密码错误', result_code=401)
 
 
 @router.post('/logout')

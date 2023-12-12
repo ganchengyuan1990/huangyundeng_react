@@ -23,7 +23,7 @@ export async function apiFformGetForms(
   submitTimeEnd?: Date,
   filterValues: Record<string, FormValueIn> = {},
 ): Promise<{ fforms: FformModel[] } & ApiResponse> {
-  return await apiRequest({ path: 'api/fform/get-forms', method: 'POST', data: {
+  return await requestApiWithToken({ path: 'api/fform/get-forms', method: 'POST', data: {
       formInterfaceId,
       status,
       auditTimeStart,

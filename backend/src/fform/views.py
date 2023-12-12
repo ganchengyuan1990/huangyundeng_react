@@ -69,7 +69,7 @@ class GetFormsIn(Schema):
 class GetFormsOut(Schema):
     fforms: List[FormSerializer]
 
-@router.post('/get-forms', auth=None, response=GetFormsOut)
+@router.post('/get-forms', response=GetFormsOut)
 def 获取多个表单(request: Request, data: GetFormsIn):
     fforms_query = Form.objects.order_by('-id')
     if data.form_interface_id:
@@ -125,7 +125,7 @@ class FormChangeStatusIn(Schema):
     form_id: int
     target_status: Form.Status.for_ninjia_in()
 
-@router.post('/form-change-audit', auth=None)
+@router.post('/form-change-audit')
 def 表单修改状态(request: Request, data: FormChangeStatusIn):
     form = get_object_or_404(Form, id=data.form_id)
     form.status = data.target_status

@@ -7,6 +7,7 @@ import { CompletePage } from './pages/complete';
 import { CommitPage } from './pages/commit';
 import { FformAdminPage } from './pages/admin';
 import { AdminLayout } from './pages/admin/layout';
+import { AdminLoginPage } from './pages/admin/login';
 
 // import { QaPage } from './pages/qa/qa';
 
@@ -23,6 +24,7 @@ function App() {
           <Route path="/commit" element={<CommitPage />} />
 
 
+          <Route path="/admin/login" element={<AdminLoginPage />} />
           <Route path="/admin" element={<AdminLayout />}>
             <Route path="fform" element={<FformAdminPage />} />
           </Route>

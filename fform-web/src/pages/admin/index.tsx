@@ -7,21 +7,27 @@ import { FformModel, FormFileOut } from '../../types/fform';
 import { apiFformChangeAudit, apiFformGetForm, apiFformGetForms } from '../../apis/fform';
 import dayjs from 'dayjs';
 import camelCase from 'camelcase';
+import accountManager from '../account/accountManager';
 
 export const FformAdminPage = () => {
   const [searchForm] = Form.useForm();
+  const account = accountManager.getAccount()
   const [messageApi, contextHolder] = message.useMessage();
   const navigate = useNavigate()
 
   const [fforms, setFforms] = useState<FformModel[]>([])
   const [filterValues, setFilterValues] = useState<Record<string, any>>({})
-  const [page, setPages] = useState<number>(1)
+  const [page, setPage] = useState<number>(1)
 
   const [openForm, setOpenForm] = React.useState<FformModel | null>(null)
 
   const [fformId, setFformId] = useState<string | number | null>(null);
 
   useEffect(() => {
+    if (!account) {
+      navigate('/admin/login')
+      return
+    }
     (async() => {
       const { fforms } = await apiFformGetForms('1',
         filterValues['status'],
