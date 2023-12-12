@@ -90,6 +90,7 @@ export const FformAdminPage = () => {
         for (let fform of fforms) {
           if (fformId == fform.id) {
             fform.status = 'editing'
+            fform.auditTime = new Date()
           }
         }
         return fforms
@@ -168,7 +169,7 @@ export const FformAdminPage = () => {
 
 
   return (
-    <>
+    <div style={{ minHeight: '150.0rem' }}>
       {contextHolder}
 
       <Form form={searchForm} onFinish={onFinish} style={{ textAlign: 'left' }}>
@@ -273,6 +274,6 @@ export const FformAdminPage = () => {
              pagination={{ defaultPageSize: 50, total: totalCount, current: page, showSizeChanger: false }}
              onChange={paginationOnChange}/>
 
-    </>
+    </div>
   );
 };

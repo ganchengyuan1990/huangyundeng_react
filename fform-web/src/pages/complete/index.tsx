@@ -5,6 +5,7 @@ import { Button, Form, Input, message, Modal } from 'antd';
 import accountManager from '../account/accountManager';
 import { useNavigate } from 'react-router-dom';
 import { AccountModel } from '../../types/account';
+import useQuery from '../../utils/query';
 
 
 export const CompletePage = () => {
@@ -12,16 +13,25 @@ export const CompletePage = () => {
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate()
 
+  const { fformId } = useQuery<{ fformId: string, }>()
+
   useEffect(() => {
-    let account: AccountModel | null = accountManager.getAccount();
-    accountManager.listenAccountChange(v => account = v);
-    setTimeout(() => {
+    setInterval(() => {
       setShowModal(true);
     }, 10000);
   }, [])
 
+  const onFinish = (values: any) => {
+    if (values['password'] == '123456') {
+      navigate(`/commit?fformId=${fformId}`)
+    } else {
+      messageApi.error('密码错误')
+    }
+  }
+
   return (
     <div style={{ overflow: 'hidden', minHeight: '150.0rem', marginTop: '25%' }}>
+      {contextHolder}
 
       <div className="bnerbghome_tbox">
         <span className="bnerbghome_subtitle">
@@ -55,9 +65,7 @@ export const CompletePage = () => {
               wrapperCol={{ span: 16 }}
               style={{ maxWidth: 1000 }}
               initialValues={{ remember: true }}
-              onFinish={() => { 
-                window.location.href = './commit'
-              }}
+              onFinish={onFinish}
               onFinishFailed={() => { }}
               autoComplete="off"
             >
@@ -79,9 +87,6 @@ export const CompletePage = () => {
           </>
         </Modal> : null
       }
-
-      {contextHolder}
-
     </div>
   );
 };

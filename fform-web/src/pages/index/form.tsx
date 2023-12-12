@@ -51,7 +51,6 @@ export const FormPage = () => {
   const [current, setCurrent] = useState(0);
   const [maxStep, setMaxStep] = useState(0);
   const onNext = async () => {
-    const values = form.getFieldsValue();
     let validateResult = true
     if (current >= maxStep) {
       try {
@@ -121,10 +120,9 @@ export const FormPage = () => {
     }
     setIsSubmit(true)
     await onUpsertForm(!fformId)
-    await apiFformSubmitAudit(fformId)
     form.resetFields()
     setIsSubmit(false)
-    navigate('/complete')
+    navigate(`/complete?fformId=${fformId}`)
   }
 
   useEffect(() => {
@@ -146,7 +144,6 @@ export const FormPage = () => {
   };
   const onChangeHoc = (formName: string) => {
     return (info: UploadChangeParam) => {
-      console.log(info)
       if (info.file.status !== 'uploading') {
         console.log(info.file, info.fileList)
       }
@@ -193,16 +190,6 @@ export const FormPage = () => {
     if (formValues['bq4'] === true) {
       files.push(...[
         { name: 'file13', title: '关系材料(如结婚证、户口簿、出生证、人民法院判决书、人民法院调解书或者其他有资质的机构部门出具的能够说明双方关系的材料）', },
-      ])
-    }
-    if (formValues['']) {
-      files.push(...[
-        { name: 'file9', title: '在本市缴交个人所得税或社会保险的缴纳证明', },
-        { name: 'file10', title: '卖方个人名下查询', },
-        { name: 'file11', title: '家庭成员（卖方夫妻双方）户口簿、身份证明、婚姻证明(结婚证、离婚证)', },
-        { name: 'file12', title: '购房发票、契税完税证明等房产原值、合理费用凭证', },
-        { name: 'file13', title: '关系材料(如结婚证、户口簿、出生证、人民法院判决书、人民法院调解书或者其他有资质的机构部门出具的能够说明双方关系的材料）', },
-        { name: 'file14', title: '若选择同时办理银行抵押权登记的，要额外提供广州市不动产登记申请表，按揭抵押合同等材料', },
       ])
     }
     return files
