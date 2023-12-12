@@ -15,6 +15,8 @@ export async function apiFformGetForm(formId: string | number): Promise<{ fform:
 
 // 获取表单
 export async function apiFformGetForms(
+  page: number,
+  pageSize: number,
   formInterfaceId: string,
   status?: 'editing' | 'auditing' | 'confirmed',
   auditTimeStart?: Date,
@@ -22,8 +24,10 @@ export async function apiFformGetForms(
   submitTimeStart?: Date,
   submitTimeEnd?: Date,
   filterValues: Record<string, FormValueIn> = {},
-): Promise<{ fforms: FformModel[] } & ApiResponse> {
+): Promise<{ fforms: FformModel[], totalCount: number, } & ApiResponse> {
   return await requestApiWithToken({ path: 'api/fform/get-forms', method: 'POST', data: {
+      page,
+      pageSize,
       formInterfaceId,
       status,
       auditTimeStart,

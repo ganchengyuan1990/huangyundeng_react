@@ -1,6 +1,19 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { Button, DatePicker, Form, Image, Input, message, Modal, Select, Skeleton, Space, Table } from 'antd';
+import {
+  Button,
+  DatePicker,
+  Form,
+  Image,
+  Input,
+  message,
+  Modal,
+  Select,
+  Skeleton,
+  Space,
+  Table,
+  TablePaginationConfig
+} from 'antd';
 import { useNavigate } from 'react-router-dom';
 import type { ColumnsType } from 'antd/es/table';
 import { FformModel, FormFileOut } from '../../types/fform';
@@ -8,6 +21,7 @@ import { apiFformChangeAudit, apiFformGetForm, apiFformGetForms } from '../../ap
 import dayjs from 'dayjs';
 import camelCase from 'camelcase';
 import accountManager from '../account/accountManager';
+import { FilterValue, SorterResult } from 'antd/es/table/interface';
 
 export const FformAdminPage = () => {
   const [searchForm] = Form.useForm();
@@ -17,6 +31,7 @@ export const FformAdminPage = () => {
 
   const [fforms, setFforms] = useState<FformModel[]>([])
   const [filterValues, setFilterValues] = useState<Record<string, any>>({})
+  const [totalCount, setTotalCount] = useState<number>(0)
   const [page, setPage] = useState<number>(1)
 
   const [openForm, setOpenForm] = React.useState<FformModel | null>(null)
@@ -29,13 +44,17 @@ export const FformAdminPage = () => {
       return
     }
     (async() => {
-      const { fforms } = await apiFformGetForms('1',
+      const { fforms, totalCount } = await apiFformGetForms(
+        page,
+        50,
+        '1',
         filterValues['status'],
         filterValues['auditTimeStart'], filterValues['auditTimeEnd'],
         filterValues['submitTimeStart'], filterValues['submitTimeEnd'],
         filterValues['filterValues'],
       )
       setFforms(fforms)
+      setTotalCount(totalCount)
     })()
   }, [filterValues, page])
 
@@ -75,6 +94,17 @@ export const FformAdminPage = () => {
         }
         return fforms
       })
+    }
+  }
+
+  const paginationOnChange = (
+    pagination: TablePaginationConfig,
+    filters: Record<'tags', FilterValue | null>,
+    sorter: SorterResult<FformModel> | SorterResult<FformModel>[],
+  ) => {
+    console.log(pagination)
+    if (pagination.current) {
+      setPage(pagination.current)
     }
   }
 
@@ -239,7 +269,9 @@ export const FformAdminPage = () => {
           : <Skeleton/>}
       </Modal>
 
-      <Table columns={columns} dataSource={fforms} rowKey="id" />
+      <Table columns={columns} dataSource={fforms} rowKey="id"
+             pagination={{ defaultPageSize: 50, total: totalCount, current: page, showSizeChanger: false }}
+             onChange={paginationOnChange}/>
 
     </>
   );

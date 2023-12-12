@@ -1,6 +1,7 @@
 from typing import Dict, List
 
 import qiniu
+from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from ninja import Router, Schema
@@ -58,6 +59,8 @@ def 获取单个表单(request: Request, form_id: str):
 
 
 class GetFormsIn(Schema):
+    page_size: int = 50
+    page: int = 1
     form_interface_id: int
     status: Form.Status.for_ninjia_in() = None
     audit_time_start: str = None
@@ -68,6 +71,7 @@ class GetFormsIn(Schema):
 
 class GetFormsOut(Schema):
     fforms: List[FormSerializer]
+    total_count: int
 
 @router.post('/get-forms', response=GetFormsOut)
 def 获取多个表单(request: Request, data: GetFormsIn):
@@ -88,8 +92,10 @@ def 获取多个表单(request: Request, data: GetFormsIn):
         print(data.filter_values)
         for filter_key in data.filter_values:
             fforms_query = fforms_query.filter(values__column__key=filter_key, values__value_string=data.filter_values[filter_key])
-    fforms = list(fforms_query.all())
-    return ApiResponse.success(fforms=fforms)
+
+    p = Paginator(fforms_query, data.page_size)
+    fforms = list(p.page(data.page).object_list)
+    return ApiResponse.success(fforms=fforms, total_count=p.count)
 
 
 class UpsertFormIn(Schema):
