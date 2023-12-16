@@ -15,7 +15,8 @@ import {
   TabsProps,
   Typography,
   Upload,
-  UploadProps
+  UploadProps,
+  Image,
 } from 'antd';
 import {
   apiFformCreateForm,
@@ -33,6 +34,7 @@ export const FormPage = () => {
   const [form] = Form.useForm()
   const [isSubmit, setIsSubmit] = React.useState(false)
   const [formValues, setFormValues] = React.useState<Record<string, FormValueIn>>({})
+  const [fileUrls, setFileUrls] = React.useState<Record<string, string>>({})
   const [files, setFiles] = React.useState<Record<string, FormFileOut>>({})
   const [fformId, setFformId] = useState<string>('')
   const [token, setToken] = useState<string>('')
@@ -141,6 +143,8 @@ export const FormPage = () => {
     headers: {
       authorization: 'authorization-text',
     },
+    showUploadList: false,
+    accept: ".jpg, .jpeg, .png"
   };
   const onChangeHoc = (formName: string) => {
     return (info: UploadChangeParam) => {
@@ -150,6 +154,8 @@ export const FormPage = () => {
       if (info.file.status === 'done') {
         message.success(`${info.file.name} 上传成功`)
         form.setFieldValue(formName, info.file.response.form_file_id)
+        fileUrls[formName] = info.file.response.private_url;
+        setFileUrls(fileUrls);
         onSyncForm()
       } else if (info.file.status === 'error') {
         message.error(`${info.file.name} 上传失败`)
@@ -209,6 +215,10 @@ export const FormPage = () => {
           rules={[{ required: true, message: '请输入卖方姓名' }]} required>
           {/* fformId是否已经获取过了，如果是，那么主键就不再允许修改了 */}
           <Input maxLength={18} disabled={!!fformId}/>
+        </Form.Item>
+        <Form.Item name="seller_id_phone_number" label="卖方联系方式"
+          rules={[{ required: true, message: '请输入卖方联系方式' }]} required>
+          <Input maxLength={11}/>
         </Form.Item>
         <Form.Item name="contract_number" label="网签合同号"
           rules={[{ required: true, message: '请输入网签合同号' }]} required>
@@ -289,11 +299,11 @@ export const FormPage = () => {
               </div>
               <div className="flex-box">
                 <Form.Item name="seller_child_name" label="卖方子女姓名"
-                  rules={[{ required: true, message: '请输入卖方子女姓名' }]} required>
+                  rules={[{ required: false, message: '请输入卖方子女姓名' }]}>
                   <Input />
                 </Form.Item>
                 <Form.Item name="seller_child_id_card_number" label="卖方子女身份证号码"
-                  rules={[{ required: true, message: '请输入卖方子女身份证号码' }]} required>
+                  rules={[{ required: false, message: '请输入卖方子女身份证号码' }]}>
                   <Input maxLength={18}/>
                 </Form.Item>
               </div>
@@ -358,11 +368,11 @@ export const FormPage = () => {
               </div>
               <div className="flex-box">
                 <Form.Item name="receiver_child_name" label="买方子女姓名"
-                  rules={[{ required: true, message: '请输入买方子女姓名' }]} required>
+                  rules={[{ required: false, message: '请输入买方子女姓名' }]}>
                   <Input />
                 </Form.Item>
                 <Form.Item name="receiver_child_id_card_number" label="买方子女身份证号码"
-                  rules={[{ required: true, message: '请输入买方子女身份证号码' }]} required>
+                  rules={[{ required: false, message: '请输入买方子女身份证号码' }]}>
                   <Input maxLength={18}/>
                 </Form.Item>
               </div>
@@ -439,14 +449,19 @@ export const FormPage = () => {
                   <div className="volumnFour">
                     <Form.Item name={fileInfo.name} noStyle><></></Form.Item>
                     <Button style={{ margin: '0 8px' }} onClick={() => alert('敬请期待')}>要求与示例</Button>
-                    <Upload {...props} onChange={onChangeHoc(fileInfo.name)}>
+                    {formValues[fileInfo.name] ? null : <Upload {...props} onChange={onChangeHoc(fileInfo.name)}>
                       <Button style={{ margin: '0 8px' }} type="primary">上传</Button>
-                    </Upload>
+                    </Upload>}
                     {formValues[fileInfo.name] &&
                       <Button style={{ margin: '0 8px' }} danger onClick={() => {
                         form.setFieldValue(fileInfo.name, null)
                         onSyncForm()
                       }}>删除</Button>}
+                      {fileUrls[fileInfo.name] && <Image
+                        width={50}
+                        style={{maxHeight: '30px', marginLeft: '20px'}}
+                        src={fileUrls[fileInfo.name]}
+                      />}
                   </div>
                 </td>
               </tr>}

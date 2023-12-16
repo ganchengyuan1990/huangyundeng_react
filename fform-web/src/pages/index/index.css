@@ -62,3 +62,19 @@
 :where(.css-dev-only-do-not-override-qgg3xn).ant-row {
   margin-right: 30px;
 }
+
+
+:where(.css-dev-only-do-not-override-qgg3xn).ant-image .ant-image-mask {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.3s;
+    left: 20px;
+    right: -20px;
+}

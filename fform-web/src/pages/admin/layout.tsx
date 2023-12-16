@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Breadcrumb, Layout, Menu } from 'antd';
 import { Link, Outlet } from 'react-router-dom';
+import "./layout.css";
 
 
 export const AdminLayout = () => {
@@ -18,10 +19,10 @@ export const AdminLayout = () => {
           />
         </Layout.Header>
         <Layout.Content style={{ padding: '0 50px' }}>
-          <Breadcrumb style={{ margin: '16px 0' }}>
+          {/* <Breadcrumb style={{ margin: '16px 0' }}>
             <Breadcrumb.Item>主页</Breadcrumb.Item>
             <Breadcrumb.Item>填表管理</Breadcrumb.Item>
-          </Breadcrumb>
+          </Breadcrumb> */}
           <div className="site-layout-content">
             <Outlet />
           </div>

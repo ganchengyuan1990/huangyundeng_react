@@ -30,7 +30,7 @@ export const CompletePage = () => {
   }
 
   return (
-    <div style={{ overflow: 'hidden', minHeight: '150.0rem', marginTop: '25%' }}>
+    <div style={{ overflow: 'hidden', marginTop: '25%', position: 'fixed', top: 0, bottom: 0, right: 0, left: 0 }}>
       {contextHolder}
 
       <div className="bnerbghome_tbox">
