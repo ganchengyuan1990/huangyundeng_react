@@ -66,6 +66,14 @@ export const FformAdminPage = () => {
         for (const column of fform.formInterface.columns) {
           column.key = camelCase(column.key)
         }
+        const fileArr = [] as any;
+        fform.formInterface.columns.forEach((item, idx) => {
+          if (item.valueType === 'file') {
+            fileArr.push(item);
+            delete fform.formInterface.columns[idx];
+          }
+        });
+        fform.formInterface.columns = fform.formInterface.columns.concat(fileArr);
         setOpenForm(fform)
       }
     })()
@@ -144,7 +152,7 @@ export const FformAdminPage = () => {
     {
       title: '审批状态',
       key: 'status',
-      render: (_, record) => (record.status ? {'editing': '审批不通过/修改中', 'auditing': '等待审批',  'confirmed': '审批通过'}[record.status] : '未知'),
+      render: (_, record) => (record.status ? {'editing': '审批不通过', 'auditing': '等待审批',  'confirmed': '审批通过'}[record.status] : '未知'),
     },
     {
       title: '审批人',
@@ -169,7 +177,7 @@ export const FformAdminPage = () => {
 
 
   return (
-    <div style={{ minHeight: '150.0rem' }}>
+    <div>
       {contextHolder}
 
       <Form form={searchForm} onFinish={onFinish} style={{ textAlign: 'left' }}>
@@ -200,8 +208,8 @@ export const FformAdminPage = () => {
               style={{ width: 167 }}
               allowClear
               options={[
-                { value: 'editing', label: '审批不通过/修改中' },
-                { value: 'auditing', label: '审批中' },
+                { value: 'editing', label: '审批不通过' },
+                { value: 'auditing', label: '待审批' },
                 { value: 'confirmed', label: '已审批通过' },
               ]}
             />

@@ -5,6 +5,7 @@ import { postUpLogin } from '../../apis/account';
 import { UserException } from '../../utils/request';
 import accountManager from '../account/accountManager';
 import { useNavigate } from 'react-router-dom';
+import "./index.css"
 
 export const AdminLoginPage = () => {
   const [messageApi, contextHolder] = message.useMessage();
@@ -27,36 +28,44 @@ export const AdminLoginPage = () => {
     }
   };
   return (
-    <Form
-      name="normal_login"
-      className="login-form"
-      initialValues={{ remember: true }}
-      onFinish={onFinish}
-    >
-      {contextHolder}
-      <Form.Item
-        name="username"
-        label="用户名"
-        rules={[{ required: true, message: '请输入用户名' }]}
+    <div>
+      <div className="background"></div>
+      <Form
+        name="normal_login"
+        className="login-form"
+        initialValues={{ remember: true }}
+        onFinish={onFinish}
       >
-        <Input placeholder="管理员用户名" />
-      </Form.Item>
-      <Form.Item
-        name="password"
-        label="密　码"
-        rules={[{ required: true, message: '请输入密码' }]}
-      >
-        <Input
-          type="password"
-          placeholder="管理员密码"
-        />
-      </Form.Item>
+        {contextHolder}
+        <div className="bnerbghome_tbox">
+          <span className="bnerbghome_title">
+            二手房转移登记智能申报系统
+          </span>
+        </div>
+        <Form.Item
+          name="username"
+          label="用户名"
+          rules={[{ required: true, message: '请输入用户名' }]}
+        >
+          <Input placeholder="管理员用户名" />
+        </Form.Item>
+        <Form.Item
+          name="password"
+          label="密　码"
+          rules={[{ required: true, message: '请输入密码' }]}
+        >
+          <Input
+            type="password"
+            placeholder="管理员密码"
+          />
+        </Form.Item>
 
-      <Form.Item>
-        <Button type="primary" htmlType="submit" className="login-form-button">
-          登录
-        </Button>
-      </Form.Item>
-    </Form>
+        <Form.Item>
+          <Button type="primary" htmlType="submit" className="login-form-button">
+            登录
+          </Button>
+        </Form.Item>
+      </Form>
+    </div>
   );
 };
