@@ -297,6 +297,7 @@ export const FormPage = () => {
                   <Input maxLength={18}/>
                 </Form.Item>
               </div>
+              <div className="form-mention">注：如有未成年子女，请填写以下信息</div>
               <div className="flex-box">
                 <Form.Item name="seller_child_name" label="卖方子女姓名"
                   rules={[{ required: false, message: '请输入卖方子女姓名' }]}>
@@ -366,6 +367,7 @@ export const FormPage = () => {
                   <Input maxLength={18}/>
                 </Form.Item>
               </div>
+              <div className="form-mention">注：如有未成年子女，请填写以下信息</div>
               <div className="flex-box">
                 <Form.Item name="receiver_child_name" label="买方子女姓名"
                   rules={[{ required: false, message: '请输入买方子女姓名' }]}>
