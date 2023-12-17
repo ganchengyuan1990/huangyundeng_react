@@ -456,6 +456,9 @@ export const FormPage = () => {
                       <Button style={{ margin: '0 8px' }} danger onClick={() => {
                         form.setFieldValue(fileInfo.name, null)
                         onSyncForm()
+                        const newfileUrls = JSON.parse(JSON.stringify(fileUrls));
+                        delete newfileUrls[fileInfo.name];
+                        setFileUrls(newfileUrls);
                       }}>删除</Button>}
                       {fileUrls[fileInfo.name] && <Image
                         width={50}
