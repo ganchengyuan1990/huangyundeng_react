@@ -35,19 +35,19 @@
 
 
 
-:where(.css-dev-only-do-not-override-qgg3xn).ant-form-item .ant-form-item-control-input-content {
+.ant-form-item .ant-form-item-control-input-content {
   flex: none;
 }
 
-.whole-line :where(.css-dev-only-do-not-override-qgg3xn).ant-form-item .ant-form-item-control-input-content {
+.whole-line .ant-form-item .ant-form-item-control-input-content {
   flex: 1;
 }
 
-:where(.css-dev-only-do-not-override-qgg3xn).ant-form {
+.ant-form {
   font-size: 20px;
 }
 
-:where(.css-dev-only-do-not-override-qgg3xn).ant-form label {
+.ant-form label {
   font-size: 16px;
 }
 
@@ -59,12 +59,12 @@
   display: flex;
 }
 
-:where(.css-dev-only-do-not-override-qgg3xn).ant-row {
+.ant-row {
   margin-right: 30px;
 }
 
 
-:where(.css-dev-only-do-not-override-qgg3xn).ant-image .ant-image-mask {
+.ant-image .ant-image-mask {
     position: absolute;
     inset: 0;
     display: flex;
@@ -77,4 +77,16 @@
     transition: opacity 0.3s;
     left: 20px;
     right: -20px;
+}
+
+.form-mention {
+  margin-bottom: 20px;
+  color: #000;
+  font-weight: bold;
+  text-align: left;
+}
+
+.ant-form-item .ant-form-item-explain-error {
+  text-align: left;
+  margin-bottom: 12px;
 }
