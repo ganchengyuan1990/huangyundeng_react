@@ -49,6 +49,17 @@ services:
     depends_on:
       - django
 
+  minio:
+    image: docker.io/bitnami/minio:2023
+    ports:
+      - '9000:9000'
+      - '9001:9001'
+    environment:
+      - MINIO_ROOT_USER=fxt1u2849759
+      - MINIO_ROOT_PASSWORD=fxt5798124709321
+    volumes:
+      - 'minio_data:/bitnami/minio/data'
+
   fform:
     image: registry.cn-shanghai.aliyuncs.com/fangxt/fform:$version
     restart: on-failure
@@ -56,7 +67,9 @@ services:
       - "82:80"
     depends_on:
       - django
+      - minio
 
 volumes:
   qdrant-storage:
   postgres-storage:
+  minio_data:
