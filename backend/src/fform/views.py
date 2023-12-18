@@ -1,10 +1,11 @@
 from typing import Dict, List
 
 import qiniu
+from django.core.files.storage import default_storage, storages, Storage
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
-from ninja import Router, Schema
+from ninja import Router, Schema, UploadedFile, File
 
 from src.base.request_defined import Request
 from src.config import config
@@ -181,6 +182,26 @@ def 处理上传的文件(request: Request, data: FormFileUploadCallbackIn):
     form_file.form = form
     form_file.fname = data.fprefix
     form_file.key = data.qiniu_key
+    form_file.in_use = True
+    form_file.save_type = FormFile.SaveType.qiniu
+    form_file.save()
+
+    return ApiResponse.success(form_file_id=form_file.id, private_url=private_url)
+
+
+@router.post('/upload-direct', auth=None)
+def 处理直接上传来的文件(request: Request, form_id: str, file: UploadedFile = File(...)):
+    storage_manager: Storage = storages['minio']
+    filename = str(file.size) + '_' + storage_manager.generate_filename(file.name)
+    path = storage_manager.save(f'fform/{timezone.now().strftime("%Y%m%d")}/{timezone.now().strftime("%H%M")}/{filename}', file)
+    private_url = storage_manager.url(path)
+
+    form = get_object_or_404(Form, id=form_id)
+    form_file = FormFile()
+    form_file.form = form
+    form_file.fname = filename
+    form_file.key = path
+    form_file.save_type = FormFile.SaveType.minio
     form_file.in_use = True
     form_file.save()
 

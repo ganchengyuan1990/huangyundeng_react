@@ -1,6 +1,7 @@
 from typing import Dict
 
 import qiniu
+from django.core.files.storage import Storage, storages
 
 from src.config import config
 from src.fform.models import Form, FormColumn, FormValue, FormFile
@@ -49,8 +50,15 @@ class FformService(object):
             elif form_value.column.value_type == FormColumn.ValueType.boolean:
                 values[form_value.column.key] = form_value.value_boolean
             elif form_value.column.value_type == FormColumn.ValueType.file:
-                problem_file_url = f'http://{bucket_host}/{form_value.value_file.key}'
-                private_url = q.private_download_url(problem_file_url, expires=3600)
+                if form_value.value_file.save_type == FormFile.SaveType.qiniu:
+                    problem_file_url = f'http://{bucket_host}/{form_value.value_file.key}'
+                    private_url = q.private_download_url(problem_file_url, expires=3600)
+                elif form_value.value_file.save_type == FormFile.SaveType.minio:
+                    storage_manager: Storage = storages['minio']
+                    private_url = storage_manager.url(form_value.value_file.key)
+                else:
+                    raise Exception('unknown file type')
+
                 values[form_value.column.key] = {
                     'id': form_value.value_file.id,
                     'fname': form_value.value_file.fname,

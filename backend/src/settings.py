@@ -30,6 +30,8 @@ INSTALLED_APPS = [
     'src.qa',
     'src.fform',
 
+    'minio_storage',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -185,6 +187,28 @@ AUTH_USER_MODEL = 'account.Account'
 
 STATIC_URL = 'django_static/'
 STATIC_ROOT = '/django_static/'
+
+STORAGES = {
+    # ...
+    "minio": {
+        "BACKEND": "minio_storage.storage.MinioMediaStorage",
+        "OPTIONS": {},
+    },
+}
+
+MINIO_STORAGE_ENDPOINT = config['minio']['endpoint']
+MINIO_STORAGE_ACCESS_KEY = config['minio']['access_key']
+MINIO_STORAGE_SECRET_KEY = config['minio']['secret_key']
+MINIO_STORAGE_USE_HTTPS = False
+MINIO_STORAGE_MEDIA_OBJECT_METADATA = {"Cache-Control": "max-age=1000"}
+MINIO_STORAGE_MEDIA_BUCKET_NAME = 'local-media'
+MINIO_STORAGE_MEDIA_BACKUP_BUCKET = 'Recycle Bin'
+MINIO_STORAGE_MEDIA_BACKUP_FORMAT = '%c/'
+MINIO_STORAGE_AUTO_CREATE_MEDIA_BUCKET = True
+MINIO_STORAGE_MEDIA_USE_PRESIGNED = True
+MINIO_STORAGE_AUTO_CREATE_MEDIA_POLICY = 'NONE'
+MINIO_STORAGE_STATIC_BUCKET_NAME = 'local-static'
+MINIO_STORAGE_AUTO_CREATE_STATIC_BUCKET = True
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field

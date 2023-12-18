@@ -21,6 +21,11 @@ config = {
     'qdrant': {
         'url': "127.0.0.1",
     },
+    'minio': {
+        'endpoint': '127.0.0.1:9000',
+        'access_key': '',
+        'secret_key': '',
+    },
     'qiniu': {
         'obj_bucket': 'fangxiaotong',
         'obj_host': 'oss.aichan.info',

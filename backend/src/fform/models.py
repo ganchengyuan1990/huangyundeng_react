@@ -44,6 +44,11 @@ class FormFile(BaseModel):
     key = models.CharField('文件名', max_length=255)
     in_use = models.BooleanField('是否在用', default=True)
 
+    class SaveType(BaseModelEnum):
+        qiniu = 'qiniu'
+        minio = 'minio'
+    save_type = models.CharField(max_length=255, choices=SaveType.model_items(), default=SaveType.qiniu)
+
     def __str__(self):
         return f'{self.in_use} {self.fname}({self.key})'
 

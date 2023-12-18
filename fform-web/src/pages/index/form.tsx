@@ -130,16 +130,17 @@ export const FormPage = () => {
   useEffect(() => {
     (async () => {
       if (fformId) {
-        const response = await apiFformUploadToken(fformId)
-        setToken(response.token)
+        // const response = await apiFformUploadToken(fformId)
+        // setToken(response.token)
       }
     })()
   }, [fformId])
 
   const props: UploadProps = {
     name: 'file',
-    action: 'https://upload.qiniup.com/',
-    data: { token },
+    // action: 'https://upload.qiniup.com/',
+    action: `/api/fform/upload-direct?form_id=${fformId}`,
+    data: { token, },
     headers: {
       authorization: 'authorization-text',
     },
