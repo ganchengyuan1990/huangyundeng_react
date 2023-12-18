@@ -22,6 +22,7 @@ config = {
         'url': "127.0.0.1",
     },
     'minio': {
+        'base_url': 'http://minio:9000/',
         'endpoint': 'minio:9000',
         'access_key': '',
         'secret_key': '',

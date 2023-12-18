@@ -209,6 +209,7 @@ MINIO_STORAGE_MEDIA_USE_PRESIGNED = True
 MINIO_STORAGE_AUTO_CREATE_MEDIA_POLICY = 'NONE'
 MINIO_STORAGE_STATIC_BUCKET_NAME = 'local-static'
 MINIO_STORAGE_AUTO_CREATE_STATIC_BUCKET = True
+MINIO_STORAGE_MEDIA_URL = config['minio']['base_url'] + MINIO_STORAGE_MEDIA_BUCKET_NAME
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
