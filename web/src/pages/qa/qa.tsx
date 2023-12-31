@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useContext, useEffect, useState } from 'react';
-import { Button, Card, Col, Input, Row, Skeleton, Space } from 'antd';
+import { Button, Card, Col, Input, Row, Skeleton, Space, message as Message, Modal, message } from 'antd';
 import Frame from '../../utils/frame';
 import Block from '../../utils/block';
 import { feedback, getHotQuestions, qa } from '../../apis/qa';
@@ -17,6 +17,8 @@ export const QaPage = () => {
   const { title } = useContext(AppContext)
   let account = accountManager.getAccount();
   const [questionText, questionTextSetter] = useState('');
+  const [feedbackMessage, setFeedbackMessage] = useState('');
+
 
   const [guessTagShow, guessTagShowSetter] = React.useState(false);
   const [chooseTag, chooseTagSetter] = React.useState('');
@@ -25,7 +27,7 @@ export const QaPage = () => {
   const [tags, setTags] = useState<string[]>([]);
   const [startDate, setStartDate] = useState<Date>(new Date());
 
-  const [qas, qasSetter] = React.useState<{ type: 'ai' | 'user', recordId: string, message: string, time: Date }[]>([]);
+  const [qas, qasSetter] = React.useState<{ type: 'ai' | 'user', recordId: string, message: string, time: Date, collapse?: boolean }[]>([]);
   const [qaAnswerLoading, qaAnswerLoadingSetter] = React.useState(false);
 
   // 请求热门tags、及参数中tag或者问题的答案
@@ -62,7 +64,7 @@ export const QaPage = () => {
     qaAnswerLoadingSetter(true)
     try {
       const { answer, recordId } = await qa(question)
-      qasSetter(qas => [...qas, { type: 'ai', recordId: recordId, message: answer, time: new Date() }])
+      qasSetter(qas => [...qas, { type: 'ai', recordId: recordId, message: answer, time: new Date(), collapse: answer?.length < 80 }])
     } catch (e) {
       qasSetter(qas => [...qas, { type: 'ai', recordId: '', message: '服务器连接失败，请稍后再试', time: new Date() }])
     } finally {
@@ -79,11 +81,37 @@ export const QaPage = () => {
       }
       return newV
     })
-    alert('感谢您的反馈')
+    Message.info('感谢您的反馈')
   }
 
+  const feedbackInfo = (info: any) => {
+    return () => {
+      Modal.info({
+        title: '纠错反馈',
+        content: (
+          <div>
+            <Input.TextArea
+              placeholder="请输入你的反馈"
+              value={(window as any).feedbackMessage}
+              onChange={e => {
+                (window as any).feedbackMessage = e.target.value;
+              }}
+            ></Input.TextArea>
+          </div>
+        ),
+        onOk() {
+          if (!(window as any).feedbackMessage) {
+            message.info("请输入内容");
+            return
+          }
+          requestFeedback(info, 'fix', (window as any).feedbackMessage);
+        },
+      });
+    }
+  };
+
   return (
-    <Frame grayBg style={{ overflow: 'hidden', minHeight: '100.0rem' }}>
+    <Frame grayBg className="qaPage" style={{ overflow: 'hidden', minHeight: '100.0rem' }}>
       <Block padding style={{ paddingTop: '2.0rem', paddingBottom: 0 }}>
         <Row>
           <Col span={4}>
@@ -114,7 +142,7 @@ export const QaPage = () => {
               <Col span={17} offset={3}>
                 <div style={{ padding: '2.0rem', lineHeight: '3.0rem', fontSize: '2.5rem', textAlign: 'right', color: '#666', }}>
                   <div>{account.nickname || '我'}</div>
-                  <div>{new Date().toLocaleString()}</div>
+                  <div style={{ marginTop: '0.5rem' }}>{new Date().toLocaleString()}</div>
                 </div>
               </Col>
               <Col span={4}>
@@ -137,24 +165,30 @@ export const QaPage = () => {
               <Col span={20}>
                 <div style={{ padding: '2.0rem', lineHeight: '3.0rem', fontSize: '2.5rem', textAlign: 'left', color: '#666', }}>
                   <div>{title || '小Ai'}</div>
-                  <div>{new Date().toLocaleString()}</div>
+                  <div style={{ marginTop: '0.5rem' }}>{new Date().toLocaleString()}</div>
                 </div>
               </Col>
             </Row>
           </Block>
-          <Block padding style={{ padding: '1.0rem', paddingBottom: '1.0rem', textAlign: 'left' }}>
-            <Card
-              actions={qa.recordId ? [
-                <Space key="good" onClick={() => requestFeedback(qa, 'good', '')}><LikeOutlined/>有用</Space>,
-                <Space key="bad" onClick={() => requestFeedback(qa, 'bad', '')}><DislikeOutlined/>无效</Space>,
-                <Space key="fix" onClick={() => {
-                  const message = prompt('请修改：', qa.message)
-                  message && requestFeedback(qa, 'fix', message)
-                }}><ToolOutlined/>纠错</Space>,
-              ] : []}>
+          <Card 
+            style={{ padding: '1.0rem', paddingBottom: '1.0rem', textAlign: 'left', margin: '1.0rem 2.4rem' }}
+            actions={qa.recordId ? [
+              <Space key="good" onClick={() => requestFeedback(qa, 'good', '')}><LikeOutlined/>有用</Space>,
+              <Space key="bad" onClick={() => requestFeedback(qa, 'bad', '')}><DislikeOutlined/>无效</Space>,
+              <Space key="fix" onClick={feedbackInfo(qa)}><ToolOutlined/>纠错</Space>,
+            ] : []}
+          >
+            <div
+              className={!qa?.collapse ? "contentWrapper" : "contentWrapperNo"}
+              >
               {qa.message.split('\n').map((v, i) => <div key={i}>{v}</div>)}
-            </Card>
-          </Block>
+            </div>
+            {!qa?.collapse ? <div className="collIcon" onClick={() => {
+                const newQas = JSON.parse(JSON.stringify(qas));
+                newQas[index].collapse = !newQas[index].collapse
+                qasSetter(newQas)
+              }}>展开<span className="collIconRight">▽</span></div> : null}
+          </Card>
         </>}
       </>)}
 
