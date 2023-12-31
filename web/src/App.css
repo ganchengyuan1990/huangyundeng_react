@@ -36,3 +36,145 @@
     transform: rotate(360deg);
   }
 }
+
+
+
+.buttonsWrapper {
+  display: flex;
+}
+
+.indexBottombuttonsWrapper {
+  display: flex
+}
+
+.indexButton {
+  flex: 1;
+  margin: 15px 20px;
+  margin-top: 15px;
+  margin-bottom: 8px;
+  border-radius: 4px;
+  background: #fff;
+  padding: 5px 10px 10px;
+  line-height: 24px;
+  font-size: 14px;
+}
+
+.bottomButton {
+  flex: 1;
+  margin: 15px 20px;
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  text-align: center;
+
+}
+
+.buttonImage {
+  width: 25px;
+  height: 25px;
+  margin-right: 18px;
+  position: relative;
+  top: 5px;
+}
+
+
+
+
+.buttonImageV2 {
+  width: 25px;
+  height: 17px;
+  position: relative;
+  top: 5px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  background: #fff;
+  padding: 10px 12px;
+}
+
+.buttonImageV2_1 {
+  width: 25px;
+  height: 25px;
+  position: relative;
+  top: 5px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  background: #fff;
+  padding: 6px 12px;
+
+}
+
+.buttonImageV2_2 {
+  width: 25px;
+  height: 25px;
+  position: relative;
+  top: 5px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  background: #fff;
+  padding: 6px 12px;
+}
+
+.chuchuIcon {
+  position: absolute;
+  width: 160px;
+  height: 225px;
+  z-index: 1;
+  bottom: -105px;
+  left: 0;
+}
+
+.indexPage .ant-tabs-nav-wrap {
+  justify-content: flex-start !important;
+}
+
+.indexPage .ant-tabs-tab-active {
+  background: #1677ff !important;
+  
+}
+
+.indexPage .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: #ffffff !important;
+}
+
+.indexPage .ant-card .ant-card-body {
+  padding: 1rem;
+}
+
+.qaPage .ant-card .ant-card-body {
+  padding: 2rem 2.5rem;
+  text-align: left;
+}
+
+
+.contentWrapper {
+  /* max-height: 80px; */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  max-height: 80px;
+  /* margin: 24px; */
+}
+
+.contentWrapperNo {
+  max-height: auto;
+}
+
+.collIcon {
+  text-align: center;
+  margin: 6px auto;
+  color: rgb(100, 141, 165);
+  font-size: 13px;
+  /* opacity: 0.7; */
+}
+
+.collIconRight {
+  /* transform: rotate(180deg); */
+  margin-left: 3px;
+  position: relative;
+  top: 0px;
+  font-size: 13px;
+}
