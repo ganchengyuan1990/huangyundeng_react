@@ -1,0 +1,9 @@
+.imgScene {
+  width: 100%;
+  height: 500px;
+}
+
+.anna-card-content {
+  border-radius: 12rpx;
+  margin-top: 12rpx;
+}

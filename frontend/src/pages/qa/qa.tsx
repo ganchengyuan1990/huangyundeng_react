@@ -71,13 +71,13 @@ export default () => {
   }
   const requestQA = async (question: string) => {
     questionTextSetter('')
-    qasSetter(qas => [...qas, { type: 'user', recordId: '', message: question, collapse: question?.length < 80 }])
+    qasSetter(qas => [...qas, { type: 'user', recordId: '', message: question, collapse: question?.length < 80, initCollapse: question?.length > 80 }])
 
     guessTagShowSetter(false)
     qaAnswerLoadingSetter(true)
     try {
       const { answer, record_id } = await qa(question)
-      qasSetter(qas => [...qas, { type: 'ai', recordId: record_id, message: answer, collapse: answer?.length < 80 }])
+      qasSetter(qas => [...qas, { type: 'ai', recordId: record_id, message: answer, collapse: answer?.length < 80, initCollapse: question?.length > 80 }])
     } catch (e) {
       qasSetter(qas => [...qas, { type: 'ai', recordId: '', message: '服务器连接失败，请稍后再试' }])
     } finally {
@@ -186,9 +186,16 @@ export default () => {
               {!qa?.collapse ? <View className="collIcon" onTap={() => {
                 setCollapse(!collapse)
                 const newQas = JSON.parse(JSON.stringify(qas));
+                newQas[idx].collapse = !newQas[idx].collapse;
+                newQas[idx].initCollapse = newQas[idx].message?.length > 80;
+                console.log(newQas[idx], '==newQas==')
+                qasSetter(newQas)
+              }}>展开<Text className="collIconRight">▽</Text></View> : qa?.collapse && qa?.initCollapse ? <View className="collIcon" onTap={() => {
+                setCollapse(!collapse)
+                const newQas = JSON.parse(JSON.stringify(qas));
                 newQas[idx].collapse = !newQas[idx].collapse
                 qasSetter(newQas)
-              }}>展开<Text className="collIconRight">▽</Text></View> : null}
+              }}>收起<Text className="collIconRight upsideDown">Δ</Text></View> : null}
 
               <Popup open={showTextArea} closeable={true} onClose={() => {
                 setShowTextArea(false)
@@ -196,7 +203,6 @@ export default () => {
                 {showTextArea ? <form bindsubmit={async (e) => {
                   const res = await requestFeedback(qa, 'fix', e.detail.value.textarea)
                   setShowTextArea(false);
-                  console.log(res, 123)
                 }}>
                   <textarea style="margin: 10px 0; padding: 12px; background: #eee; border-radius: 8px; width: calc(100% - 24px);" placeholder="请输入" name="textarea" />
                   <button style="height: 38px; line-height: 38px; border: 1px solid rgb(9, 191, 255); background: rgba(0, 191, 255, 0.5); color: #fff" form-type="submit"> 提交 </button>

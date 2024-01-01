@@ -1,0 +1,36 @@
+.bottomButton {
+  /* margin: 30px 40px; */
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  text-align: center;
+  color: #333;
+  width: 20%;
+  flex: none;
+  margin-top: 100px;
+  transform: translateX(-50%);
+  position: relative;
+  left: 90px;
+}
+
+.bottomButton:last-child {
+  transform: translateX(100%);
+  left: -50%;
+  margin-left: 60px;
+}
+
+.indexBottombuttonsWrapper {
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.buttonImage {
+  width: 60px;
+  height: 60px;
+  margin-right: 35px;
+  position: relative;
+  top: 10px;
+}
