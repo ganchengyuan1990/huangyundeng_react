@@ -6,7 +6,7 @@ export async function getHotQuestions(tag: string = ''): Promise<{ questions: st
 }
 
 // 回答问题
-export async function qa(question: string): Promise<{ answer: string, recordId: string } & ApiResponse> {
+export async function qa(question: string): Promise<{ answer: string, recordId: string, relatedQuestions: string[] } & ApiResponse> {
   return await requestApiWithToken({ path: 'api/qa/a', method: 'POST', data: {question} });
 }
 

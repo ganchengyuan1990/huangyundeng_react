@@ -27,7 +27,7 @@ export const QaPage = () => {
   const [tags, setTags] = useState<string[]>([]);
   const [startDate, setStartDate] = useState<Date>(new Date());
 
-  const [qas, qasSetter] = React.useState<{ type: 'ai' | 'user', recordId: string, message: string, time: Date, collapse?: boolean }[]>([]);
+  const [qas, qasSetter] = React.useState<{ type: 'ai' | 'user', recordId: string, message: string, relatedQuestions?: string[], time: Date, collapse?: boolean }[]>([]);
   const [qaAnswerLoading, qaAnswerLoadingSetter] = React.useState(false);
 
   // 请求热门tags、及参数中tag或者问题的答案
@@ -63,8 +63,8 @@ export const QaPage = () => {
     guessTagShowSetter(false)
     qaAnswerLoadingSetter(true)
     try {
-      const { answer, recordId } = await qa(question)
-      qasSetter(qas => [...qas, { type: 'ai', recordId: recordId, message: answer, time: new Date(), collapse: answer?.length < 80 }])
+      const { answer, relatedQuestions, recordId } = await qa(question)
+      qasSetter(qas => [...qas, { type: 'ai', recordId: recordId, message: answer, relatedQuestions, time: new Date(), collapse: answer?.length < 80 }])
     } catch (e) {
       qasSetter(qas => [...qas, { type: 'ai', recordId: '', message: '服务器连接失败，请稍后再试', time: new Date() }])
     } finally {
@@ -170,9 +170,9 @@ export const QaPage = () => {
               </Col>
             </Row>
           </Block>
-          <Card 
+          <Card
             style={{ padding: '1.0rem', paddingBottom: '1.0rem', textAlign: 'left', margin: '1.0rem 2.4rem' }}
-            actions={qa.recordId ? [
+            actions={qa.recordId && !qa.relatedQuestions ? [
               <Space key="good" onClick={() => requestFeedback(qa, 'good', '')}><LikeOutlined/>有用</Space>,
               <Space key="bad" onClick={() => requestFeedback(qa, 'bad', '')}><DislikeOutlined/>无效</Space>,
               <Space key="fix" onClick={feedbackInfo(qa)}><ToolOutlined/>纠错</Space>,
@@ -182,6 +182,11 @@ export const QaPage = () => {
               className={!qa?.collapse ? "contentWrapper" : "contentWrapperNo"}
               >
               {qa.message.split('\n').map((v, i) => <div key={i}>{v}</div>)}
+              {qa.relatedQuestions?.map((q, i) =>
+                <div key={i} style={{ padding: '1.0rem', borderBottom: 'solid thin #ddd' }}
+                     onClick={async() => requestQA(q)}>
+                  <span style={{ color: i <= 2 ? 'red' : (i <= 3 ? 'orange' : 'gray') }}>{i+1}</span>. {q}
+                </div>)}
             </div>
             {!qa?.collapse ? <div className="collIcon" onClick={() => {
                 const newQas = JSON.parse(JSON.stringify(qas));
