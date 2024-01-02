@@ -1,6 +1,7 @@
 from typing import List
 
 import qdrant_client
+from django.db import connection
 from langchain.chains import LLMChain
 from langchain.chat_models import QianfanChatEndpoint
 from langchain.embeddings import OpenAIEmbeddings
@@ -24,6 +25,7 @@ class AIn(Schema):
 class AOut(ApiResponse):
     record_id: str
     answer: str
+    related_questions: List[str] = None
 
 @router.post('/a', response=AOut)
 def 获取答案(request: Request, data: AIn):
@@ -121,7 +123,7 @@ def 获取答案(request: Request, data: AIn):
         ))
     if len(found_docs) > 0:
         doc, score = found_docs[0]
-        if score > 0.9:
+        if score > 0.6:
             chat = QianfanChatEndpoint(**{'top_p': 0.4, 'temperature': 0.1, 'penalty_score': 1})
             human_message_prompt = HumanMessagePromptTemplate.from_template("""
             你是房地产法律法规方面的专家，现在，请你先看一下几个参考问答，再回答最后给出的问题。
@@ -153,6 +155,41 @@ def 获取答案(request: Request, data: AIn):
             )
             qr.save()
             return ApiResponse.success(record_id=qr.id, answer=final_answer)
+
+    # 继续检查这个问题中包含什么样的tag
+
+    related_question_models = (
+        HotQuestion.objects
+        .raw("""
+WITH
+  exist_tags AS (SELECT * FROM qa_hotquestion_tag WHERE %s ILIKE '%%' || tag || '%%'),
+  tag_similarity AS (
+    SELECT
+      qa_hotquestion.*,
+      (SELECT sum(1.0 / exist_tags.tag_count)
+       FROM jsonb_array_elements_text(qa_hotquestion.tags) t1
+       JOIN exist_tags ON t1.value=exist_tags.tag) AS similarity_count
+    FROM qa_hotquestion
+  )
+SELECT *
+FROM tag_similarity
+WHERE similarity_count>0
+ORDER BY similarity_count DESC
+LIMIT 5;
+""", [data.question]))
+    if len(related_question_models) > 0:
+        questions = [qm.standard_question for qm in related_question_models]
+        qr = QaRecord(
+            platform=platform,
+            account=request.user,
+            question=data.question,
+            match_question='na',
+            top_score=0,
+            answer_type='',
+            answer='',
+        )
+        qr.save()
+        return ApiResponse.success(record_id=1, answer='您是否想问：', related_questions=questions)
 
     qr = QaRecord(
         platform=platform,
@@ -189,7 +226,7 @@ class HotQuestionOut(ApiResponse):
     tags: List[str]
 
 @router.get('/hot_questions', auth=None, response=HotQuestionOut)
-def 热门问题(request: Request, tag: str = ''):
+def 热门问题(request: Request, tag: str = '', category_2: str = ''):
     tags = [
         '使用权',
         '继承',
@@ -202,20 +239,38 @@ def 热门问题(request: Request, tag: str = ''):
         '承包地',
         '居住权',
     ]
-    if tag == '':
+    category_2s = [
+        '抵押',
+        '转移登记',
+        '办理资料清单',
+        '新房办证',
+        '法律法规',
+        '联系方式',
+        '名词解释',
+        '收费标准',
+        '便民服务',
+        '跨区/异地办理',
+    ]
+    if tag == '' and category_2 == '':
         questions = [
-            '未成年人房屋由谁申请登记？',
-            '预告登记和网签备案的区别是什么？',
-            '赠与合同可以撤销吗？',
-            '什么是保障性住房？',
-            '农房可以买卖或赠与方式转让吗？',
-            '什么情况下继承人丧失继承权？',
-            '建筑区划内哪些部分属于业主共有？',
+            '二手房过户需要什么材料？',
+            '新房办证需要提供什么资料？',
+            '无房证明怎么开具？',
+            '如何查询我名下的房产信息？',
+            '不动产登记能否委托他人代办？',
+            '离婚析产需要什么材料？',
+            '如何申请不动产登记上门服务？',
             '委托人或者受托人可以解除委托合同吗？',
-            '土地经营权可以出租、入股、抵押吗？',
-            '最高额抵押担保的债权确定前，抵押权人与抵押人可以通过协议变更哪些内容？',
+            '领证方式有哪些？',
+            '房产可以办理二次抵押吗？',
         ]
-    else:
+    elif tag != '':
         question_models = HotQuestion.objects.filter(tag=tag).all()
         questions = [qm.standard_question for qm in question_models]
-    return ApiResponse.success(questions=questions, tags=tags)
+    elif category_2 != '':
+        question_models = HotQuestion.objects.filter(category_2=category_2).all()
+        questions = [qm.standard_question for qm in question_models]
+    else:
+        question_models = HotQuestion.objects.filter(tag=tag, category_2=category_2).all()
+        questions = [qm.standard_question for qm in question_models]
+    return ApiResponse.success(questions=questions, tags=tags, category_2s=category_2s)

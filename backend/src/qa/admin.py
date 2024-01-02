@@ -10,10 +10,10 @@ from src.qa.models import HotQuestion
 
 
 class HotQuestionAdmin(admin.ModelAdmin):
-    search_fields = ['region', 'tag', 'standard_question']
-    list_display = ('id', 'platform', 'region', 'category_1', 'category_2', 'tag', 'standard_question')
+    search_fields = ['region', 'tags', 'standard_question']
+    list_display = ('id', 'platform', 'region', 'category_1', 'category_2', 'tags', 'standard_question')
     list_display_links = ('id', 'standard_question')
-    list_filter = ('platform', 'region', 'category_1', 'category_2', 'tag')
+    list_filter = ('platform', 'region', 'category_1', 'category_2', 'tags')
 
 
 class PlatformAdmin(admin.ModelAdmin):

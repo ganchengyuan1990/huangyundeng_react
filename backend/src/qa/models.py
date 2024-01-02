@@ -10,7 +10,7 @@ class HotQuestion(BaseModel):
     region = models.CharField('地域', max_length=255, null=True)
     category_1 = models.CharField('大类', max_length=255, null=True)
     category_2 = models.CharField('小类', max_length=255, null=True)
-    tag = models.CharField('标签', max_length=255, null=True)
+    tags = models.JSONField('标签', null=True)
     standard_question = models.CharField('标准问题', max_length=255, null=True)
     similar_questions = models.TextField('相似问题', null=True)
     related_questions = models.TextField('相关问题', null=True)

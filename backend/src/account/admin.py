@@ -40,7 +40,7 @@ class FileUploadAdmin(admin.ModelAdmin):
                     region=row['地域'],
                     category_1=row['大类'],
                     category_2=row['小类'],
-                    tag=row['标签'],
+                    tags=row['标签'].split('，'),
                     standard_question=row['标准问题'],
                     similar_questions=row['相似问题'],
                     related_questions=row['相关问题'],
