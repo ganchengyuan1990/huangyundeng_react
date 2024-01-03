@@ -10,6 +10,7 @@ import { Image } from 'remax/wechat';
 import accountManager from '../account/accountManager';
 import { getAccountInfoSync, setNavigationBarTitle } from '@remax/wechat/esm/api';
 import { getBase } from '../../apis/account';
+import SpeechRecognizer from '../index/components/speechRecognizer';
 
 export default () => {
   let account = accountManager.getAccount();
@@ -249,24 +250,24 @@ export default () => {
         backgroundColor: '#fff', width: '750rpx', position: 'fixed', bottom: 0, left: 0, padding: '10rpx',
         borderTop: 'solid #eee thin'
       }}>
-        {/* <input 
+        {/* <input
           bindfocus={(e) => {
             // ling.current.info(e?.detail.height)
             setKeyboradHeight(550)
-          }} 
-          bindblur={() => {setKeyboradHeight(0)}} 
-          style={{backgroundColor: '#fff', height: '84px', textAlign: 'center', marginBottom: 30, position: 'relative', bottom: keyboradHeight }} 
-          maxlength="100" 
-          adjust-position={false} 
-          value={questionText} 
-          placeholder="请输入你想问的问题" 
+          }}
+          bindblur={() => {setKeyboradHeight(0)}}
+          style={{backgroundColor: '#fff', height: '84px', textAlign: 'center', marginBottom: 30, position: 'relative', bottom: keyboradHeight }}
+          maxlength="100"
+          adjust-position={false}
+          value={questionText}
+          placeholder="请输入你想问的问题"
           bindinput={(e) => {
               questionTextSetter(e.detail.value)
             }
-          }  
+          }
           bindconfirm={async (e) => {
             requestQA(e.detail.value)
-          }} 
+          }}
         /> */}
         <SearchBar shape="square" placeholder="请输入你想问的问题"
           actionName="确认"
@@ -280,6 +281,7 @@ export default () => {
           onSubmit={async () => requestQA(questionText)}
           onActionClick={async () => requestQA(questionText)}
         />
+        <SpeechRecognizer onFinish={v => questionTextSetter(v)} />
       </View>
     </Frame>
   );

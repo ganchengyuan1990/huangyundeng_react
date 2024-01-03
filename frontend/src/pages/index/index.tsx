@@ -143,7 +143,7 @@ export default () => {
                        style={{ width: '195rpx', margin: '10rpx' }}>{t}</Tag>)}
               </Card>
             </Tabs.TabContent>
-            <Tabs.TabContent key="quesionKind" tab="问题类别导航">
+            <Tabs.TabContent key="questionKind" tab="问题类别导航">
               <Card>
                 {[
                   '抵押',

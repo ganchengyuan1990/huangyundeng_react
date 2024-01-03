@@ -30,3 +30,9 @@ export async function getBase(miniId)
   : Promise<{ title: string, showLogo: boolean } & ApiResponse> {
   return await apiRequest({ path: 'api/account/base', method: 'GET', data: { miniId } });
 }
+
+// 获取腾讯云信息
+export async function getTencentInfo(miniId)
+  : Promise<{ appid: string, secretid: string, secretkey: string } & ApiResponse> {
+  return await apiRequest({ path: 'api/account/tencent-info', method: 'GET', data: { miniId } });
+}

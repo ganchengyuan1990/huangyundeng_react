@@ -33,6 +33,11 @@ config = {
         'ak': 'qEpYKYzApLC……',
         'sk': '……',
     },
+    'tencent_cloud': {
+        'appid': 1321865852,
+        'secretid': 'AKID…………dKoZk',
+        'secretkey': '…………',
+    },
 }
 
 

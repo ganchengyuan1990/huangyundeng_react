@@ -1,44 +1,28 @@
 import * as React from 'react';
-import { Button, Card, Icon, Ling, Skeleton, Tabs, Tag } from 'annar';
-import { getUserProfile, Image, login as wxLogin, redirectTo, showShareMenu, showShareImageMenu } from 'remax/wechat';
-import { useEffect, useRef, useState } from 'react';
-import { View, Text } from 'remax/one';
-import "./index.css";
-import { getAccountInfoSync, setNavigationBarTitle } from '@remax/wechat/esm/api';
+import { Card } from 'annar';
+import { downloadFile, openDocument, saveFile } from 'remax/wechat';
+import { View, Image } from 'remax/one';
+import './index.css';
 
 export default (props) => {
   const {
     files = [],
-    saveFile = false,
+    saveFile: needSaveFile = false,
   } = props;
-  // const [questions, setQuestions] = useState<string[]>([]);
-  // const [tags, setTags] = useState<string[]>([]);
-  // const [isLoading, isLoadingSetter] = useState(true);
-  // const [isInfoLoading, isInfoLoadingSetter] = useState(false);
-  // const [errorMessage, errorMessageSetter] = useState('');
-  // const ling = useRef<any>();
-
-  // useEffect(() => {
-
-
-  //   (async function() {
-
-  //   })()
-  // }, [])
 
   const openFile = async (q) => {
-    wx?.downloadFile({
+    downloadFile({
       // 示例 url，并非真实存在
       url: q.url,
       success: function (res) {
         const filePath = res.tempFilePath
-        wx?.openDocument({
+        openDocument({
           filePath: filePath,
           success: function (res) {
             console.log('打开文档成功')
           }
         })
-        saveFile && wx.saveFile({
+        needSaveFile && saveFile({
           tempFilePath: res.tempFilePath
         }).then(console.log)
       },

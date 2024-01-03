@@ -12,6 +12,7 @@ from src.account.models import Account
 from src.account.serializers import AccountSerializer
 from src.base.request_defined import Request
 from src.account.utils import get_platform
+from src.config import config
 from src.utils.api import ApiResponse, ApiResponseResultCode, UserException
 from src.utils.wx.wxauth import code2session
 
@@ -26,6 +27,17 @@ def account_base(request: Request, mini_id: str):
         csrf_token=get_token(request),
         title=config.title,
         showLogo=False,
+    )
+
+
+@router.get('/tencent-info', auth=None)
+def tencent_info(request: Request, mini_id: str):
+    """ 获取站点的腾讯云账号信息 """
+    return ApiResponse.success(
+        csrf_token=get_token(request),
+        appid=config['tencent_cloud']['appid'],
+        secretid=config['tencent_cloud']['secretid'],
+        secretkey=config['tencent_cloud']['secretkey'],
     )
 
 
