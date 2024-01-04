@@ -33,6 +33,6 @@ export async function getBase(miniId)
 
 // 获取腾讯云信息
 export async function getTencentInfo(miniId)
-  : Promise<{ appid: string, secretid: string, secretkey: string } & ApiResponse> {
+  : Promise<{ appid: string, secretid: string, secretkey: string, token: string } & ApiResponse> {
   return await apiRequest({ path: 'api/account/tencent-info', method: 'GET', data: { miniId } });
 }

@@ -12,7 +12,7 @@ export default ({ onFinish }: {
   onFinish: (text: string) => void
 }) => {
   const [recording, setRecording] = useState(false);
-  const [tencentInfo, setTencentInfo] = useState<{ appid: string, secretid: string, secretkey: string } | null>(null);
+  const [tencentInfo, setTencentInfo] = useState<{ appid: string, secretid: string, secretkey: string, token: string } | null>(null);
   const [result, setResult] = useState('');
   const [speechRecognizerManager, setSpeechRecognizerManager] = useState(() => getRecorderSpeechRecognizer());
 
@@ -97,6 +97,7 @@ export default ({ onFinish }: {
       appid: tencentInfo.appid,
       secretid:  tencentInfo.secretid,
       secretkey: tencentInfo.secretkey,
+      token: tencentInfo.token,
       // 录音参数
       // duration: 100000,
       // frameSize: 1.28,  //单位:k

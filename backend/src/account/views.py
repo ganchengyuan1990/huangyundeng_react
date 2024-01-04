@@ -6,6 +6,8 @@ from django.contrib.sessions.models import Session
 from django.http import Http404, HttpResponse
 from django.middleware.csrf import get_token
 from ninja import Router, Schema
+from tencentcloud.common import credential
+from tencentcloud.sts.v20180813 import sts_client, models as sts_models
 
 from src.account.account_service import AccountService
 from src.account.models import Account
@@ -15,6 +17,7 @@ from src.account.utils import get_platform
 from src.config import config
 from src.utils.api import ApiResponse, ApiResponseResultCode, UserException
 from src.utils.wx.wxauth import code2session
+from django.core.cache import caches, BaseCache
 
 router = Router()
 
@@ -33,11 +36,34 @@ def account_base(request: Request, mini_id: str):
 @router.get('/tencent-info', auth=None)
 def tencent_info(request: Request, mini_id: str):
     """ 获取站点的腾讯云账号信息 """
+
+    cache: BaseCache = caches['default']
+    tmp_secret_id = cache.get('tencent_cloud:TmpSecretId')
+    tmp_secret_key = cache.get('tencent_cloud:TmpSecretKey')
+    tmp_secret_token = cache.get('tencent_cloud:Token')
+    if not tmp_secret_id or not tmp_secret_key:
+        # 请求临时key
+        cred = credential.Credential(config['tencent_cloud']['secretid'], config['tencent_cloud']['secretkey'])
+        client = sts_client.StsClient(cred, "ap-shanghai")
+
+        req = sts_models.GetFederationTokenRequest()
+        req.Name = 'aaa'
+        req.Policy = '{"statement":[{"action":["asr:*"],"effect":"allow","resource":"*"}],"version":"2.0"}'
+        req.Policy = '{"statement":[{"action":["name/asr:*"],"effect":"allow","resource":"*"}],"version":"2.0"}'
+        req.DurationSeconds = 7200
+        resp = client.GetFederationToken(req)
+        tmp_secret_id = resp.Credentials.TmpSecretId
+        tmp_secret_key = resp.Credentials.TmpSecretKey
+        tmp_secret_token = resp.Credentials.Token
+        cache.set('tencent_cloud:TmpSecretId', tmp_secret_id, 3600)
+        cache.set('tencent_cloud:TmpSecretKey', tmp_secret_key, 3600)
+        cache.set('tencent_cloud:Token', tmp_secret_token, 3600)
+
     return ApiResponse.success(
-        csrf_token=get_token(request),
         appid=config['tencent_cloud']['appid'],
-        secretid=config['tencent_cloud']['secretid'],
-        secretkey=config['tencent_cloud']['secretkey'],
+        secretid=tmp_secret_id,
+        secretkey=tmp_secret_key,
+        token=tmp_secret_token,
     )
 
 

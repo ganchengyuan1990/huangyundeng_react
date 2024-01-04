@@ -196,6 +196,13 @@ STORAGES = {
     },
 }
 
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.dummy.DummyCache",
+        # "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+    }
+}
+
 MINIO_STORAGE_ENDPOINT = config['minio']['endpoint']
 MINIO_STORAGE_ACCESS_KEY = config['minio']['access_key']
 MINIO_STORAGE_SECRET_KEY = config['minio']['secret_key']

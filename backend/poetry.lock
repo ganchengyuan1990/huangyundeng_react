@@ -2557,6 +2557,25 @@ url = "http://mirrors.aliyun.com/pypi/simple"
 reference = "aliyun"
 
 [[package]]
+name = "tencentcloud-sdk-python"
+version = "3.0.1065"
+description = "Tencent Cloud SDK for Python"
+optional = false
+python-versions = "*"
+files = [
+    {file = "tencentcloud-sdk-python-3.0.1065.tar.gz", hash = "sha256:ae634d1faea6b2d29cbc28268b72d8819d4fa0f5c9eea451e83cc992f28d6b1b"},
+    {file = "tencentcloud_sdk_python-3.0.1065-py2.py3-none-any.whl", hash = "sha256:936e6c25ea85584226fb27f6c9d9c10b0464d9d59598b189c5449d69b94d085a"},
+]
+
+[package.dependencies]
+requests = ">=2.16.0"
+
+[package.source]
+type = "legacy"
+url = "http://mirrors.aliyun.com/pypi/simple"
+reference = "aliyun"
+
+[[package]]
 name = "tiktoken"
 version = "0.5.1"
 description = "tiktoken is a fast BPE tokeniser for use with OpenAI's models"
@@ -2815,4 +2834,4 @@ reference = "aliyun"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.11,<3.12"
-content-hash = "5b4182d9d3d93fa7e59c7f1129c793c25d6e6c4d28caa13bc092f5e738592bf2"
+content-hash = "6e935b5419d58273cfff3a29f3791dd6599c1d1dc5a8f1444779c171b63e6364"
